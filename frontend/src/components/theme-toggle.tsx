@@ -1,17 +1,20 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { Moon, Palette, Sparkles, Sun } from 'lucide-react';
+import { Droplet, Moon, Palette, Printer, Sparkles, Sun } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 /** Переключатель тем по циклу: тёмная → светлая → золотая тёмная → золотая
- * светлая → тёмная. Иконка показывает, какая тема включится по клику. */
-const CYCLE = ['dark', 'light', 'gold', 'gold-light'] as const;
+ * светлая → CMYK тёмная («Чернила») → CMYK светлая («Бумага») → тёмная.
+ * Иконка показывает, какая тема включится по клику. */
+const CYCLE = ['dark', 'light', 'gold', 'gold-light', 'cmyk', 'cmyk-light'] as const;
 
 const NEXT_META: Record<string, { icon: typeof Sun; label: string }> = {
   light: { icon: Sun, label: 'Включить светлую тему' },
   gold: { icon: Sparkles, label: 'Включить золотую тёмную тему' },
   'gold-light': { icon: Palette, label: 'Включить золотую светлую тему' },
+  cmyk: { icon: Droplet, label: 'Включить тёмную тему CMYK «Чернила»' },
+  'cmyk-light': { icon: Printer, label: 'Включить светлую тему CMYK «Бумага»' },
   dark: { icon: Moon, label: 'Включить тёмную тему' },
 };
 

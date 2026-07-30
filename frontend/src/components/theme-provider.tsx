@@ -5,13 +5,15 @@ import type { ReactNode } from 'react';
 
 /** Тёмная тема (PrintOS) — по умолчанию; светлая — равноправный вариант.
  * «gold» и «gold-light» — временные экспериментальные темы
- * (шампанское золото на чёрном и на тёплом светлом). */
+ * (шампанское золото на чёрном и на тёплом светлом).
+ * «cmyk» и «cmyk-light» — «Чернила и бумага»: маджента + циан
+ * (краски печатной машины) на чернильном и тёпло-бумажном фоне. */
 export function ThemeProvider({ children }: { children: ReactNode }) {
   return (
     <NextThemeProvider
       attribute="data-theme"
       defaultTheme="dark"
-      themes={['dark', 'light', 'gold', 'gold-light']}
+      themes={['dark', 'light', 'gold', 'gold-light', 'cmyk', 'cmyk-light']}
       enableSystem={false}
       disableTransitionOnChange
     >

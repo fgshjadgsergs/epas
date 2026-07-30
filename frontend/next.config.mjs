@@ -19,7 +19,9 @@ const ym = 'https://mc.yandex.ru https://mc.yandex.com';
  * script-src/style-src содержат 'unsafe-inline': Next App Router встраивает
  * inline-скрипт гидратации и inline-стили (styled-jsx) без nonce, а nonce-режим
  * потребовал бы полностью динамического рендера и сломал бы SSG/ISR каталога.
- * 'unsafe-eval' НЕ разрешён (в production-сборке Next его не требует).
+ * 'unsafe-eval' НЕ разрешён в production (сборка Next его не требует), но
+ * dev-рантайм (react-refresh, source maps) без него не гидратируется — вся
+ * интерактивность в `npm run dev` умирает. Поэтому в dev добавляем его.
  */
 const csp = [
   "default-src 'self'",
@@ -27,7 +29,7 @@ const csp = [
   "object-src 'none'",
   "frame-ancestors 'none'",
   "form-action 'self'",
-  `script-src 'self' 'unsafe-inline' ${ym}`,
+  `script-src 'self' 'unsafe-inline'${isProd ? '' : " 'unsafe-eval'"} ${ym}`,
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: blob: ${mediaSrc} ${optionalMediaOrigin} ${ym}`,
   "font-src 'self' data:",
