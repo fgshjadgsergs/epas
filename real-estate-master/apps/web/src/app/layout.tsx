@@ -22,6 +22,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {/* Палитра применяется до первой отрисовки — иначе страница
+            мигает темой по умолчанию. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              'try{var t=localStorage.getItem("epas-theme");if(t&&t!=="night")document.documentElement.setAttribute("data-theme",t)}catch(e){}',
+          }}
+        />
         {/* Шрифты захостены локально: Google Fonts из РФ нестабилен и
             блокирует первый рендер, а DM Serif Display не имеет кириллицы. */}
         <link

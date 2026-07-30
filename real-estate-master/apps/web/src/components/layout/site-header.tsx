@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ThemeSwitcher } from "./theme-switcher";
 
 function createListingHref(dealType: string, title: string): string {
   const params = new URLSearchParams({
@@ -38,6 +39,7 @@ export function SiteHeader() {
           <a href="tel:+79990016588" className="header__phone">
             +7 (999) 001-65-88
           </a>
+          <ThemeSwitcher />
           <a href="#callback" className="btn btn--ghost" data-bs-toggle="modal" data-bs-target="#userSignInModal">
             Заявка
           </a>
