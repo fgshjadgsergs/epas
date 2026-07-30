@@ -597,8 +597,9 @@ h4,
   padding: 0 44px;
   font-size: 1.15rem;
   font-weight: 700;
-  color: #fff;
-  background: linear-gradient(180deg, var(--e-accent) 0%, var(--e-accent-strong) 100%);
+  color: #fff !important;
+  /* !important: в globals.css несколько своих градиентов на .search-btn */
+  background: linear-gradient(180deg, var(--e-accent) 0%, var(--e-accent-strong) 100%) !important;
   border: 0;
   border-radius: 14px;
   cursor: pointer;
@@ -2897,4 +2898,247 @@ h4,
     grid-template-columns: minmax(0, 1fr);
     gap: 24px;
   }
+}
+
+/* ---------------------------------------------------------------
+   11. Светлые темы: светлая сцена HERO и светлая панель фильтров
+   --------------------------------------------------------------- */
+
+/* Небо: светлое сверху, плотнее к горизонту */
+[data-theme="light"] #searchbox-hero-1 .hero__bg,
+[data-theme="sand"] #searchbox-hero-1 .hero__bg {
+  background:
+    radial-gradient(90% 55% at 50% 104%, rgba(47, 111, 224, 0.16) 0%, transparent 66%),
+    linear-gradient(180deg, #f8fafd 0%, #e9f0f9 44%, #d7e3f2 78%, #c9d9ec 100%);
+}
+
+[data-theme="sand"] #searchbox-hero-1 .hero__bg {
+  background:
+    radial-gradient(90% 55% at 50% 104%, rgba(176, 123, 46, 0.14) 0%, transparent 66%),
+    linear-gradient(180deg, #faf7f1 0%, #f1ebdf 46%, #e5dcc9 80%, #dbd0b9 100%);
+}
+
+/* Сетка пола: тёмно-синие линии на светлом */
+[data-theme="light"] #searchbox-hero-1 .hero__bg::before,
+[data-theme="sand"] #searchbox-hero-1 .hero__bg::before {
+  background-image:
+    repeating-linear-gradient(90deg, rgba(47, 86, 150, 0.2) 0 1px, transparent 1px 96px),
+    repeating-linear-gradient(0deg, rgba(47, 86, 150, 0.16) 0 1px, transparent 1px 72px);
+}
+
+[data-theme="sand"] #searchbox-hero-1 .hero__bg::before {
+  background-image:
+    repeating-linear-gradient(90deg, rgba(122, 92, 42, 0.2) 0 1px, transparent 1px 96px),
+    repeating-linear-gradient(0deg, rgba(122, 92, 42, 0.16) 0 1px, transparent 1px 72px);
+}
+
+/* Каркас города: светлые варианты слоёв.
+   Меняем только background-image — геометрия (размер, позиция)
+   наследуется из базовых и мобильных правил. */
+[data-theme="light"] #searchbox-hero-1 .hero__bg::after,
+[data-theme="sand"] #searchbox-hero-1 .hero__bg::after {
+  background-image: url("/static/img/hero/wire-far-light.svg");
+  opacity: 0.7;
+}
+
+[data-theme="light"] #searchbox-hero-1 .hero__overlay::before,
+[data-theme="sand"] #searchbox-hero-1 .hero__overlay::before {
+  background-image: url("/static/img/hero/wire-near-light.svg");
+}
+
+/* Дымка и виньетка — светлые */
+[data-theme="light"] #searchbox-hero-1 .hero__overlay,
+[data-theme="sand"] #searchbox-hero-1 .hero__overlay {
+  background: linear-gradient(180deg, transparent 50%, rgba(178, 197, 222, 0.24) 82%, rgba(160, 182, 210, 0.3) 100%);
+}
+
+[data-theme="sand"] #searchbox-hero-1 .hero__overlay {
+  background: linear-gradient(180deg, transparent 50%, rgba(214, 200, 168, 0.26) 82%, rgba(202, 186, 150, 0.3) 100%);
+}
+
+[data-theme="light"] #searchbox-hero-1 .hero__overlay::after,
+[data-theme="sand"] #searchbox-hero-1 .hero__overlay::after {
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(47, 111, 224, 0.05) 44%,
+      rgba(47, 111, 224, 0.09) 50%,
+      rgba(47, 111, 224, 0.05) 56%,
+      transparent 100%
+    ),
+    radial-gradient(130% 92% at 50% 30%, transparent 60%, rgba(90, 115, 150, 0.14) 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, transparent 22%, transparent 76%, var(--e-bg) 100%);
+  background-size: 100% 46%, 100% 100%, 100% 100%;
+  background-repeat: no-repeat;
+}
+
+/* Тексты HERO в светлых темах — тёмные */
+[data-theme="light"] #searchbox-hero-1 h1,
+[data-theme="sand"] #searchbox-hero-1 h1 {
+  color: var(--e-text);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+[data-theme="light"] .hero-subtitle,
+[data-theme="sand"] .hero-subtitle {
+  color: var(--e-text-soft);
+  text-shadow: none;
+}
+
+[data-theme="light"] .hero-trust b,
+[data-theme="sand"] .hero-trust b {
+  color: var(--e-text);
+}
+
+[data-theme="light"] .hero-trust li,
+[data-theme="sand"] .hero-trust li {
+  color: var(--e-text-soft);
+}
+
+[data-theme="light"] .hero-trust span,
+[data-theme="sand"] .hero-trust span {
+  color: var(--e-text-muted);
+}
+
+/* Панель фильтров на главной: светлое стекло + светлые токены
+   (перебивает тёмный пин с .filters-panel--hero) */
+[data-theme="light"] .filters-panel--hero,
+[data-theme="sand"] .filters-panel--hero {
+  --e-field: rgba(15, 30, 60, 0.05);
+  --e-field-hover: rgba(15, 30, 60, 0.1);
+  --e-tile: rgba(15, 30, 60, 0.04);
+  --e-track: rgba(15, 30, 60, 0.16);
+  --e-strong: #101d33;
+  --e-text: #16233a;
+  --e-text-soft: #3d4c66;
+  --e-text-muted: #66748c;
+  --e-line: rgba(15, 30, 60, 0.12);
+  --e-line-strong: rgba(15, 30, 60, 0.22);
+  background: rgba(255, 255, 255, 0.76);
+  border-color: rgba(15, 30, 60, 0.14);
+  box-shadow: 0 24px 60px rgba(40, 62, 100, 0.18);
+}
+
+[data-theme="sand"] .filters-panel--hero {
+  --e-field: rgba(74, 56, 30, 0.06);
+  --e-field-hover: rgba(74, 56, 30, 0.11);
+  --e-tile: rgba(74, 56, 30, 0.05);
+  --e-track: rgba(74, 56, 30, 0.18);
+  --e-strong: #241f16;
+  --e-text: #2e2820;
+  --e-text-soft: #57503f;
+  --e-text-muted: #837a66;
+  --e-line: rgba(74, 56, 30, 0.14);
+  --e-line-strong: rgba(74, 56, 30, 0.24);
+  background: rgba(253, 250, 244, 0.8);
+  border-color: rgba(74, 56, 30, 0.16);
+  box-shadow: 0 24px 60px rgba(96, 78, 44, 0.16);
+}
+
+/* Мобильный якорь горизонта — светлые версии пиксельных градиентов */
+@media (max-width: 900px) {
+  [data-theme="light"] #searchbox-hero-1 .hero__bg {
+    background:
+      radial-gradient(140% 280px at 50% 720px, rgba(47, 111, 224, 0.16) 0%, transparent 68%),
+      linear-gradient(180deg, #f8fafd 0px, #ecf2fa 320px, #dde7f4 620px, #cfdded 780px, var(--e-bg) 100%);
+  }
+
+  [data-theme="sand"] #searchbox-hero-1 .hero__bg {
+    background:
+      radial-gradient(140% 280px at 50% 720px, rgba(176, 123, 46, 0.14) 0%, transparent 68%),
+      linear-gradient(180deg, #faf7f1 0px, #f3edE1 320px, #e9e0cd 620px, #ded3bd 780px, var(--e-bg) 100%);
+  }
+
+  [data-theme="light"] #searchbox-hero-1 .hero__overlay,
+  [data-theme="sand"] #searchbox-hero-1 .hero__overlay {
+    background: none;
+  }
+
+  [data-theme="light"] #searchbox-hero-1 .hero__overlay::after,
+  [data-theme="sand"] #searchbox-hero-1 .hero__overlay::after {
+    background:
+      radial-gradient(140% 620px at 50% 300px, transparent 60%, rgba(90, 115, 150, 0.12) 100%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0px, transparent 200px, transparent 74%, var(--e-bg) 100%);
+  }
+}
+
+/* Легаси красит панель и её элементы напрямую (globals.css: .filters-panel
+   градиент, .filter-btn, .filters-search) — в светлых темах глушим. */
+[data-theme="light"] .filters-panel--hero,
+[data-theme="sand"] .filters-panel--hero {
+  background: rgba(255, 255, 255, 0.82) !important;
+  border: 1px solid rgba(15, 30, 60, 0.14) !important;
+  box-shadow: 0 24px 60px rgba(40, 62, 100, 0.18) !important;
+}
+
+[data-theme="sand"] .filters-panel--hero {
+  background: rgba(253, 250, 244, 0.85) !important;
+  border-color: rgba(74, 56, 30, 0.16) !important;
+}
+
+[data-theme="light"] .filters-panel--hero .filters-search,
+[data-theme="sand"] .filters-panel--hero .filters-search {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+[data-theme="light"] .filters-panel--hero .filters-search input,
+[data-theme="sand"] .filters-panel--hero .filters-search input {
+  color: var(--e-text) !important;
+  background: var(--e-field) !important;
+  border: 1px solid var(--e-line-strong) !important;
+  box-shadow: none !important;
+}
+
+[data-theme="light"] .filters-panel--hero .filters-search input::placeholder,
+[data-theme="sand"] .filters-panel--hero .filters-search input::placeholder {
+  color: var(--e-text-muted) !important;
+}
+
+[data-theme="light"] .filters-panel--hero .filters-search button,
+[data-theme="sand"] .filters-panel--hero .filters-search button {
+  color: var(--e-text-soft) !important;
+  background: transparent !important;
+}
+
+[data-theme="light"] .filters-panel--hero .filter-btn,
+[data-theme="sand"] .filters-panel--hero .filter-btn {
+  color: var(--e-text-soft) !important;
+  background: var(--e-field) !important;
+  border: 1px solid var(--e-line-strong) !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+[data-theme="light"] .filters-panel--hero .filter-btn:hover,
+[data-theme="sand"] .filters-panel--hero .filter-btn:hover {
+  color: var(--e-text) !important;
+  background: var(--e-field-hover) !important;
+}
+
+[data-theme="light"] .filters-panel--hero .filter-btn.active,
+[data-theme="sand"] .filters-panel--hero .filter-btn.active {
+  color: #fff !important;
+  background: var(--e-accent-strong) !important;
+  border-color: var(--e-accent) !important;
+}
+
+[data-theme="light"] .filters-panel--hero .slider-block,
+[data-theme="sand"] .filters-panel--hero .slider-block {
+  background: var(--e-tile) !important;
+  border: 1px solid var(--e-line) !important;
+}
+
+[data-theme="light"] .filters-panel--hero .slider-label,
+[data-theme="sand"] .filters-panel--hero .slider-label {
+  color: var(--e-text-soft) !important;
+}
+
+/* Заголовок HERO: bootstrap-класс text-white держит цвет с !important */
+[data-theme="light"] #searchbox-hero-1 h1.text-white,
+[data-theme="sand"] #searchbox-hero-1 h1.text-white {
+  color: var(--e-text) !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55) !important;
 }

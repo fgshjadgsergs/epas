@@ -117,6 +117,40 @@ const layers = [
   },
 ];
 
+// Светлые варианты тех же слоёв — для светлых тем сайта.
+layers.push(
+  {
+    name: "wire-far-light.svg",
+    seed: 9151,
+    widthRange: [70, 130],
+    heightRange: [150, 340],
+    stroke: "#6c86ad",
+    strokeOpacity: 0.5,
+    faceFill: "rgba(255, 255, 255, 0.45)",
+    topFill: "rgba(108, 134, 173, 0.14)",
+    lineWidth: 1.1,
+    floorStep: 30,
+    gap: 26,
+    node: "#2f6fe0",
+    nodeRadius: 2.4,
+  },
+  {
+    name: "wire-near-light.svg",
+    seed: 33827,
+    widthRange: [150, 280],
+    heightRange: [280, 600],
+    stroke: "#3f5d85",
+    strokeOpacity: 0.62,
+    faceFill: "rgba(250, 252, 255, 0.9)",
+    topFill: "rgba(63, 93, 133, 0.12)",
+    lineWidth: 1.5,
+    floorStep: 34,
+    gap: 60,
+    node: "#2f6fe0",
+    nodeRadius: 3.4,
+  },
+);
+
 for (const layer of layers) {
   const svg = makeLayer(layer);
   await writeFile(join(OUT, layer.name), svg, "utf8");
