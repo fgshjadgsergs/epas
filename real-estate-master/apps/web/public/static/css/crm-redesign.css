@@ -1,0 +1,883 @@
+/* =====================================================================
+   EPAS CRM — дизайн-слой по концепту «тёмно-синее стекло».
+   Структура интерфейса не меняется: перекрашиваются базовые
+   компоненты (панели, таблицы, поля, кнопки, бейджи) + полная
+   мобильная адаптация. Перекрывает crm-стили из globals.css —
+   на спорных свойствах стоит !important, порядок загрузки бандла
+   и <link> не гарантирован.
+   ===================================================================== */
+
+:root {
+  --crm-bg-0: #0a1120;
+  --crm-bg-1: #0e1830;
+  --crm-bg-2: #14213f;
+  --crm-glass: rgba(148, 178, 233, 0.06);
+  --crm-glass-strong: rgba(148, 178, 233, 0.1);
+  --crm-line: rgba(148, 178, 233, 0.14);
+  --crm-line-strong: rgba(148, 178, 233, 0.24);
+  --crm-text: #eef3fb;
+  --crm-text-soft: #c0cde2;
+  --crm-text-muted: #8ea0bd;
+  --crm-accent: #4d92ff;
+  --crm-accent-strong: #2f6fe0;
+  --crm-ok: #3fbf9a;
+  --crm-warn: #e2a84a;
+  --crm-danger: #e2606c;
+  --crm-radius: 16px;
+  --crm-radius-sm: 11px;
+  --crm-field: rgba(10, 18, 36, 0.55);
+  --crm-shadow: 0 18px 44px rgba(3, 8, 20, 0.45);
+}
+
+/* ---------------------------------------------------------------
+   1. Сцена: глубокий сине-графитовый фон со свечениями
+   --------------------------------------------------------------- */
+
+.crm-shell {
+  grid-template-columns: 248px minmax(0, 1fr);
+  background:
+    radial-gradient(70% 55% at 82% -10%, rgba(64, 120, 220, 0.18) 0%, transparent 60%),
+    radial-gradient(55% 45% at -8% 30%, rgba(46, 90, 180, 0.14) 0%, transparent 62%),
+    radial-gradient(60% 50% at 50% 115%, rgba(30, 70, 150, 0.16) 0%, transparent 64%),
+    linear-gradient(155deg, var(--crm-bg-1) 0%, var(--crm-bg-0) 55%, #070d1a 100%) !important;
+  color: var(--crm-text) !important;
+  min-height: 100vh;
+}
+
+.crm-shell__main {
+  padding: 22px 26px 46px;
+}
+
+/* тонкие тёмные скроллбары */
+.crm-shell *::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+.crm-shell *::-webkit-scrollbar-thumb {
+  background: rgba(148, 178, 233, 0.22);
+  border-radius: 999px;
+}
+
+.crm-shell *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ---------------------------------------------------------------
+   2. Сайдбар
+   --------------------------------------------------------------- */
+
+.crm-shell__sidebar {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 14px 16px !important;
+  background: rgba(10, 17, 34, 0.72) !important;
+  border-right: 1px solid var(--crm-line) !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  color: var(--crm-text-soft) !important;
+}
+
+.crm-brand__eyebrow {
+  font-size: 0.72rem !important;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--crm-accent) !important;
+}
+
+.crm-brand__title {
+  margin-top: 4px;
+  font-family: "Manrope", "Inter", sans-serif;
+  font-size: 1.18rem !important;
+  font-weight: 800;
+  color: var(--crm-text) !important;
+}
+
+.crm-brand__subtitle {
+  margin-top: 2px;
+  font-size: 0.85rem !important;
+  color: var(--crm-text-muted) !important;
+}
+
+.crm-nav {
+  margin-top: 18px;
+  display: grid;
+  gap: 4px;
+}
+
+.crm-nav__link {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px !important;
+  font-size: 0.98rem !important;
+  font-weight: 600;
+  color: var(--crm-text-soft) !important;
+  text-decoration: none;
+  border-radius: var(--crm-radius-sm) !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+
+.crm-nav__link:hover {
+  color: var(--crm-text) !important;
+  background: var(--crm-glass) !important;
+}
+
+.crm-nav__link.is-active {
+  color: #fff !important;
+  background: linear-gradient(120deg, rgba(77, 146, 255, 0.24) 0%, rgba(77, 146, 255, 0.1) 100%) !important;
+  border-color: rgba(77, 146, 255, 0.35) !important;
+  box-shadow: inset 3px 0 0 var(--crm-accent);
+}
+
+.crm-shell__sidebar-footer {
+  margin-top: auto;
+  padding-top: 14px;
+}
+
+.crm-sidebar-close {
+  display: none;
+}
+
+/* ---------------------------------------------------------------
+   3. Шапка контента
+   --------------------------------------------------------------- */
+
+.crm-shell__header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-content: flex-start !important;
+  padding: 14px 26px !important;
+  background: rgba(10, 17, 34, 0.55) !important;
+  border-bottom: 1px solid var(--crm-line) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.crm-shell__user {
+  font-size: 1.02rem !important;
+  font-weight: 700;
+  color: var(--crm-text) !important;
+}
+
+.crm-shell__role {
+  font-size: 0.85rem !important;
+  color: var(--crm-text-muted) !important;
+}
+
+.crm-burger {
+  display: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: var(--crm-text);
+  background: var(--crm-glass);
+  border: 1px solid var(--crm-line-strong);
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.crm-burger svg {
+  width: 22px;
+  height: 22px;
+}
+
+.crm-shell__backdrop {
+  display: none;
+}
+
+/* ---------------------------------------------------------------
+   4. Поверхности: панели, карточки, секции
+   --------------------------------------------------------------- */
+
+.crm-panel,
+.crm-detail-card,
+.crm-control-surface,
+.crm-deal-panel__section,
+.crm-client-panel__section,
+.crm-matching-card,
+.crm-image-card,
+.crm-deal-activity-card,
+.crm-subsection {
+  background: linear-gradient(160deg, rgba(148, 178, 233, 0.08) 0%, rgba(148, 178, 233, 0.03) 100%) !important;
+  border: 1px solid var(--crm-line) !important;
+  border-radius: var(--crm-radius) !important;
+  box-shadow: var(--crm-shadow) !important;
+  color: var(--crm-text-soft);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.crm-panel {
+  padding: 20px 22px;
+}
+
+/* Заголовки страниц и секций */
+.crm-page-header {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 0 6px !important;
+}
+
+.crm-page-header h1,
+.crm-page-header__title {
+  font-family: "Manrope", "Inter", sans-serif !important;
+  font-size: clamp(1.35rem, 2.4vw, 1.8rem) !important;
+  font-weight: 800;
+  color: var(--crm-text) !important;
+  letter-spacing: -0.01em;
+}
+
+.crm-page-header p,
+.crm-page-header__description {
+  color: var(--crm-text-muted) !important;
+  font-size: 0.95rem !important;
+}
+
+.crm-section-title,
+.crm-client-panel__section-title,
+.crm-table__title {
+  color: var(--crm-text) !important;
+  font-weight: 800 !important;
+}
+
+.crm-note,
+.crm-subsection__note,
+.crm-field__hint {
+  color: var(--crm-text-muted) !important;
+}
+
+.crm-state {
+  background: var(--crm-glass) !important;
+  border: 1px dashed var(--crm-line-strong) !important;
+  border-radius: var(--crm-radius) !important;
+  color: var(--crm-text-soft) !important;
+}
+
+.crm-state__title {
+  color: var(--crm-text) !important;
+}
+
+.crm-state__description {
+  color: var(--crm-text-muted) !important;
+}
+
+/* ---------------------------------------------------------------
+   5. Поля форм
+   --------------------------------------------------------------- */
+
+.crm-field__label {
+  color: var(--crm-text-soft) !important;
+  font-weight: 600 !important;
+  font-size: 0.88rem !important;
+}
+
+/* Специфичность 0,3,0: в globals.css поля переопределены как
+   .crm-shell .crm-input с !important — обычный класс их не перебьёт. */
+.crm-input,
+.crm-shell .crm-input.crm-input,
+.crm-shell .crm-select.crm-select,
+.crm-shell .crm-textarea.crm-textarea,
+.crm-shell .crm-control-surface.crm-control-surface,
+.crm-select,
+.crm-textarea,
+.crm-pipeline-status-select select,
+.crm-user-multi-select {
+  min-height: 44px;
+  padding: 8px 13px !important;
+  font-size: 0.98rem !important;
+  color: var(--crm-text) !important;
+  background: var(--crm-field) !important;
+  border: 1px solid var(--crm-line-strong) !important;
+  border-radius: var(--crm-radius-sm) !important;
+  box-shadow: none !important;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.crm-shell .crm-input.crm-input:hover,
+.crm-shell .crm-select.crm-select:hover,
+.crm-shell .crm-textarea.crm-textarea:hover {
+  background: var(--crm-field) !important;
+  border-color: var(--crm-line-strong) !important;
+}
+
+.crm-input:focus,
+.crm-select:focus,
+.crm-textarea:focus,
+.crm-shell .crm-input.crm-input:focus,
+.crm-shell .crm-select.crm-select:focus,
+.crm-shell .crm-textarea.crm-textarea:focus {
+  border-color: var(--crm-accent) !important;
+  box-shadow: 0 0 0 3px rgba(77, 146, 255, 0.22) !important;
+}
+
+.crm-input::placeholder,
+.crm-textarea::placeholder,
+.crm-shell .crm-input.crm-input::placeholder,
+.crm-shell .crm-textarea.crm-textarea::placeholder {
+  color: var(--crm-text-muted) !important;
+}
+
+.crm-select,
+.crm-pipeline-status-select select {
+  /* системная стрелка нечитаема на тёмном — своя */
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%238ea0bd' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 12px center !important;
+  padding-right: 34px !important;
+}
+
+.crm-select option {
+  background: var(--crm-bg-1);
+  color: var(--crm-text);
+}
+
+.crm-checkbox {
+  accent-color: var(--crm-accent);
+  width: 18px;
+  height: 18px;
+}
+
+.crm-form__error,
+.crm-action__feedback--error {
+  color: #ff9aa4 !important;
+}
+
+.crm-form__success,
+.crm-action__feedback {
+  color: var(--crm-ok);
+}
+
+.crm-required-mark {
+  color: var(--crm-danger) !important;
+}
+
+/* ---------------------------------------------------------------
+   6. Кнопки
+   --------------------------------------------------------------- */
+
+.crm-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 18px !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  background: linear-gradient(180deg, var(--crm-accent) 0%, var(--crm-accent-strong) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: var(--crm-radius-sm) !important;
+  box-shadow: 0 8px 20px rgba(31, 86, 184, 0.35) !important;
+  cursor: pointer;
+  transition: transform 0.13s ease, filter 0.13s ease;
+}
+
+.crm-button:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.crm-button--ghost,
+.crm-button--secondary,
+.crm-action-button {
+  color: var(--crm-text-soft) !important;
+  background: var(--crm-glass) !important;
+  border: 1px solid var(--crm-line-strong) !important;
+  box-shadow: none !important;
+}
+
+.crm-button--ghost:hover,
+.crm-button--secondary:hover,
+.crm-action-button:hover {
+  color: var(--crm-text) !important;
+  background: var(--crm-glass-strong) !important;
+}
+
+.crm-button--danger {
+  color: #ffd7db !important;
+  background: rgba(226, 96, 108, 0.16) !important;
+  border: 1px solid rgba(226, 96, 108, 0.45) !important;
+  box-shadow: none !important;
+}
+
+.crm-button--danger:hover {
+  background: rgba(226, 96, 108, 0.28) !important;
+}
+
+.crm-button--xs {
+  min-height: 34px;
+  padding: 0 12px !important;
+  font-size: 0.85rem !important;
+}
+
+.crm-button--wide {
+  width: 100%;
+}
+
+.crm-button:disabled {
+  opacity: 0.55;
+  transform: none;
+  cursor: default;
+}
+
+/* ---------------------------------------------------------------
+   7. Таблицы
+   --------------------------------------------------------------- */
+
+.crm-table-wrap {
+  background: linear-gradient(160deg, rgba(148, 178, 233, 0.07) 0%, rgba(148, 178, 233, 0.02) 100%) !important;
+  border: 1px solid var(--crm-line) !important;
+  border-radius: var(--crm-radius) !important;
+  box-shadow: var(--crm-shadow) !important;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.crm-table {
+  background: transparent !important;
+  color: var(--crm-text-soft) !important;
+}
+
+.crm-table thead th {
+  font-size: 0.76rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--crm-text-muted) !important;
+  background: rgba(10, 17, 34, 0.45) !important;
+  border-bottom: 1px solid var(--crm-line-strong) !important;
+}
+
+.crm-table tbody td {
+  border-bottom: 1px solid var(--crm-line) !important;
+  background: transparent !important;
+  color: var(--crm-text-soft) !important;
+}
+
+.crm-table tbody tr {
+  background: transparent !important;
+  transition: background 0.12s ease;
+}
+
+.crm-table tbody tr:hover {
+  background: rgba(77, 146, 255, 0.07) !important;
+}
+
+.crm-table tbody tr:nth-child(even) {
+  background: rgba(148, 178, 233, 0.025);
+}
+
+.crm-table strong,
+.crm-table b,
+.crm-table__meta strong {
+  color: var(--crm-text) !important;
+}
+
+.crm-table__meta {
+  color: var(--crm-text-muted) !important;
+}
+
+.crm-table__thumb,
+.crm-table__thumb-placeholder,
+.crm-matching-card__thumb,
+.crm-matching-card__thumb-placeholder,
+.crm-image-card__preview {
+  border-radius: 10px !important;
+  border: 1px solid var(--crm-line) !important;
+  background: var(--crm-field) !important;
+  overflow: hidden;
+}
+
+.crm-table__price {
+  color: var(--crm-text) !important;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.crm-table__status {
+  color: var(--crm-ok) !important;
+  background: rgba(63, 191, 154, 0.12) !important;
+  border: 1px solid rgba(63, 191, 154, 0.35) !important;
+  border-radius: 999px !important;
+  font-weight: 700;
+}
+
+.crm-table__status--inactive {
+  color: var(--crm-text-muted) !important;
+  background: var(--crm-glass) !important;
+  border-color: var(--crm-line-strong) !important;
+}
+
+.crm-table__status--priority {
+  color: var(--crm-warn) !important;
+  background: rgba(226, 168, 74, 0.13) !important;
+  border-color: rgba(226, 168, 74, 0.4) !important;
+}
+
+.crm-pagination {
+  color: var(--crm-text-muted) !important;
+}
+
+/* ---------------------------------------------------------------
+   8. Бейджи пайплайна
+   --------------------------------------------------------------- */
+
+.crm-pipeline-badge {
+  border-radius: 999px !important;
+  font-weight: 700 !important;
+  border: 1px solid transparent !important;
+}
+
+.crm-pipeline-badge--new {
+  color: #a9c7ff !important;
+  background: rgba(77, 146, 255, 0.14) !important;
+  border-color: rgba(77, 146, 255, 0.4) !important;
+}
+
+.crm-pipeline-badge--in-progress {
+  color: #cdb5ff !important;
+  background: rgba(147, 108, 255, 0.14) !important;
+  border-color: rgba(147, 108, 255, 0.4) !important;
+}
+
+.crm-pipeline-badge--showing {
+  color: #8fe3cb !important;
+  background: rgba(63, 191, 154, 0.13) !important;
+  border-color: rgba(63, 191, 154, 0.4) !important;
+}
+
+.crm-pipeline-badge--negotiation {
+  color: #f2c98a !important;
+  background: rgba(226, 168, 74, 0.14) !important;
+  border-color: rgba(226, 168, 74, 0.42) !important;
+}
+
+.crm-pipeline-badge--closed {
+  color: #9ccf9f !important;
+  background: rgba(101, 190, 110, 0.14) !important;
+  border-color: rgba(101, 190, 110, 0.4) !important;
+}
+
+.crm-pipeline-badge--rejected {
+  color: #ff9aa4 !important;
+  background: rgba(226, 96, 108, 0.13) !important;
+  border-color: rgba(226, 96, 108, 0.4) !important;
+}
+
+/* ---------------------------------------------------------------
+   9. Канбан сделок
+   --------------------------------------------------------------- */
+
+.crm-deals-board {
+  gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+.crm-deals-column {
+  background: linear-gradient(170deg, rgba(148, 178, 233, 0.07) 0%, rgba(148, 178, 233, 0.02) 100%) !important;
+  border: 1px solid var(--crm-line) !important;
+  border-radius: var(--crm-radius) !important;
+  box-shadow: none !important;
+  scroll-snap-align: start;
+}
+
+.crm-deal-card {
+  background: rgba(10, 18, 36, 0.6) !important;
+  border: 1px solid var(--crm-line) !important;
+  border-radius: var(--crm-radius-sm) !important;
+  box-shadow: none !important;
+  color: var(--crm-text-soft) !important;
+  transition: border-color 0.13s ease, transform 0.13s ease;
+}
+
+.crm-deal-card:hover {
+  border-color: rgba(77, 146, 255, 0.45) !important;
+  transform: translateY(-1px);
+}
+
+.crm-deal-card strong,
+.crm-deal-card b {
+  color: var(--crm-text) !important;
+}
+
+/* ---------------------------------------------------------------
+   10. Логин
+   --------------------------------------------------------------- */
+
+.crm-login {
+  background:
+    radial-gradient(70% 55% at 80% -10%, rgba(64, 120, 220, 0.2) 0%, transparent 60%),
+    radial-gradient(55% 45% at 0% 100%, rgba(46, 90, 180, 0.16) 0%, transparent 62%),
+    linear-gradient(155deg, var(--crm-bg-1) 0%, var(--crm-bg-0) 60%, #070d1a 100%) !important;
+}
+
+.crm-login__panel {
+  background: rgba(12, 20, 40, 0.72) !important;
+  border: 1px solid var(--crm-line-strong) !important;
+  border-radius: 20px !important;
+  box-shadow: var(--crm-shadow) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.crm-login__brand {
+  color: var(--crm-accent) !important;
+  letter-spacing: 0.14em;
+}
+
+.crm-login__title {
+  color: var(--crm-text) !important;
+  font-family: "Manrope", "Inter", sans-serif !important;
+}
+
+.crm-login__subtitle {
+  color: var(--crm-text-muted) !important;
+}
+
+/* ---------------------------------------------------------------
+   11. Мобильная адаптация (сейчас её нет вовсе)
+   --------------------------------------------------------------- */
+
+@media (max-width: 1024px) {
+  /* сайдбар превращается в выезжающую панель */
+  .crm-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .crm-shell__sidebar {
+    position: fixed !important;
+    inset: 0 auto 0 0;
+    z-index: 210;
+    width: min(300px, 84vw);
+    min-height: 100dvh;
+    transform: translateX(-105%);
+    transition: transform 0.22s ease;
+    box-shadow: 24px 0 60px rgba(3, 8, 20, 0.55);
+  }
+
+  body.crm-nav-open .crm-shell__sidebar {
+    transform: translateX(0);
+  }
+
+  body.crm-nav-open {
+    overflow: hidden;
+  }
+
+  .crm-shell__backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(3, 8, 20, 0.6);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  body.crm-nav-open .crm-shell__backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .crm-burger {
+    display: grid;
+  }
+
+  .crm-sidebar-close {
+    display: grid;
+    place-items: center;
+    position: absolute;
+    top: 14px;
+    right: 12px;
+    width: 42px;
+    height: 42px;
+    color: var(--crm-text-soft);
+    background: var(--crm-glass);
+    border: 1px solid var(--crm-line-strong);
+    border-radius: 11px;
+    cursor: pointer;
+  }
+
+  .crm-sidebar-close svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .crm-shell__header {
+    padding: 10px 14px !important;
+  }
+
+  .crm-shell__main {
+    padding: 14px 14px 40px;
+  }
+}
+
+@media (max-width: 760px) {
+  .crm-panel {
+    padding: 14px 14px;
+  }
+
+  /* формы и фильтры — в одну колонку */
+  .crm-form-grid,
+  .crm-form-columns,
+  .crm-form-grid--wide,
+  .crm-estate-filters,
+  .crm-filters {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .crm-inline-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .crm-field--wide {
+    grid-column: auto !important;
+  }
+
+  .crm-form-actions,
+  .crm-filters__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .crm-form-actions .crm-button,
+  .crm-filters__actions .crm-button {
+    flex: 1 1 45%;
+  }
+
+  /* липкие действия форм — над нижним краем, с фоном */
+  .crm-form-actions--sticky {
+    position: sticky;
+    bottom: 0;
+    padding: 12px 0 calc(10px + env(safe-area-inset-bottom));
+    background: linear-gradient(180deg, transparent 0%, var(--crm-bg-0) 34%);
+  }
+
+  /* таблицы: скролл внутри рамки, плотнее ячейки */
+  .crm-table {
+    min-width: 760px;
+  }
+
+  .crm-table thead th,
+  .crm-table tbody td {
+    padding: 10px 10px !important;
+    font-size: 0.9rem !important;
+  }
+
+  /* канбан: колонка почти во всю ширину, перелистывание свайпом */
+  .crm-deals-board {
+    display: flex !important;
+    gap: 12px;
+    scroll-snap-type: x mandatory;
+  }
+
+  .crm-deals-column {
+    flex: 0 0 86vw;
+    max-width: 86vw;
+  }
+
+  /* страницы сделок/клиентов: колонки в стек */
+  .crm-deal-page-grid,
+  .crm-client-page-grid,
+  .crm-estate-editor {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 14px !important;
+  }
+
+  .crm-page-header {
+    display: grid;
+    gap: 10px;
+  }
+
+  .crm-page-header .crm-button {
+    width: 100%;
+  }
+
+  /* тач-цели */
+  .crm-button--xs {
+    min-height: 40px;
+  }
+
+  .crm-nav__link {
+    min-height: 48px;
+    font-size: 1.04rem !important;
+  }
+}
+
+/* ---------------------------------------------------------------
+   12. Внутренности канбана и панелей сделок/клиентов: легаси-цвета
+   текста рассчитаны на светлые карточки — перекрашиваем.
+   --------------------------------------------------------------- */
+
+.crm-deals-column__title,
+.crm-deal-card__title,
+.crm-deal-panel__title,
+.crm-client-panel__info-row strong,
+.crm-deal-panel__row strong {
+  color: var(--crm-text) !important;
+}
+
+.crm-deals-column__count {
+  color: var(--crm-text) !important;
+  background: var(--crm-glass-strong) !important;
+  border: 1px solid var(--crm-line-strong) !important;
+  border-radius: 999px !important;
+}
+
+.crm-deals-column__header {
+  border-bottom: 1px solid var(--crm-line-strong) !important;
+}
+
+.crm-deal-card__estate,
+.crm-deal-card__meta,
+.crm-deal-card__date,
+.crm-deals-column__empty-description,
+.crm-deal-panel__subtitle,
+.crm-deal-panel__row,
+.crm-client-panel__info-row {
+  color: var(--crm-text-soft) !important;
+}
+
+.crm-deals-column__empty-title {
+  color: var(--crm-text) !important;
+}
+
+.crm-deal-card--active {
+  border-color: rgba(77, 146, 255, 0.55) !important;
+  box-shadow: 0 0 0 3px rgba(77, 146, 255, 0.18) !important;
+}
+
+.crm-deal-activity-card__text {
+  color: var(--crm-text-soft) !important;
+}
+
+.crm-deal-activity-card__meta {
+  color: var(--crm-text-muted) !important;
+}
+
+.crm-deal-task-row {
+  color: var(--crm-text-soft) !important;
+}

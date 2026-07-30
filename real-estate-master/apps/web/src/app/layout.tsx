@@ -52,6 +52,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link rel="stylesheet" href="/static/css/discoverize-default.css" />
         <link rel="stylesheet" href="/static/css/cards.css" />
         <link rel="stylesheet" href="/static/css/redesign.css" />
+        <link rel="stylesheet" href="/static/css/crm-redesign.css" />
       </head>
       <body>
         <QueryProvider>{children}</QueryProvider>
