@@ -1,0 +1,845 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Users & RBAC
+//
+// Roles and permissions are stored in DB (not hardcoded as app-level enums)
+// so they can be managed/extended later without code changes or migrations.
+// At this stage only role checks are enforced by guards; Permission /
+// RolePermission are wired up and seeded, but fine-grained permission checks
+// are a TODO for a later stage (PermissionsGuard).
+// ---------------------------------------------------------------------------
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String
+  firstName    String?
+  lastName     String?
+  isActive     Boolean   @default(true)
+  // Bumped on password change / forced logout-all; embedded in access JWTs
+  // so a stale token can be rejected even before it expires.
+  tokenVersion Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  userRoles     UserRole[]
+  refreshTokens RefreshToken[]
+  uploadedFiles UploadedFile[]
+  snapshots     CalculationSnapshot[]
+  carts         Cart[]
+  orders        Order[]
+  orderStatusChanges OrderStatusHistory[] @relation("OrderStatusActor")
+  reviewedArtworks     OrderItemArtwork[]     @relation("ArtworkReviewer")
+  artworkStatusChanges ArtworkStatusHistory[] @relation("ArtworkStatusActor")
+
+  @@map("users")
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  name        String
+  description String?
+  isSystem    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userRoles       UserRole[]
+  rolePermissions RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+
+  rolePermissions RolePermission[]
+
+  @@map("permissions")
+}
+
+model UserRole {
+  id        String   @id @default(uuid())
+  userId    String
+  roleId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  id           String   @id @default(uuid())
+  roleId       String
+  permissionId String
+  createdAt    DateTime @default(now())
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model RefreshToken {
+  id         String    @id @default(uuid())
+  userId     String
+  tokenHash  String    @unique
+  userAgent  String?
+  ip         String?
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+// ---------------------------------------------------------------------------
+// Files / storage metadata
+// Binary content lives in S3/MinIO; only metadata is persisted here.
+// ---------------------------------------------------------------------------
+
+enum FileStatus {
+  PENDING
+  READY
+  DELETED
+}
+
+enum FileVisibility {
+  PRIVATE
+  PUBLIC
+}
+
+model UploadedFile {
+  id           String          @id @default(uuid())
+  originalName String
+  mimeType     String
+  size         Int
+  bucket       String
+  storageKey   String          @unique
+  publicUrl    String?
+  ownerId      String?
+  entityType   String?
+  entityId     String?
+  status       FileStatus      @default(READY)
+  visibility   FileVisibility  @default(PRIVATE)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  owner        User?         @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  serviceImage ServiceImage?
+  artworks     OrderItemArtwork[]
+
+  @@index([ownerId])
+  @@index([entityType, entityId])
+  @@map("uploaded_files")
+}
+
+// ---------------------------------------------------------------------------
+// Catalog: Category / Service / ServiceImage
+// ---------------------------------------------------------------------------
+
+model Category {
+  id          String   @id @default(uuid())
+  parentId    String?
+  slug        String   @unique
+  title       String
+  description String?
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  parent   Category?  @relation("CategoryToCategory", fields: [parentId], references: [id], onDelete: SetNull)
+  children Category[] @relation("CategoryToCategory")
+  services Service[]
+
+  @@index([parentId])
+  @@map("categories")
+}
+
+model Service {
+  id                 String   @id @default(uuid())
+  categoryId         String
+  slug               String   @unique
+  title              String
+  shortDescription   String?
+  description        String?
+  priceFrom          Decimal? @db.Decimal(12, 2)
+  productionTimeFrom Int?
+  isActive           Boolean  @default(true)
+  sortOrder          Int      @default(0)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  category   Category           @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  images     ServiceImage[]
+  calculator ServiceCalculator?
+  orderItems OrderItem[]
+
+  @@index([categoryId])
+  @@map("services")
+}
+
+model ServiceImage {
+  id        String   @id @default(uuid())
+  serviceId String
+  fileId    String   @unique
+  alt       String?
+  sortOrder Int      @default(0)
+  isMain    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  service Service      @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  file    UploadedFile @relation(fields: [fileId], references: [id], onDelete: Restrict)
+
+  @@index([serviceId])
+  @@map("service_images")
+}
+
+// ---------------------------------------------------------------------------
+// Универсальный движок калькуляторов (ТЗ «Калькуляторы цен», backend_requirements §15).
+//
+// Принципы:
+// - вся логика цен/сроков/совместимости — данные в БД (редактируются через CMS),
+//   никакого исполняемого кода в данных;
+// - деньги — целые копейки (amountMinor), множители — Decimal;
+// - условия правил — декларативный JSON вида {"param":"value"} или
+//   {"param":["v1","v2"]}: правило применяется, когда ВСЕ пары совпали
+//   с нормализованными параметрами. Никакого eval.
+// ---------------------------------------------------------------------------
+
+/// Тип UI-контрола параметра (влияет только на отрисовку frontend).
+enum CalcParamType {
+  SEGMENTED
+  SWATCH
+  SELECT
+  SEARCH_SELECT
+  DIMENSION
+  TOGGLE
+  MULTI_QTY
+}
+
+/// Режим базовой цены: пороговая цена за штуку либо цена за м².
+enum CalcPricingMode {
+  TIER
+  AREA
+}
+
+enum PriceListStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+/// Виды строк прайс-листа. Порядок применения фиксирован в движке:
+/// база (TIER/PER_SQM) → MULTIPLIER → SURCHARGE_* → QTY_DISCOUNT → MIN_TOTAL.
+enum PriceRuleKind {
+  /// Цена за единицу от порога тиража (qtyFrom, amountMinor); condition сужает
+  /// по параметрам (напр. отдельная сетка для subtype=plastic).
+  BASE_TIER
+  /// Цена за м² (amountMinor); площадь = width × height из DIMENSION-параметров.
+  BASE_PER_SQM
+  /// Множитель к промежуточной сумме при совпадении condition (напр. coating).
+  MULTIPLIER
+  /// Разовая надбавка к заказу, копейки.
+  SURCHARGE_FLAT
+  /// Надбавка за единицу тиража, копейки.
+  SURCHARGE_PER_UNIT
+  /// Скидочный множитель от порога тиража (qtyFrom + multiplier).
+  QTY_DISCOUNT
+  /// Минимальная стоимость заказа, копейки.
+  MIN_TOTAL
+  /// Надбавка за длину производной метрики (подшив по периметру и т.п.):
+  /// amountMinor — копейки за одну config.unit; config = {sourceMetric, unit, perItem}.
+  SURCHARGE_PER_LENGTH
+  /// Надбавка за количество интервалов CEIL(длина/шаг) (люверсы каждые N см):
+  /// config = {sourceMetric, interval|intervalParam, intervalUnit, rounding, perItem}.
+  SURCHARGE_PER_INTERVAL_COUNT
+  /// Базовая цена одной строки MULTI_QTY (формат фотопечати, размер футболки):
+  /// amountMinor — копейки за единицу строки; qtyFrom/qtyTo — по количеству
+  /// ЭТОЙ строки; config = {sourceParameter, lineKey}.
+  BASE_PER_MULTI_QTY_LINE
+}
+
+enum CompatRuleKind {
+  /// Запретить варианты target.options параметра target.param при условии when.
+  DISABLE_OPTIONS
+  /// Скрыть параметры target.params при условии when (их значения не участвуют в расчёте).
+  HIDE_PARAMS
+  /// Минимальный тираж target.minQty при условии when.
+  MIN_QTY
+  /// Максимальный тираж target.maxQty при условии when (напр. экспресс ≤ 1000).
+  MAX_QTY
+  /// Условные границы: target {param, min?, max?, step?, required?} при условии when
+  /// (напр. шаг тиража 100 для пластиковых визиток).
+  SET_BOUNDS
+}
+
+enum UpsellPricing {
+  FLAT
+  PER_UNIT
+  MULTIPLIER
+}
+
+model CalculatorDefinition {
+  id          String          @id @default(uuid())
+  /// Стабильный service_id из ТЗ («business-cards»); ключ интеграции.
+  /// Уникален в паре с version: опубликованные версии неизменяемы,
+  /// правка = новая строка с version+1.
+  code        String
+  title       String
+  version     Int             @default(1)
+  status      PriceListStatus @default(DRAFT)
+  /// Демо-данные: production-расчёт НИКОГДА не использует isDemo=true.
+  isDemo      Boolean         @default(false)
+  /// Момент публикации; после него строка неизменяема (enforce в сервисе).
+  publishedAt DateTime?
+  isActive    Boolean         @default(true)
+  pricingMode CalcPricingMode @default(TIER)
+  /// Порядок url-ключей при сериализации состояния в query string.
+  urlOrder    String[]
+  /// Типо-специфичные настройки (zod-валидируются): area-единицы,
+  /// minBillableArea и т.п. Без исполняемого кода.
+  config      Json?
+  minQty      Int             @default(1)
+  maxQty      Int             @default(1000000)
+  qtyStep     Int             @default(1)
+  defaultQty  Int             @default(1)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  parameters         CalculatorParameter[]
+  compatibilityRules CalculatorCompatibilityRule[]
+  upsells            CalculatorUpsell[]
+  priceLists         PriceList[]
+  productionRules    ProductionTimeRule[]
+  services           ServiceCalculator[]
+  snapshots          CalculationSnapshot[]
+
+  @@unique([code, version])
+  @@index([code, status])
+  @@map("calculator_definitions")
+}
+
+/// Связь «страница услуги → калькулятор» + предвыбор со страниц-вариантов
+/// (напр. /vizitki/s-lakirovkoy/ → business-cards с preset {"subtype":"lacquer"}).
+model ServiceCalculator {
+  id           String   @id @default(uuid())
+  serviceId    String   @unique
+  definitionId String
+  preset       Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  service    Service              @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  definition CalculatorDefinition @relation(fields: [definitionId], references: [id], onDelete: Restrict)
+
+  @@index([definitionId])
+  @@map("service_calculators")
+}
+
+model CalculatorParameter {
+  id           String        @id @default(uuid())
+  definitionId String
+  /// Стабильный машинный ключ: имя GET-параметра в URL и ключ в API-запросе.
+  urlKey       String
+  label        String
+  type         CalcParamType
+  sortOrder    Int           @default(0)
+  isRequired   Boolean       @default(true)
+  /// false — параметр никогда не попадает в shareable URL (промо, B2B и т.п.).
+  shareable    Boolean       @default(true)
+  /// Для DIMENSION: единица измерения и диапазон.
+  unit         String?
+  minValue     Decimal?      @db.Decimal(12, 4)
+  maxValue     Decimal?      @db.Decimal(12, 4)
+  stepValue    Decimal?      @db.Decimal(12, 4)
+  /// Дефолт для DIMENSION/TOGGLE/MULTI_QTY (у опционных параметров — isDefault варианта).
+  defaultValue String?
+  /// Показывать только при условии {"param":"value"|["v1","v2"]} (декларативно).
+  visibleIf    Json?
+  /// Типо-специфичные настройки (zod-валидируются). Для MULTI_QTY:
+  /// {maxLines, lineMin, lineMax, lineStep, totalMin, totalMax};
+  /// для DIMENSION с площадью: {unit: "mm"|"cm"|"m"}.
+  config       Json?
+
+  definition CalculatorDefinition @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+  options    CalculatorOption[]
+
+  @@unique([definitionId, urlKey])
+  @@index([definitionId])
+  @@map("calculator_parameters")
+}
+
+model CalculatorOption {
+  id          String  @id @default(uuid())
+  parameterId String
+  /// Машинное значение для URL и API: строчная латиница/цифры/дефис («coated-350»).
+  value       String
+  /// Отображаемое название («Мелованная 350 г», «A5», «4+4»).
+  label       String
+  isDefault   Boolean @default(false)
+  isActive    Boolean @default(true)
+  sortOrder   Int     @default(0)
+  /// Презентационные метаданные (свотч, бейдж) — движок их не интерпретирует.
+  meta        Json?
+
+  parameter CalculatorParameter @relation(fields: [parameterId], references: [id], onDelete: Cascade)
+
+  @@unique([parameterId, value])
+  @@index([parameterId])
+  @@map("calculator_options")
+}
+
+model CalculatorCompatibilityRule {
+  id           String         @id @default(uuid())
+  definitionId String
+  kind         CompatRuleKind
+  /// Условие применения: {"subtype":"plastic"} / {"subtype":["foil","plastic"]}.
+  when         Json
+  /// Цель: {"param":"coating","options":["soft-touch"]} | {"params":["paper"]}
+  /// | {"minQty":100} | {"maxQty":1000} — по kind.
+  target       Json
+  /// Текст для «Недоступно для этого параметра» и ошибок валидации.
+  message      String?
+  sortOrder    Int            @default(0)
+
+  definition CalculatorDefinition @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+
+  @@index([definitionId])
+  @@map("calculator_compatibility_rules")
+}
+
+/// Upsell — отдельная сущность (ТЗ §15.8), в URL не сериализуется.
+model CalculatorUpsell {
+  id           String        @id @default(uuid())
+  definitionId String
+  code         String
+  label        String
+  pricing      UpsellPricing
+  /// Копейки для FLAT/PER_UNIT.
+  amountMinor  Int?
+  /// Множитель для MULTIPLIER (1.10 = +10%).
+  multiplier   Decimal?      @db.Decimal(8, 4)
+  /// Доступность по параметрам: {"subtype":"plastic"}; null = всегда доступен.
+  /// Не совпало с выбором — заказать опцию нельзя (422 в preview и confirm).
+  visibleIf    Json?
+  isActive     Boolean       @default(true)
+  sortOrder    Int           @default(0)
+
+  definition CalculatorDefinition @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+
+  @@unique([definitionId, code])
+  @@map("calculator_upsells")
+}
+
+model PriceList {
+  id           String          @id @default(uuid())
+  definitionId String
+  /// Версия прайса — входит в calculationVersion. Активный прайс выбирается
+  /// по status=ACTIVE + непересекающимся периодам (enforce на publish).
+  version      Int
+  /// Токен оптимистичной блокировки DRAFT: каждая правка правил инкрементит
+  /// его; мутация требует ожидаемый revision, иначе 409 PRICING_DRAFT_CONFLICT.
+  /// При архивации ACTIVE→ARCHIVED не меняется (совместимо с immutability-триггером).
+  revision     Int             @default(0)
+  status       PriceListStatus @default(DRAFT)
+  /// Демо-прайс: production-расчёт НИКОГДА не использует isDemo=true.
+  isDemo       Boolean         @default(false)
+  /// После публикации строка неизменяема (enforce в publish-сервисе).
+  publishedAt  DateTime?
+  currency     String          @default("RUB")
+  validFrom    DateTime?
+  validTo      DateTime?
+  comment      String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  definition CalculatorDefinition @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+  rules      PriceRule[]
+  snapshots  CalculationSnapshot[]
+
+  @@unique([definitionId, version])
+  @@index([definitionId, status])
+  @@map("price_lists")
+}
+
+model PriceRule {
+  id          String        @id @default(uuid())
+  priceListId String
+  kind        PriceRuleKind
+  /// Сужение по параметрам: {"paper":"design","subtype":["foil"]}; null = всегда.
+  condition   Json?
+  /// Диапазон тиража для BASE_TIER / QTY_DISCOUNT: [qtyFrom, qtyTo].
+  /// qtyTo null = открытый диапазон; пересечения отклоняются на publish.
+  qtyFrom     Int?
+  qtyTo       Int?
+  /// Деньги в копейках (единица/надбавка/минимум — по kind).
+  amountMinor Int?
+  /// Множитель для MULTIPLIER / QTY_DISCOUNT.
+  multiplier  Decimal?      @db.Decimal(8, 4)
+  /// Типизированная конфигурация метрических правил (zod-валидируется):
+  /// SURCHARGE_PER_LENGTH / SURCHARGE_PER_INTERVAL_COUNT. Без исполняемого кода.
+  config      Json?
+  sortOrder   Int           @default(0)
+
+  priceList PriceList @relation(fields: [priceListId], references: [id], onDelete: Cascade)
+
+  @@index([priceListId, kind])
+  @@map("price_rules")
+}
+
+/// Срок изготовления: правило с наибольшим priority среди подошедших по condition.
+model ProductionTimeRule {
+  id           String   @id @default(uuid())
+  definitionId String
+  /// Напр. {"express":"1"} для срочного срока; null = базовое правило.
+  condition    Json?
+  workingDays  Int
+  /// Время отсечки «сегодня» (МСК): стандарт 14:00, экспресс 12:00 (ТЗ §15.5).
+  cutoff       String   @default("14:00")
+  priority     Int      @default(0)
+
+  definition CalculatorDefinition @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+
+  @@index([definitionId])
+  @@map("production_time_rules")
+}
+
+/// Праздники/нерабочие дни РФ — управляются из CMS (ТЗ §15.5).
+model Holiday {
+  id   String   @id @default(uuid())
+  date DateTime @unique @db.Date
+  name String?
+
+  @@map("holidays")
+}
+
+/// Снимок расчёта: воспроизводимость цены при создании заказа (будущий OrderItem
+/// ссылается на snapshot, а не пересчитывает по изменившемуся прайсу).
+/// Создаётся ТОЛЬКО явным действием (сохранить расчёт / в корзину / заказ),
+/// preview-/calculate записей не создаёт. FK Restrict: версии, на которые
+/// ссылается snapshot, удалить нельзя.
+model CalculationSnapshot {
+  id                String   @id @default(uuid())
+  definitionId      String
+  priceListId       String
+  definitionVersion Int
+  priceListVersion  Int
+  /// Версия алгоритма движка на момент расчёта (константа в коде).
+  engineVersion     String
+  serviceSlug       String
+  /// Нормализованные параметры расчёта (после дефолтов и совместимости).
+  parameters        Json
+  /// Normalized input upsells: валидированные коды опций из запроса (блок 1 v2).
+  upsells           Json     @default("[]")
+  /// Применённые правила: [{ruleId, kind, amountMinor?/multiplier?}] — аудит цены.
+  appliedRules      Json
+  /// Применённые upsells с денежным эффектом: [{code, label, amountMinor}].
+  appliedUpsells    Json     @default("[]")
+  /// Коммерческий контекст (customerType и т.п.) — без PII.
+  customerContext   Json?
+  totalMinor        Int
+  unitMinor         Int
+  vatMinor          Int
+  currency          String   @default("RUB")
+  workingDays       Int
+  b2b               Boolean  @default(false)
+  /// Владелец расчёта (проставляется при confirm): авторизованный пользователь
+  /// ИЛИ анонимная сессия. Корзина принимает только snapshot текущего владельца.
+  userId             String?
+  anonymousSessionId String?
+  /// Отзыв snapshot (безопасность/недействительность). Отозванный не
+  /// добавляется в корзину и не используется в заказе.
+  revokedAt          DateTime?
+  /// Момент, когда расчёт «израсходован» успешным заказом. После этого снимок
+  /// нельзя использовать для второго заказа (одноразовость), но исходный
+  /// OrderItem продолжает на него ссылаться для воспроизводимости цены.
+  consumedAt         DateTime?
+  createdAt          DateTime @default(now())
+
+  definition CalculatorDefinition @relation(fields: [definitionId], references: [id], onDelete: Restrict)
+  priceList  PriceList            @relation(fields: [priceListId], references: [id], onDelete: Restrict)
+  user       User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  @@index([definitionId, createdAt])
+  @@index([userId])
+  @@index([anonymousSessionId])
+  @@map("calculation_snapshots")
+}
+
+/// Статус корзины. ACTIVE — рабочая; MERGED — влита в пользовательскую при входе;
+/// ORDERED зарезервирован под будущие Orders.
+enum CartStatus {
+  ACTIVE
+  MERGED
+  ORDERED
+}
+
+/// Свежесть позиции корзины. В корзине статус ВЫЧИСЛЯЕТСЯ на лету (хранить
+/// его нельзя — устареет при смене прайса); тип заведён в БД как общий
+/// контракт и резерв под Orders, где статус фиксируется в момент заказа.
+enum CartItemStatus {
+  VALID
+  STALE
+  UNAVAILABLE
+  REQUIRES_RECALCULATION
+}
+
+/// Серверная корзина. Владелец — пользователь ИЛИ анонимная сессия (ровно один
+/// ACTIVE-cart на каждого, enforce partial-unique индексами в миграции).
+/// Суммы считает backend по priceSnapshot позиций, цена клиента не принимается.
+model Cart {
+  id                 String     @id @default(uuid())
+  userId             String?
+  anonymousSessionId String?
+  status             CartStatus @default(ACTIVE)
+  currency           String     @default("RUB")
+  /// Оптимистичная блокировка + версия для клиента; растёт на каждой мутации.
+  version            Int        @default(0)
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+  expiresAt          DateTime?
+
+  user  User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[]
+
+  @@index([userId])
+  @@index([anonymousSessionId])
+  @@map("carts")
+}
+
+/// Позиция корзины: ссылка на подтверждённый CalculationSnapshot + неизменяемый
+/// display-снимок (title/config/цена), чтобы корзина не менялась при правках
+/// каталога. Идемпотентность add: @@unique([cartId, calculationSnapshotId]).
+model CartItem {
+  id                    String   @id @default(uuid())
+  cartId                String
+  calculationSnapshotId String
+  serviceSlug           String
+  /// Immutable display snapshot (на момент добавления).
+  titleSnapshot         String
+  configurationSnapshot Json
+  unitPriceMinor        Int
+  lineTotalMinor        Int
+  currency              String
+  /// Кол-во копий позиции (business quantity). ≥1, enforce CHECK в миграции.
+  quantity              Int      @default(1)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  cart     Cart                @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  snapshot CalculationSnapshot @relation(fields: [calculationSnapshotId], references: [id], onDelete: Restrict)
+
+  @@unique([cartId, calculationSnapshotId])
+  @@index([cartId])
+  @@map("cart_items")
+}
+
+/// Статус заказа. Минимальный безопасный набор — ТЗ конкретный производственный
+/// workflow не задаёт: NEW при создании, CANCELLED — отмена. Остальные статусы
+/// (оплата/производство/выдача) появятся вместе с payment/delivery.
+enum OrderStatus {
+  NEW
+  CANCELLED
+}
+
+/// Заказ: неизменяемый снимок оформленной корзины. Состав и суммы фиксируются
+/// в момент создания из серверных CartItem — правки каталога и прайса на уже
+/// созданный заказ не влияют. Клиент цены/состав не присылает.
+model Order {
+  id                 String      @id @default(uuid())
+  /// Человекочитаемый непредсказуемый номер (дата + случайный суффикс),
+  /// не раскрывает объём заказов. Показывается клиенту.
+  orderNumber        String      @unique
+  userId             String
+  status             OrderStatus @default(NEW)
+  currency           String      @default("RUB")
+  itemsSubtotalMinor Int
+  discountsMinor     Int         @default(0)
+  totalMinor         Int
+  /// DEMO, если хотя бы одна позиция посчитана по демонстрационному прайсу.
+  pricingMode        String      @default("LIVE")
+  contactName        String
+  contactPhone       String
+  contactEmail       String
+  customerComment    String?
+  /// Корзина-источник (для аудита); после оформления она переводится в ORDERED.
+  sourceCartId       String?
+  /// Ключ идемпотентности: тот же userId+key возвращает тот же заказ.
+  idempotencyKey     String
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+
+  user          User                 @relation(fields: [userId], references: [id], onDelete: Restrict)
+  items         OrderItem[]
+  statusHistory OrderStatusHistory[]
+
+  @@unique([userId, idempotencyKey])
+  @@index([userId, createdAt])
+  @@map("orders")
+}
+
+/// Позиция заказа: неизменяемый снимок конфигурации и цены на момент оформления.
+/// Ссылается на CalculationSnapshot (FK Restrict) для воспроизводимости, но
+/// отображается ТОЛЬКО из собственных snapshot-полей — независимо от каталога.
+model OrderItem {
+  id                    String   @id @default(uuid())
+  orderId               String
+  calculationSnapshotId String
+  serviceId             String?
+  serviceSlug           String
+  titleSnapshot         String
+  configurationSnapshot Json
+  /// Снимок производства (срок изготовления и т.п.) на момент заказа.
+  productionSnapshot    Json
+  quantity              Int      @default(1)
+  unitPriceMinor        Int
+  lineTotalMinor        Int
+  currency              String
+  sortOrder             Int      @default(0)
+  createdAt             DateTime @default(now())
+
+  order    Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  snapshot CalculationSnapshot @relation(fields: [calculationSnapshotId], references: [id], onDelete: Restrict)
+  service  Service?            @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  artworks OrderItemArtwork[]
+
+  @@index([orderId])
+  @@map("order_items")
+}
+
+/// История смены статусов заказа (аудит).
+model OrderStatusHistory {
+  id              String       @id @default(uuid())
+  orderId         String
+  fromStatus      OrderStatus?
+  toStatus        OrderStatus
+  /// Кто сменил статус (actorId). NULL — системное событие (создание заказа).
+  changedByUserId String?
+  comment         String?
+  createdAt       DateTime     @default(now())
+
+  order       Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  changedBy   User? @relation("OrderStatusActor", fields: [changedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([orderId, createdAt])
+  @@index([changedByUserId])
+  @@map("order_status_history")
+}
+
+/// Аудит изменений админ-прайсинга (create/edit DRAFT, CRUD правил, publish).
+/// before/after хранят ТОЛЬКО безопасные pricing-данные — без JWT, cookies,
+/// secrets, сырого тела запроса и PII клиентов.
+model AuditLog {
+  id         String   @id @default(uuid())
+  /// Кто выполнил действие; NULL — системное/недоступно. Без FK, чтобы запись
+  /// аудита переживала удаление пользователя.
+  actorId    String?
+  /// Машинный код действия, напр. "pricing.draft.clone", "pricing.publish".
+  action     String
+  /// Тип сущности, напр. "PriceList", "PriceRule".
+  entityType String
+  entityId   String
+  before     Json?
+  after      Json?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId, createdAt])
+  @@index([actorId, createdAt])
+  @@map("audit_log")
+}
+
+// ---------------------------------------------------------------------------
+// Макеты заказа (artwork workflow, этап 4/9).
+//
+// Клиент привязывает PRIVATE finalized UploadedFile к конкретной позиции
+// заказа; менеджер принимает/отклоняет; при отклонении клиент грузит новую
+// версию (старая → SUPERSEDED). Файл не исполняется и не рендерится backend'ом;
+// физически файлы не удаляются при смене статуса (нужна история/доказательство).
+// ---------------------------------------------------------------------------
+
+enum ArtworkStatus {
+  /// Клиент загрузил файл; ожидает проверки.
+  UPLOADED
+  /// Сотрудник начал проверку.
+  IN_REVIEW
+  /// Макет принят (terminal в MVP).
+  APPROVED
+  /// Макет отклонён; reviewComment обязателен.
+  REJECTED
+  /// Заменён новой версией (terminal).
+  SUPERSEDED
+  /// Отозван клиентом до принятия (terminal).
+  WITHDRAWN
+}
+
+model OrderItemArtwork {
+  id               String        @id @default(uuid())
+  orderItemId      String
+  fileId           String
+  /// Версия для позиции; растёт последовательно (1,2,…).
+  version          Int
+  status           ArtworkStatus @default(UPLOADED)
+  /// Комментарий клиента к загрузке (без PII-копирования из заказа).
+  customerComment  String?
+  /// Комментарий проверяющего (обязателен при REJECTED).
+  reviewComment    String?
+  reviewedByUserId String?
+  reviewedAt       DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  orderItem  OrderItem              @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  file       UploadedFile           @relation(fields: [fileId], references: [id], onDelete: Restrict)
+  reviewedBy User?                  @relation("ArtworkReviewer", fields: [reviewedByUserId], references: [id], onDelete: SetNull)
+  history    ArtworkStatusHistory[]
+
+  /// Одна активная версия одного файла на позицию не дублируется (duplicate
+  /// attach). fileId НЕ уникален глобально — один файл клиента можно
+  /// переиспользовать в разных позициях/заказах (ТЗ по файлам).
+  @@unique([orderItemId, version])
+  @@index([orderItemId, status])
+  @@index([status])
+  @@index([fileId])
+  @@index([createdAt])
+  @@map("order_item_artworks")
+}
+
+model ArtworkStatusHistory {
+  id              String        @id @default(uuid())
+  artworkId       String
+  fromStatus      ArtworkStatus?
+  toStatus        ArtworkStatus
+  /// Кто сменил статус (actorId). NULL — системное событие.
+  changedByUserId String?
+  comment         String?
+  createdAt       DateTime      @default(now())
+
+  artwork   OrderItemArtwork @relation(fields: [artworkId], references: [id], onDelete: Cascade)
+  changedBy User?            @relation("ArtworkStatusActor", fields: [changedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([artworkId, createdAt])
+  @@map("artwork_status_history")
+}

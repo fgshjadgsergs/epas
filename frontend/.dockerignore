@@ -1,0 +1,12 @@
+node_modules
+.next
+.env
+.env.*
+!.env.example
+*.log
+*.xlsx
+*.docx
+*.pdf
+README.md
+tsconfig.tsbuildinfo
+Пакет ТЗ

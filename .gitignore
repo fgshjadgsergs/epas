@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.next/
+.env
+.env.local
+.env.*.local
+tool-results/
+.claude/settings.local.json
+# Офисные документы ТЗ — не код; длинные русские имена ломают checkout на Linux
+*.docx
+*.xlsx
+*.pdf
+*.log
+.DS_Store
+coverage/
+.vscode/
+.idea/

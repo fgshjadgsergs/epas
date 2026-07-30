@@ -1,0 +1,408 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Дизайн-система КИДС-ПРИНТ — две темы на токенах.
+ * Тёмная (PrintOS) — основная; светлая — равноправный вариант.
+ * Значения цветов — RGB-каналы для поддержки <alpha-value> в Tailwind.
+ */
+
+:root,
+[data-theme='dark'] {
+  --bg: 9 12 20; /* #090C14 — глубокий navy-black */
+  --bg-2: 13 17 28; /* #0D111C */
+  --surface: 19 25 38; /* #131926 — карточки */
+  --surface-2: 26 34 51; /* #1A2233 — поднятые поверхности */
+  --border: 42 52 71; /* #2A3447 */
+  --fg: 244 247 250; /* #F4F7FA */
+  --muted: 154 167 189; /* #9AA7BD */
+  --subtle: 110 122 143; /* #6E7A8F */
+  --primary: 47 124 246; /* #2F7CF6 — фирменный синий */
+  --primary-hover: 64 139 255; /* #408BFF */
+  --primary-fg: 255 255 255;
+  --accent: 124 92 252; /* #7C5CFC — индиго-акцент */
+  --success: 38 197 143; /* #26C58F */
+  --warning: 240 180 41; /* #F0B429 */
+  --danger: 244 90 90; /* #F45A5A */
+  --ring: 47 124 246; /* фокус-кольцо */
+}
+
+/* ВРЕМЕННАЯ третья тема «gold» — палитра в духе Aster DEX:
+ * чистый чёрный + шампанское золото и янтарь. Включается переключателем в шапке. */
+[data-theme='gold'] {
+  --bg: 5 5 5; /* #050505 — чистый чёрный */
+  --bg-2: 12 11 9; /* #0C0B09 */
+  --surface: 20 18 15; /* #14120F — карточки */
+  --surface-2: 31 28 23; /* #1F1C17 */
+  --border: 56 51 42; /* #38332A */
+  --fg: 245 242 235; /* #F5F2EB — тёплый белый */
+  --muted: 172 164 148; /* #ACA494 */
+  --subtle: 124 117 104; /* #7C7568 */
+  --primary: 235 200 145; /* #EBC891 — шампанское золото */
+  --primary-hover: 244 214 166; /* #F4D6A6 */
+  --primary-fg: 22 17 10; /* тёмный текст на золотой кнопке */
+  --accent: 224 148 62; /* #E0943E — янтарное свечение */
+  --success: 38 197 143;
+  --warning: 240 180 41;
+  --danger: 244 90 90;
+  --ring: 235 200 145;
+}
+
+/* ВРЕМЕННАЯ четвёртая тема «gold-light» — то же золото на тёплом светлом фоне. */
+[data-theme='gold-light'] {
+  --bg: 251 247 239; /* #FBF7EF — тёплый айвори */
+  --bg-2: 244 237 223; /* #F4EDDF */
+  --surface: 255 255 255;
+  --surface-2: 247 241 229;
+  --border: 228 219 199; /* #E4DBC7 */
+  --fg: 20 17 11; /* #14110B */
+  --muted: 116 108 92; /* #746C5C */
+  --subtle: 160 151 131;
+  --primary: 200 150 70; /* #C89646 — золото с контрастом для светлого */
+  --primary-hover: 178 132 58;
+  --primary-fg: 255 252 245; /* тёплый белый текст на золотой кнопке */
+  --accent: 199 126 46; /* #C77E2E */
+  --success: 22 163 116;
+  --warning: 201 142 13;
+  --danger: 220 70 70;
+  --ring: 200 150 70;
+}
+
+[data-theme='light'] {
+  --bg: 255 255 255; /* #FFFFFF */
+  --bg-2: 247 248 250; /* #F7F8FA */
+  --surface: 255 255 255;
+  --surface-2: 247 248 250;
+  --border: 226 230 236; /* #E2E6EC */
+  --fg: 11 15 26; /* #0B0F1A */
+  --muted: 90 102 120; /* #5A6678 */
+  --subtle: 138 151 173; /* #8A97AD */
+  --primary: 37 110 235; /* #256EEB */
+  --primary-hover: 26 95 214; /* #1A5FD6 */
+  --primary-fg: 255 255 255;
+  --accent: 108 76 240; /* #6C4CF0 */
+  --success: 22 163 116; /* #16A374 */
+  --warning: 201 142 13; /* #C98E0D */
+  --danger: 220 70 70;
+  --ring: 37 110 235;
+}
+
+* {
+  border-color: rgb(var(--border));
+}
+
+html {
+  /* Якоря под sticky-хедер (см. ТЗ навигации, п.4.4) */
+  scroll-padding-top: 7rem;
+  /* Плавный скролл к якорям (гасится в prefers-reduced-motion). */
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: rgb(var(--bg));
+  color: rgb(var(--fg));
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Видимый фокус-индикатор — WCAG 2.1 AA (ТЗ a11y, п.18) */
+:focus-visible {
+  outline: 2px solid rgb(var(--ring));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Screen-reader-only (ТЗ навигации, п.5.4) */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Появление блоков при скролле (IntersectionObserver добавляет .is-visible).
+ * Усиленная амплитуда: подъём + лёгкий масштаб — движение заметное, но мягкое. */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px) scale(0.97);
+  transition:
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Микро-лифт интерактивных карточек. */
+.lift {
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.2s ease;
+}
+.lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px -20px rgb(0 0 0 / 0.5);
+}
+
+/* Мягкое «дыхание» свечения в hero. */
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+.glow-pulse {
+  animation: glow-pulse 9s ease-in-out infinite;
+}
+
+/* ============================================================
+ * Динамика 2.0 — лёгкие эффекты (только transform/opacity + нативные API).
+ * ============================================================ */
+
+/* Курсор-прожектор: JS пишет --mx/--my (позиция в %). Слой поверх, низкая альфа — текст читается. */
+.spotlight { position: relative; }
+.spotlight::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 0%), rgb(var(--primary) / 0.15), transparent 60%);
+}
+.spotlight:hover::after { opacity: 1; }
+
+/* Лёгкий 3D-наклон за курсором: JS пишет --rx/--ry (deg). */
+.tilt {
+  transform: perspective(800px) rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg)) translateZ(0);
+  transition: transform 0.25s ease;
+}
+
+/* Бегущая лента (контент дублируется ×2 для бесшовности). */
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.marquee { overflow: hidden; }
+.marquee-track { display: flex; width: max-content; animation: marquee 38s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+
+/* Длинные списки: не рендерить за экраном (экономия рендера). */
+.cv-auto { content-visibility: auto; contain-intrinsic-size: auto 600px; }
+
+/* Табличные цифры — чтобы тикер цены не «прыгал» по ширине. */
+.tabnum { font-variant-numeric: tabular-nums; }
+
+/* Плавный вход контента при переходах между страницами (template.tsx ремоунтит). */
+@keyframes page-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.page-enter { animation: page-enter 0.32s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* Пульс цены при пересчёте калькулятора. */
+@keyframes price-pop { 0% { transform: scale(1); } 30% { transform: scale(1.06); } 100% { transform: scale(1); } }
+.price-pop { animation: price-pop 0.4s ease; transform-origin: left center; }
+
+/* ============================================================
+ * Дизайн 3.0 — «язык движения» (в фирменных цветах, transform/opacity).
+ * ============================================================ */
+
+/* Градиентный текст: фирменный синий → индиго-акцент. */
+.text-gradient {
+  background: linear-gradient(100deg, rgb(var(--primary)), rgb(var(--accent)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Каскадное появление детей контейнера (stagger). Триггер — класс .is-visible. */
+.stagger > * {
+  opacity: 0;
+  transform: translateY(26px) scale(0.97);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.stagger.is-visible > * { opacity: 1; transform: none; }
+.stagger.is-visible > *:nth-child(1) { transition-delay: 0ms; }
+.stagger.is-visible > *:nth-child(2) { transition-delay: 60ms; }
+.stagger.is-visible > *:nth-child(3) { transition-delay: 120ms; }
+.stagger.is-visible > *:nth-child(4) { transition-delay: 180ms; }
+.stagger.is-visible > *:nth-child(5) { transition-delay: 240ms; }
+.stagger.is-visible > *:nth-child(6) { transition-delay: 300ms; }
+.stagger.is-visible > *:nth-child(7) { transition-delay: 360ms; }
+.stagger.is-visible > *:nth-child(8) { transition-delay: 420ms; }
+.stagger.is-visible > *:nth-child(9) { transition-delay: 480ms; }
+.stagger.is-visible > *:nth-child(n + 10) { transition-delay: 540ms; }
+
+/* Градиентная рамка-свечение на карточке при наведении (маской, без лишних узлов). */
+.card-glow { position: relative; }
+.card-glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgb(var(--primary) / 0.6), rgb(var(--accent) / 0.6));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.card-glow:hover::before { opacity: 1; }
+
+/* Аврора: мягко «дышащие» световые пятна на фоне hero. */
+@keyframes aurora-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(6%, -4%) scale(1.15); }
+}
+@keyframes aurora-b {
+  0%, 100% { transform: translate(0, 0) scale(1.1); }
+  50% { transform: translate(-5%, 5%) scale(1); }
+}
+.aurora-a { animation: aurora-a 16s ease-in-out infinite; }
+.aurora-b { animation: aurora-b 20s ease-in-out infinite; }
+
+/* ---- Тематический фон hero: «типография» -------------------------------
+ * Растровая сетка (полутоновая печать), парящие листы-макеты и «печатающая
+ * головка», проезжающая по экрану. Только transform/opacity — дёшево. */
+
+/* Полутоновый растр: точки как в офсетной печати, тают к краю. */
+.halftone {
+  background-image: radial-gradient(rgb(var(--fg) / 0.06) 1px, transparent 1.4px);
+  background-size: 20px 20px;
+  -webkit-mask-image: radial-gradient(70% 80% at 75% 15%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(70% 80% at 75% 15%, #000 0%, transparent 72%);
+}
+
+/* Парение «листов»: медленный дрейф вверх-вниз с лёгким довортом. */
+@keyframes float-drift {
+  0%, 100% { transform: translateY(0) rotate(var(--r, 6deg)); }
+  50% { transform: translateY(-16px) rotate(calc(var(--r, 6deg) + 3deg)); }
+}
+.float-a { --r: 8deg; animation: float-drift 13s ease-in-out infinite; }
+.float-b { --r: -7deg; animation: float-drift 17s ease-in-out infinite; animation-delay: -6s; }
+.float-c { --r: 3deg; animation: float-drift 21s ease-in-out infinite; animation-delay: -12s; }
+
+/* Перспективная сетка-«пол» — эффект глубины сцены (статична, дёшево). */
+.hero-grid {
+  background-image:
+    linear-gradient(rgb(var(--primary) / 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--primary) / 0.09) 1px, transparent 1px);
+  background-size: 44px 44px;
+  transform: perspective(700px) rotateX(62deg);
+  transform-origin: 50% 0;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 22%, #000 60%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 22%, #000 60%, transparent);
+}
+
+/* Блик по кнопке при наведении. */
+.btn-shine { position: relative; overflow: hidden; isolation: isolate; }
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: translateX(-130%) skewX(-18deg);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.28), transparent);
+}
+.btn-shine:hover::after { animation: btn-shine 0.75s ease; }
+@keyframes btn-shine { to { transform: translateX(130%) skewX(-18deg); } }
+
+/* Прочерчивание соединительной линии между шагами (scroll-driven, прогрессивно). */
+@supports (animation-timeline: view()) {
+  .step-line {
+    transform-origin: left center;
+    transform: scaleX(0);
+    animation: step-draw linear both;
+    animation-timeline: view();
+    animation-range: cover 0% cover 45%;
+  }
+  @keyframes step-draw { to { transform: scaleX(1); } }
+}
+
+/* Бегущие шевроны «Всё портфолио»: окно из двух горящих стрелок едет по кругу
+ * (1 → 1+2 → 2+3 → 3+1 → …). Каждая стрелка горит 2/3 цикла со сдвигом 1/3. */
+@keyframes chev-run {
+  0%, 58% { opacity: 1; transform: translateX(0); }
+  66%, 92% { opacity: 0.25; transform: translateX(-4px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+.chev-run { animation: chev-run 1.35s ease-in-out infinite; }
+.chev-run-2 { animation-delay: 0.45s; }
+.chev-run-3 { animation-delay: 0.9s; }
+
+/* Прогресс автопереключения в витрине преимуществ. */
+@keyframes progress-x { from { width: 0; } to { width: 100%; } }
+
+/* Плавная подсветка строки таблицы. */
+.row-hover { transition: background-color 0.2s ease; }
+.row-hover:hover { background-color: rgb(var(--primary) / 0.05); }
+
+/* Нативные scroll-driven анимации — прогрессивное улучшение.
+ * Chrome/Edge: считается на компоновщике, без JS. Safari/FF: фолбэк (полоса просто не появляется). */
+@supports (animation-timeline: view()) {
+  .scroll-progress {
+    position: fixed;
+    inset: 0 0 auto 0;
+    height: 3px;
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+    background: linear-gradient(90deg, rgb(var(--primary)), rgb(var(--accent)));
+    z-index: 60;
+    animation: sp-grow linear;
+    animation-timeline: scroll(root);
+  }
+  @keyframes sp-grow { to { transform: scaleX(1); } }
+
+  .parallax-slow {
+    animation: parallax-y linear;
+    animation-timeline: view();
+    animation-range: entry 0% exit 100%;
+  }
+  @keyframes parallax-y { from { transform: translateY(28px); } to { transform: translateY(-28px); } }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  /* «Мягкий режим»: движение убрано (WCAG), но блоки появляются
+   * плавным проявлением прозрачности — сайт не выглядит мёртвым.
+   * Каскадные задержки stagger сохраняются — тихая волна фейдов. */
+  .reveal,
+  .stagger > * {
+    transform: none !important;
+    transition: opacity 0.55s ease !important;
+  }
+  /* Динамика 2.0 — гасим всё, что двигается. */
+  .tilt,
+  .parallax-slow {
+    transform: none !important;
+  }
+  .marquee-track { animation: none !important; }
+  .scroll-progress { display: none !important; }
+  /* Дизайн 3.0 — непрерывные движения выключены. */
+  .aurora-a,
+  .aurora-b { animation: none !important; }
+  .btn-shine::after { display: none !important; }
+  .step-line { transform: none !important; animation: none !important; }
+  /* Тематический фон hero — статичен. */
+  .float-a,
+  .float-b,
+  .float-c { animation: none !important; }
+  .chev-run { animation: none !important; opacity: 1 !important; transform: none !important; }
+}

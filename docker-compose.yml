@@ -1,0 +1,115 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: photo_print
+    ports:
+      # Только localhost: на публичном сервере БД не должна торчать наружу.
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      # Берутся из .env — те же значения, что S3_* у backend'а.
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY_ID:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_ACCESS_KEY:-minioadmin}
+    ports:
+      # 9000 (API) остаётся публичным — по нему браузер забирает картинки
+      # (S3_PUBLIC_URL). 9001 (админ-консоль) — только localhost.
+      - "9000:9000"
+      - "127.0.0.1:9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/photo_print?schema=public
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      S3_ENDPOINT: http://minio:9000
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    healthcheck:
+      # node:20-alpine (busybox) включает wget из коробки, отдельно ставить не нужно.
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/v1/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  frontend:
+    # Профиль "frontend": локально `docker compose up -d` этот сервис НЕ поднимает
+    # (для разработки фронт запускается через `npm run dev -- -p 3001`).
+    # На сервере: docker compose --profile frontend up -d --build
+    profiles:
+      - frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # Публичный URL API, как его видит браузер посетителя.
+        # На сервере задать в .env: FRONTEND_API_URL=https://домен/api/v1
+        NEXT_PUBLIC_API_URL: ${FRONTEND_API_URL:-http://localhost:3000/api/v1}
+        # Демо-стенд: fallback-пометка о демонстрационных ценах (на staging
+        # ставим true вместе с ALLOW_DEMO_PRICING).
+        NEXT_PUBLIC_DEMO_PRICING: ${FRONTEND_DEMO_PRICING:-false}
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
