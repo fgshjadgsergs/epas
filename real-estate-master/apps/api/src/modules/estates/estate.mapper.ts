@@ -64,11 +64,16 @@ export class EstateMapper {
       coordinates: estate.coordinates,
       coordinatesTuple: this.parseCoordinates(estate.coordinates),
       price,
-      presentationPrice: formatInteger(price),
+      presentationPrice: formatIntegerForPresentation(price),
       area,
       areaPrice: area > 0 ? formatInteger(price / area) : null,
       dealType: estate.dealType,
       description: estate.description,
+      areaDescription: estate.areaDescription,
+      region: estate.region,
+      district: estate.district,
+      ceilingHeightM: decimalToNumber(estate.ceilingHeightM),
+      powerKw: decimalToNumber(estate.powerKw),
       images: imagePaths,
       imagesPublicUrls: imagePaths.map((imagePath) => this.storageService.resolvePublicUrl(imagePath)),
       planImage: planImage?.url ?? null,
@@ -76,7 +81,7 @@ export class EstateMapper {
       estateType: estate.estateType,
       tenantType: estate.tenantType,
       map: mapValue ? Math.trunc(mapValue) : null,
-      presentationMap: mapValue ? formatInteger(mapValue) : null,
+      presentationMap: mapValue ? formatIntegerForPresentation(mapValue) : null,
       contractTerm: estate.contractTerm,
       indexing: estate.indexing,
       profit: this.computeProfit(estate.dealType, price, mapValue),
@@ -91,7 +96,12 @@ export class EstateMapper {
       return null;
     }
 
-    const parts = coordinates.split(" ").map((part) => Number(part));
+    // Исторический формат — «lon lat» через пробел, но координаты из CRM
+    // приходят и через запятую: «lon,lat». Принимаем оба разделителя.
+    const parts = coordinates
+      .trim()
+      .split(/[,\s]+/)
+      .map((part) => Number(part));
     if (parts.length !== 2 || parts.some((part) => Number.isNaN(part))) {
       return null;
     }

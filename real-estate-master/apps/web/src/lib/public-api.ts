@@ -32,6 +32,11 @@ export interface PublicEstateDetail {
   areaPrice: string | null;
   dealType: string;
   description: string;
+  areaDescription: string | null;
+  region: string | null;
+  district: string | null;
+  ceilingHeightM: number | null;
+  powerKw: number | null;
   images: string[];
   imagesPublicUrls: string[];
   planImage: string | null;
