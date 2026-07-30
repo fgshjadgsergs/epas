@@ -1,0 +1,860 @@
+/* =====================================================================
+   EPAS — слой редизайна публичной витрины.
+   Подключается последним и намеренно перекрывает легаси-правила
+   cards.css / discoverize-default.css (там местами стоит !important).
+
+   Состав: типографика, HERO, панель фильтров, карточки объектов,
+   мобильная адаптация.
+   ===================================================================== */
+
+:root {
+  /* Поверхности */
+  --e-bg: #070b14;
+  --e-surface: #111a2a;
+  --e-surface-hover: #16223a;
+  --e-line: rgba(255, 255, 255, 0.1);
+  --e-line-strong: rgba(255, 255, 255, 0.18);
+
+  /* Текст: контраст поднят относительно прежних #9B9BA5 */
+  --e-text: #f3f6fb;
+  --e-text-soft: #c2cddd;
+  --e-text-muted: #93a2b8;
+
+  /* Акценты по типу сделки */
+  --e-accent: #4d92ff;
+  --e-accent-strong: #2f6fe0;
+  --e-rent: #3fbf9a;
+  --e-sale: #6aa6ff;
+  --e-business: #e2a84a;
+
+  --e-radius: 18px;
+  --e-radius-sm: 12px;
+
+  /* Базовый кегль намеренно крупный: аудитория — люди в возрасте */
+  --e-font-base: 18px;
+}
+
+/* ---------------------------------------------------------------
+   1. Типографика
+   --------------------------------------------------------------- */
+
+body {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif !important;
+  font-size: var(--e-font-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+.display-1,
+.display-2,
+.display-3,
+.display-4,
+.display-5,
+.section__title,
+.hero__title {
+  /* DM Serif Display не содержит кириллицы — русские заголовки
+     всё равно падали на системный serif. Manrope её поддерживает. */
+  font-family: "Manrope", "Inter", system-ui, sans-serif !important;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  font-weight: 800;
+}
+
+/* ---------------------------------------------------------------
+   2. HERO — реальная архитектурная фотография вместо градиента
+   --------------------------------------------------------------- */
+
+#searchbox-hero-1 {
+  min-height: min(760px, 92vh);
+  display: flex;
+  align-items: center;
+  padding-block: 72px 88px;
+}
+
+#searchbox-hero-1 .hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url("/static/img/index-main-bg.jpg");
+  background-size: cover;
+  background-position: center 28%;
+  background-repeat: no-repeat;
+  transform: scale(1.04);
+  filter: saturate(0.85) contrast(1.05);
+}
+
+/* Затемняющая шторка: снизу плотнее, чтобы форма поиска и заголовок
+   читались поверх любого кадра. */
+#searchbox-hero-1 .hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(7, 11, 20, 0.32) 0%,
+      rgba(7, 11, 20, 0.46) 40%,
+      rgba(7, 11, 20, 0.82) 80%,
+      var(--e-bg) 100%
+    ),
+    linear-gradient(105deg, rgba(6, 20, 48, 0.55) 0%, rgba(7, 11, 20, 0.08) 60%);
+}
+
+/* Анимированные «волны» из легаси спорят с фотографией — гасим. */
+#searchbox-hero-1 .hero__overlay::before,
+#searchbox-hero-1 .hero__overlay::after {
+  display: none !important;
+  animation: none !important;
+}
+
+/* Декоративный «орб» здесь тоже лишний. */
+#searchbox-hero-1 .hero-orb-wrap {
+  display: none !important;
+}
+
+#searchbox-hero-1 > .container-xl {
+  position: relative;
+  z-index: 2;
+}
+
+#searchbox-hero-1 .hero-layout {
+  display: block;
+}
+
+#searchbox-hero-1 .searchbox {
+  padding-block: 0 !important;
+  margin-block: 0 !important;
+}
+
+#searchbox-hero-1 h1 {
+  font-size: clamp(2.1rem, 4.6vw, 3.75rem);
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
+  margin-bottom: 14px;
+  max-width: 20ch;
+  margin-inline: auto;
+}
+
+.hero-subtitle {
+  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+  line-height: 1.55;
+  color: var(--e-text-soft);
+  text-align: center;
+  max-width: 56ch;
+  margin: 0 auto 34px;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Полоска доверия под формой */
+.hero-trust {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px 40px;
+  margin-top: 30px;
+  padding: 0;
+  list-style: none;
+}
+
+.hero-trust li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--e-text-soft);
+}
+
+.hero-trust b {
+  font-family: "Manrope", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.hero-trust span {
+  font-size: 0.95rem;
+  color: var(--e-text-muted);
+}
+
+/* ---------------------------------------------------------------
+   3. Панель фильтров
+   --------------------------------------------------------------- */
+
+.filters-panel {
+  display: grid;
+  gap: 20px;
+  padding: 26px;
+  border-radius: 22px;
+  background: rgba(11, 17, 30, 0.82);
+  border: 1px solid var(--e-line-strong);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* На странице выдачи панель стоит на плоском фоне — стекло не нужно */
+.filters-panel:not(.filters-panel--hero) {
+  background: var(--e-surface);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+/* --- строка поиска --- */
+.filters-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.filters-search input {
+  width: 100%;
+  height: 62px;
+  padding: 0 62px 0 22px;
+  font-size: 1.15rem;
+  color: var(--e-text);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--e-line-strong);
+  border-radius: 14px;
+  outline: none;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.filters-search input::placeholder {
+  color: var(--e-text-muted);
+}
+
+.filters-search input:focus {
+  border-color: var(--e-accent);
+  box-shadow: 0 0 0 4px rgba(77, 146, 255, 0.22);
+}
+
+.filters-search button {
+  position: absolute;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  font-size: 1.5rem;
+  color: var(--e-text-soft);
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+
+.filters-search button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+/* --- чипы (тип сделки / регион) --- */
+.filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.filter-btn {
+  min-height: 52px;
+  padding: 0 24px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--e-text-soft);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--e-line-strong);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.filter-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.filter-btn.active {
+  color: #fff;
+  background: var(--e-accent-strong);
+  border-color: var(--e-accent);
+  box-shadow: 0 6px 18px rgba(47, 111, 224, 0.4);
+}
+
+/* --- диапазоны --- */
+.filters-row--sliders {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+/* Каждый диапазон — в своей рамке: иначе две шкалы, стоящие рядом,
+   читаются как одна полоса, а крайние ручки соприкасаются. */
+.slider-block {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px 18px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--e-line);
+  border-radius: 16px;
+}
+
+.slider-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--e-text-soft);
+  letter-spacing: 0.01em;
+}
+
+.slider-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.slider-inputs input {
+  width: 100%;
+  height: 54px;
+  padding: 0 16px;
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--e-text);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--e-line-strong);
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.slider-inputs input:focus {
+  border-color: var(--e-accent);
+  box-shadow: 0 0 0 4px rgba(77, 146, 255, 0.22);
+}
+
+.filters-slider {
+  margin: 6px 8px 0;
+}
+
+/* noUiSlider — крупные ручки под палец и мышь.
+   Специфичность 0,3,0 + !important: правила в globals.css
+   (.filters-panel--hero .noUi-*) форсят свои значения. */
+.filters-panel .filters-slider.noUi-target {
+  height: 8px !important;
+  margin: 8px 4px 0 !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+}
+
+.filters-panel .filters-slider.noUi-horizontal .noUi-connect {
+  background: linear-gradient(90deg, var(--e-accent-strong), var(--e-accent)) !important;
+  box-shadow: none !important;
+}
+
+/* 0,4,0 — в globals.css есть .filters-panel--hero .noUi-horizontal .noUi-handle,
+   и он же зажимает размер через min/max-width, поэтому их тоже снимаем.
+   Крупная ручка нужна и под палец, и под менее точную моторику. */
+.filters-panel .filters-slider.noUi-horizontal .noUi-handle {
+  width: 30px !important;
+  min-width: 30px !important;
+  max-width: 30px !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  max-height: 30px !important;
+  top: -11px !important;
+  right: -15px !important;
+  transform: none !important;
+  background: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  border-radius: 999px !important;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.5) !important;
+  cursor: grab;
+}
+
+.filters-panel .filters-slider.noUi-horizontal .noUi-handle::before,
+.filters-panel .filters-slider.noUi-horizontal .noUi-handle::after {
+  display: none !important;
+}
+
+.filters-panel__error {
+  font-size: 0.95rem;
+  color: #ff9a9a;
+}
+
+/* --- нижняя строка --- */
+.filters-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.region-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.search-btn {
+  min-height: 60px;
+  padding: 0 44px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(180deg, var(--e-accent) 0%, var(--e-accent-strong) 100%);
+  border: 0;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: 0 10px 26px rgba(47, 111, 224, 0.42);
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+
+.search-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(47, 111, 224, 0.52);
+}
+
+.search-btn:active {
+  transform: translateY(0);
+}
+
+/* ---------------------------------------------------------------
+   4. Сетка и карточки объектов
+   --------------------------------------------------------------- */
+
+.listing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)) !important;
+  gap: 30px;
+  align-items: stretch;
+}
+
+.property-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--e-surface);
+  border: 1px solid var(--e-line);
+  border-radius: var(--e-radius);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.34);
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.property-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--e-line-strong);
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.46);
+}
+
+/* --- медиа --- */
+.property-card__media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #0c1320;
+  flex: 0 0 auto;
+}
+
+.property-card__media .card-gallery,
+.property-card__media .card-gallery__frame {
+  height: 100%;
+}
+
+.property-card__media .card-gallery__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.property-card__badge,
+.property-card__type {
+  position: absolute;
+  z-index: 3;
+  top: 14px;
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 14px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.property-card__badge {
+  left: 14px;
+  color: #06111f;
+  background: #fff;
+}
+
+.property-card__badge--rent {
+  background: var(--e-rent);
+}
+
+.property-card__badge--sale {
+  background: var(--e-sale);
+}
+
+.property-card__badge--business {
+  background: var(--e-business);
+}
+
+.property-card__type {
+  right: 14px;
+  max-width: 55%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #fff;
+  background: rgba(7, 11, 20, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* стрелки и точки галереи */
+.property-card__media .card-gallery__btn {
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  font-size: 1.6rem;
+  color: #fff;
+  background: rgba(7, 11, 20, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.16s ease, background 0.16s ease;
+}
+
+.property-card:hover .card-gallery__btn {
+  opacity: 1;
+}
+
+.property-card__media .card-gallery__btn:hover {
+  background: rgba(7, 11, 20, 0.82);
+}
+
+.property-card__media .card-gallery__dot {
+  width: 7px;
+  height: 7px;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.property-card__media .card-gallery__dot.is-active {
+  background: #fff;
+}
+
+/* --- тело --- */
+.property-card__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px 22px 24px;
+  min-width: 0;
+}
+
+.property-card__price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  /* !important — легаси-правило cards.css:2543 форсит system-ui */
+  font-family: "Manrope", "Inter", sans-serif !important;
+  font-size: 1.95rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Период у цены — ключ к тому, чтобы аренда не читалась как продажа */
+.property-card__price-period {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--e-text-muted);
+  letter-spacing: 0;
+}
+
+.property-card__address {
+  /* ровно две строки в любой карточке — иначе сетка разъезжается */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(2 * 1.4 * 1.15rem);
+  margin: 0;
+  font-family: "Inter", sans-serif !important;
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: var(--e-text);
+}
+
+.property-card__location {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  min-height: 28px;
+  margin: 0;
+  font-size: 1rem;
+  color: var(--e-text-soft);
+}
+
+.property-card__metro {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 500;
+}
+
+.property-card__metro-icon {
+  display: grid;
+  place-items: center;
+  width: 21px;
+  height: 21px;
+  font-family: "Manrope", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #fff;
+  background: #d6083b;
+  border-radius: 50%;
+}
+
+.property-card__district {
+  color: var(--e-text-muted);
+}
+
+/* --- плитки характеристик: всегда три --- */
+.property-card__meta {
+  display: grid;
+  /* Третья плитка несёт самые длинные подписи («Ставка м²/год»,
+     «Окупаемость») — отдаём ей больше ширины, «Этаж» самый короткий. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 1.35fr);
+  gap: 10px;
+  margin: 4px 0 0;
+}
+
+.property-card__stat {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  /* Подпись может занять две строки («Ставка м²/год») — высоты должно
+     хватать, иначе значение обрезается по overflow карточки. */
+  min-height: 84px;
+  padding: 10px 8px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--e-line);
+  border-radius: var(--e-radius-sm);
+}
+
+.property-card__stat dt {
+  font-size: 0.74rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--e-text-muted);
+}
+
+.property-card__stat dd {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--e-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* --- футер прижат к низу: выравнивает кнопки во всём ряду --- */
+.property-card__footer {
+  margin-top: auto;
+  padding-top: 18px;
+}
+
+.property-card__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 56px;
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--e-line-strong);
+  border-radius: 14px;
+  transition: background 0.16s ease, border-color 0.16s ease;
+}
+
+.property-card__cta:hover {
+  color: #fff;
+  background: var(--e-accent-strong);
+  border-color: var(--e-accent);
+}
+
+/* ---------------------------------------------------------------
+   5. Заголовок страницы выдачи
+   --------------------------------------------------------------- */
+
+.listing-head h1,
+#listing-1 h1 {
+  font-size: clamp(1.9rem, 3.4vw, 2.9rem);
+}
+
+/* ---------------------------------------------------------------
+   6. Мобильная адаптация
+   --------------------------------------------------------------- */
+
+@media (max-width: 1200px) {
+  .listing-grid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  :root {
+    --e-font-base: 17px;
+  }
+
+  #searchbox-hero-1 {
+    min-height: 0;
+    padding-block: 48px 56px;
+  }
+
+  #searchbox-hero-1 .hero__bg {
+    background-position: center 32%;
+  }
+
+  .filters-panel {
+    padding: 18px;
+    gap: 16px;
+    border-radius: 18px;
+  }
+
+  .filters-row--sliders {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .filters-bottom {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .region-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .region-buttons .filter-btn {
+    width: 100%;
+    padding: 0 12px;
+  }
+
+  .search-btn {
+    width: 100%;
+  }
+
+  .hero-trust {
+    gap: 12px 26px;
+  }
+
+  .hero-trust b {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .listing-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 22px;
+  }
+
+  .filters-row--deal-types {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  /* «Арендный бизнес» — во всю ширину, иначе текст не помещается */
+  .filters-row--deal-types .filter-btn:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .filters-row--deal-types .filter-btn {
+    width: 100%;
+    padding: 0 10px;
+    font-size: 1rem;
+  }
+
+  .filters-search input {
+    height: 56px;
+    font-size: 1.05rem;
+  }
+
+  .property-card__body {
+    padding: 18px 18px 20px;
+  }
+
+  .property-card__price {
+    font-size: 1.7rem;
+  }
+
+  /* Стрелки галереи на тач-устройствах всегда видны — ховера нет */
+  .property-card__media .card-gallery__btn {
+    opacity: 1;
+    background: rgba(7, 11, 20, 0.62);
+  }
+}
+
+@media (max-width: 420px) {
+  .property-card__meta {
+    gap: 8px;
+  }
+
+  .property-card__stat {
+    min-height: 62px;
+    padding: 8px 6px;
+  }
+
+  .property-card__stat dt {
+    font-size: 0.7rem;
+    letter-spacing: 0.03em;
+  }
+
+  .property-card__stat dd {
+    font-size: 0.95rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .property-card,
+  .search-btn {
+    transition: none;
+  }
+
+  .property-card:hover {
+    transform: none;
+  }
+}
