@@ -99,19 +99,23 @@ export function EstateCard({ estate }: EstateCardProps) {
 
   return (
     <article className="property-card">
+      {/* Поверх фотографии не выводим ничего: снимок объекта должен
+          быть виден целиком. Тип сделки и тип объекта — в теле карточки. */}
       <div className="property-card__media">
-        <span className={`property-card__badge property-card__badge--${dealModifier}`}>
-          {estate.dealType}
-        </span>
-
-        {typeChipLabel ? (
-          <span className="property-card__type">{typeChipLabel}</span>
-        ) : null}
-
         <EstateCardGallery images={cardImages} title={estate.title} />
       </div>
 
       <div className="property-card__body">
+        <p className="property-card__tags">
+          <span className={`property-card__badge property-card__badge--${dealModifier}`}>
+            {estate.dealType}
+          </span>
+
+          {typeChipLabel ? (
+            <span className="property-card__type">{typeChipLabel}</span>
+          ) : null}
+        </p>
+
         <p className="property-card__price">
           {estate.presentationPrice}&nbsp;₽
           {periodSuffix ? (

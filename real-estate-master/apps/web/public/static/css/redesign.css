@@ -76,40 +76,127 @@ h4,
   padding-block: 72px 88px;
 }
 
+/* Фон собран слоями, без растровой картинки:
+   1) глубокая база, 2) перспективная сетка, 3) две группы медленно
+   дрейфующих световых пятен, 4) виньетка и растворение в фоне страницы. */
+
 #searchbox-hero-1 .hero__bg {
   position: absolute;
   inset: 0;
   z-index: 0;
-  background-image: url("/static/img/index-main-bg.jpg");
-  background-size: cover;
-  background-position: center 28%;
-  background-repeat: no-repeat;
-  transform: scale(1.04);
-  filter: saturate(0.85) contrast(1.05);
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 78% 8%, #16346f 0%, transparent 58%),
+    radial-gradient(90% 70% at 12% 22%, #123a63 0%, transparent 62%),
+    linear-gradient(168deg, #0b1730 0%, #081227 42%, #060a14 100%);
 }
 
-/* Затемняющая шторка: снизу плотнее, чтобы форма поиска и заголовок
-   читались поверх любого кадра. */
+/* Перспективная сетка — архитектурный подтекст и ощущение объёма.
+   Маска гасит её к краям, чтобы не выглядела наклейкой. */
+#searchbox-hero-1 .hero__bg::before {
+  content: "";
+  position: absolute;
+  inset: -20% -10% -30%;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(150, 190, 255, 0.09) 0 1px,
+      transparent 1px 92px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(150, 190, 255, 0.07) 0 1px,
+      transparent 1px 92px
+    );
+  transform: perspective(760px) rotateX(58deg) scale(1.5);
+  transform-origin: 50% 100%;
+  mask-image: radial-gradient(70% 62% at 50% 78%, #000 0%, transparent 72%);
+  -webkit-mask-image: radial-gradient(70% 62% at 50% 78%, #000 0%, transparent 72%);
+  animation: heroGridDrift 34s linear infinite;
+}
+
+/* Мелкое зерно — убирает полосы на больших градиентах */
+#searchbox-hero-1 .hero__bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
 #searchbox-hero-1 .hero__overlay {
   position: absolute;
   inset: 0;
   z-index: 1;
+  overflow: hidden;
   background:
-    linear-gradient(
-      180deg,
-      rgba(7, 11, 20, 0.32) 0%,
-      rgba(7, 11, 20, 0.46) 40%,
-      rgba(7, 11, 20, 0.82) 80%,
-      var(--e-bg) 100%
-    ),
-    linear-gradient(105deg, rgba(6, 20, 48, 0.55) 0%, rgba(7, 11, 20, 0.08) 60%);
+    radial-gradient(115% 88% at 50% 42%, transparent 38%, rgba(4, 7, 14, 0.62) 100%),
+    linear-gradient(180deg, transparent 58%, rgba(6, 9, 17, 0.86) 86%, var(--e-bg) 100%);
 }
 
-/* Анимированные «волны» из легаси спорят с фотографией — гасим. */
+/* Световые пятна: две группы, разные скорости и направления —
+   движение читается, но не отвлекает от формы поиска. */
 #searchbox-hero-1 .hero__overlay::before,
 #searchbox-hero-1 .hero__overlay::after {
-  display: none !important;
-  animation: none !important;
+  content: "";
+  display: block !important;
+  position: absolute;
+  inset: -35%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+
+#searchbox-hero-1 .hero__overlay::before {
+  background:
+    radial-gradient(30% 34% at 24% 32%, rgba(64, 132, 255, 0.5) 0%, transparent 66%),
+    radial-gradient(26% 30% at 74% 26%, rgba(38, 178, 208, 0.34) 0%, transparent 68%);
+  filter: blur(46px);
+  opacity: 0.72;
+  animation: heroAuroraA 26s ease-in-out infinite !important;
+}
+
+#searchbox-hero-1 .hero__overlay::after {
+  background:
+    radial-gradient(28% 32% at 62% 62%, rgba(96, 84, 226, 0.42) 0%, transparent 68%),
+    radial-gradient(24% 26% at 34% 70%, rgba(58, 148, 255, 0.32) 0%, transparent 70%);
+  filter: blur(58px);
+  opacity: 0.6;
+  animation: heroAuroraB 38s ease-in-out infinite !important;
+}
+
+@keyframes heroAuroraA {
+  0% {
+    transform: translate3d(-3%, -2%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(5%, 4%, 0) scale(1.16);
+  }
+  100% {
+    transform: translate3d(-3%, -2%, 0) scale(1);
+  }
+}
+
+@keyframes heroAuroraB {
+  0% {
+    transform: translate3d(4%, 3%, 0) scale(1.08);
+  }
+  50% {
+    transform: translate3d(-5%, -3%, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(4%, 3%, 0) scale(1.08);
+  }
+}
+
+@keyframes heroGridDrift {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 0 0, 0 92px;
+  }
 }
 
 /* Декоративный «орб» здесь тоже лишний. */
@@ -458,18 +545,28 @@ h4,
   box-shadow: 0 22px 50px rgba(0, 0, 0, 0.46);
 }
 
-/* --- медиа --- */
+/* --- медиа: крупный кадр, поверх фотографии ничего не лежит --- */
 .property-card__media {
   position: relative;
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
-  background: #0c1320;
   flex: 0 0 auto;
+  background: #0c1320;
+  /* cards.css:3610 навязывает медиа-блоку aspect-ratio 16/10 и
+     overflow:hidden — из-за этого кадр 4:3 обрезался, а полоса точек
+     уходила под обрез. Пропорцию теперь держит сам кадр. */
+  aspect-ratio: auto;
+  overflow: visible;
 }
 
-.property-card__media .card-gallery,
+.property-card__media .card-gallery {
+  display: block;
+}
+
+/* Пропорция 4:3 вместо 16:10 — кадр примерно на 20% выше,
+   объект видно целиком. */
 .property-card__media .card-gallery__frame {
-  height: 100%;
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
 }
 
 .property-card__media .card-gallery__img {
@@ -479,24 +576,86 @@ h4,
   display: block;
 }
 
+/* Стрелки — единственный элемент над кадром, и тот появляется
+   только при наведении. */
+.property-card__media .card-gallery__btn {
+  z-index: 3;
+  width: 46px;
+  height: 46px;
+  font-size: 1.7rem;
+  color: #fff;
+  background: rgba(7, 11, 20, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.16s ease, background 0.16s ease;
+}
+
+.property-card:hover .card-gallery__btn,
+.property-card__media .card-gallery__btn:focus-visible {
+  opacity: 1;
+}
+
+.property-card__media .card-gallery__btn:hover {
+  background: rgba(7, 11, 20, 0.8);
+}
+
+/* Точки — под кадром, отдельной полосой. В cards.css:3719 они скрыты
+   через display:none !important, потому что раньше лежали на фотографии. */
+.property-card .property-card__media .card-gallery__dots {
+  position: static !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 22px;
+  transform: none !important;
+  background: transparent;
+}
+
+.property-card .property-card__media .card-gallery__dot {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transition: background 0.16s ease;
+}
+
+.property-card .property-card__media .card-gallery__dot.is-active {
+  background: var(--e-accent);
+}
+
+/* --- строка тегов в теле карточки (переехала с фотографии) --- */
+.property-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 2px;
+  min-height: 32px;
+}
+
 .property-card__badge,
 .property-card__type {
-  position: absolute;
-  z-index: 3;
-  top: 14px;
+  /* cards.css:952 держит бейдж на position:absolute — без сброса все
+     бейджи сетки собираются в одной точке поверх фотографии. */
+  position: static;
+  top: auto;
+  left: auto;
   display: inline-flex;
   align-items: center;
-  height: 34px;
+  height: 32px;
   padding: 0 14px;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 700;
   letter-spacing: 0.01em;
+  text-transform: none;
   border-radius: 999px;
   white-space: nowrap;
 }
 
 .property-card__badge {
-  left: 14px;
   color: #06111f;
   background: #fff;
 }
@@ -514,47 +673,13 @@ h4,
 }
 
 .property-card__type {
-  right: 14px;
-  max-width: 55%;
+  max-width: 60%;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #fff;
-  background: rgba(7, 11, 20, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-}
-
-/* стрелки и точки галереи */
-.property-card__media .card-gallery__btn {
-  z-index: 3;
-  width: 44px;
-  height: 44px;
-  font-size: 1.6rem;
-  color: #fff;
-  background: rgba(7, 11, 20, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  opacity: 0;
-  transition: opacity 0.16s ease, background 0.16s ease;
-}
-
-.property-card:hover .card-gallery__btn {
-  opacity: 1;
-}
-
-.property-card__media .card-gallery__btn:hover {
-  background: rgba(7, 11, 20, 0.82);
-}
-
-.property-card__media .card-gallery__dot {
-  width: 7px;
-  height: 7px;
-  background: rgba(255, 255, 255, 0.45);
-}
-
-.property-card__media .card-gallery__dot.is-active {
-  background: #fff;
+  font-weight: 600;
+  color: var(--e-text-soft);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--e-line-strong);
 }
 
 /* --- тело --- */
@@ -856,5 +981,12 @@ h4,
 
   .property-card:hover {
     transform: none;
+  }
+
+  /* Фон остаётся многослойным, но замирает */
+  #searchbox-hero-1 .hero__bg::before,
+  #searchbox-hero-1 .hero__overlay::before,
+  #searchbox-hero-1 .hero__overlay::after {
+    animation: none !important;
   }
 }
