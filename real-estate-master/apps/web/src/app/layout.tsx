@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <script
           dangerouslySetInnerHTML={{
             __html:
-              'try{var t=localStorage.getItem("epas-theme");if(t&&t!=="night")document.documentElement.setAttribute("data-theme",t)}catch(e){}',
+              'try{var t=localStorage.getItem("epas-theme");if(t&&t!=="night")document.documentElement.setAttribute("data-theme",t);var c=localStorage.getItem("epas-crm-theme");if(c&&c!=="asphalt")document.documentElement.setAttribute("data-crm-theme",c)}catch(e){}',
           }}
         />
         {/* Шрифты захостены локально: Google Fonts из РФ нестабилен и

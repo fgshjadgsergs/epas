@@ -7,6 +7,7 @@ import { CrmUser } from "@/lib/crm-api";
 import { getCrmRoleLabel } from "@/lib/crm-role";
 import { CrmLogoutButton } from "./crm-logout-button";
 import { CrmNav } from "./crm-nav";
+import { CrmThemeSwitcher } from "./crm-theme-switcher";
 
 /**
  * Каркас CRM. Структура прежняя (сайдбар + контент); для мобильных
@@ -81,6 +82,8 @@ export function CrmShell({ user, children }: { user: CrmUser; children: ReactNod
             <div className="crm-shell__user">{displayName}</div>
             <div className="crm-shell__role">{user.email}</div>
           </div>
+
+          <CrmThemeSwitcher />
         </header>
 
         <main className="crm-shell__main">{children}</main>

@@ -8,25 +8,36 @@
    ===================================================================== */
 
 :root {
-  --crm-bg-0: #0a1120;
-  --crm-bg-1: #0e1830;
-  --crm-bg-2: #14213f;
-  --crm-glass: rgba(148, 178, 233, 0.06);
-  --crm-glass-strong: rgba(148, 178, 233, 0.1);
-  --crm-line: rgba(148, 178, 233, 0.14);
-  --crm-line-strong: rgba(148, 178, 233, 0.24);
-  --crm-text: #eef3fb;
-  --crm-text-soft: #c0cde2;
-  --crm-text-muted: #8ea0bd;
-  --crm-accent: #4d92ff;
-  --crm-accent-strong: #2f6fe0;
+  /* Тема по умолчанию — «Асфальт»: приглушённый серо-графитовый
+     с холодным подтоном, как в концепте. */
+  --crm-bg-0: #1a1e27;
+  --crm-bg-1: #232833;
+  --crm-bg-deep: #13161d;
+  --crm-glow-a: rgba(122, 144, 176, 0.16);
+  --crm-glow-b: rgba(104, 126, 158, 0.11);
+  --crm-glow-c: rgba(92, 112, 142, 0.11);
+  --crm-glass: rgba(190, 203, 222, 0.055);
+  --crm-glass-strong: rgba(190, 203, 222, 0.1);
+  --crm-line: rgba(190, 203, 222, 0.13);
+  --crm-line-strong: rgba(190, 203, 222, 0.22);
+  --crm-text: #edf0f5;
+  --crm-text-soft: #c3cad6;
+  --crm-text-muted: #8f98a8;
+  --crm-accent: #6b9fff;
+  --crm-accent-strong: #4a7de0;
   --crm-ok: #3fbf9a;
   --crm-warn: #e2a84a;
   --crm-danger: #e2606c;
   --crm-radius: 16px;
   --crm-radius-sm: 11px;
-  --crm-field: rgba(10, 18, 36, 0.55);
-  --crm-shadow: 0 18px 44px rgba(3, 8, 20, 0.45);
+  --crm-field: rgba(12, 15, 22, 0.5);
+  --crm-side: rgba(20, 23, 30, 0.8);
+  --crm-head: rgba(20, 23, 30, 0.6);
+  --crm-thead: rgba(15, 18, 25, 0.5);
+  --crm-card: rgba(15, 18, 26, 0.65);
+  --crm-panel-hi: rgba(190, 203, 222, 0.07);
+  --crm-panel-lo: rgba(190, 203, 222, 0.02);
+  --crm-shadow: 0 18px 44px rgba(8, 10, 15, 0.45);
 }
 
 /* ---------------------------------------------------------------
@@ -36,10 +47,10 @@
 .crm-shell {
   grid-template-columns: 248px minmax(0, 1fr);
   background:
-    radial-gradient(70% 55% at 82% -10%, rgba(64, 120, 220, 0.18) 0%, transparent 60%),
-    radial-gradient(55% 45% at -8% 30%, rgba(46, 90, 180, 0.14) 0%, transparent 62%),
-    radial-gradient(60% 50% at 50% 115%, rgba(30, 70, 150, 0.16) 0%, transparent 64%),
-    linear-gradient(155deg, var(--crm-bg-1) 0%, var(--crm-bg-0) 55%, #070d1a 100%) !important;
+    radial-gradient(70% 55% at 82% -10%, var(--crm-glow-a) 0%, transparent 60%),
+    radial-gradient(55% 45% at -8% 30%, var(--crm-glow-b) 0%, transparent 62%),
+    radial-gradient(60% 50% at 50% 115%, var(--crm-glow-c) 0%, transparent 64%),
+    linear-gradient(155deg, var(--crm-bg-1) 0%, var(--crm-bg-0) 55%, var(--crm-bg-deep) 100%) !important;
   color: var(--crm-text) !important;
   min-height: 100vh;
 }
@@ -55,7 +66,7 @@
 }
 
 .crm-shell *::-webkit-scrollbar-thumb {
-  background: rgba(148, 178, 233, 0.22);
+  background: var(--crm-line-strong);
   border-radius: 999px;
 }
 
@@ -75,7 +86,7 @@
   display: flex;
   flex-direction: column;
   padding: 20px 14px 16px !important;
-  background: rgba(10, 17, 34, 0.72) !important;
+  background: var(--crm-side) !important;
   border-right: 1px solid var(--crm-line) !important;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
@@ -156,7 +167,7 @@
   gap: 14px;
   justify-content: flex-start !important;
   padding: 14px 26px !important;
-  background: rgba(10, 17, 34, 0.55) !important;
+  background: var(--crm-head) !important;
   border-bottom: 1px solid var(--crm-line) !important;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -207,7 +218,7 @@
 .crm-image-card,
 .crm-deal-activity-card,
 .crm-subsection {
-  background: linear-gradient(160deg, rgba(148, 178, 233, 0.08) 0%, rgba(148, 178, 233, 0.03) 100%) !important;
+  background: linear-gradient(160deg, var(--crm-panel-hi) 0%, var(--crm-panel-lo) 100%) !important;
   border: 1px solid var(--crm-line) !important;
   border-radius: var(--crm-radius) !important;
   box-shadow: var(--crm-shadow) !important;
@@ -438,7 +449,7 @@
    --------------------------------------------------------------- */
 
 .crm-table-wrap {
-  background: linear-gradient(160deg, rgba(148, 178, 233, 0.07) 0%, rgba(148, 178, 233, 0.02) 100%) !important;
+  background: linear-gradient(160deg, var(--crm-panel-hi) 0%, var(--crm-panel-lo) 100%) !important;
   border: 1px solid var(--crm-line) !important;
   border-radius: var(--crm-radius) !important;
   box-shadow: var(--crm-shadow) !important;
@@ -457,7 +468,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--crm-text-muted) !important;
-  background: rgba(10, 17, 34, 0.45) !important;
+  background: var(--crm-thead) !important;
   border-bottom: 1px solid var(--crm-line-strong) !important;
 }
 
@@ -590,7 +601,7 @@
 }
 
 .crm-deals-column {
-  background: linear-gradient(170deg, rgba(148, 178, 233, 0.07) 0%, rgba(148, 178, 233, 0.02) 100%) !important;
+  background: linear-gradient(170deg, var(--crm-panel-hi) 0%, var(--crm-panel-lo) 100%) !important;
   border: 1px solid var(--crm-line) !important;
   border-radius: var(--crm-radius) !important;
   box-shadow: none !important;
@@ -598,7 +609,7 @@
 }
 
 .crm-deal-card {
-  background: rgba(10, 18, 36, 0.6) !important;
+  background: var(--crm-card) !important;
   border: 1px solid var(--crm-line) !important;
   border-radius: var(--crm-radius-sm) !important;
   box-shadow: none !important;
@@ -622,13 +633,13 @@
 
 .crm-login {
   background:
-    radial-gradient(70% 55% at 80% -10%, rgba(64, 120, 220, 0.2) 0%, transparent 60%),
-    radial-gradient(55% 45% at 0% 100%, rgba(46, 90, 180, 0.16) 0%, transparent 62%),
-    linear-gradient(155deg, var(--crm-bg-1) 0%, var(--crm-bg-0) 60%, #070d1a 100%) !important;
+    radial-gradient(70% 55% at 80% -10%, var(--crm-glow-a) 0%, transparent 60%),
+    radial-gradient(55% 45% at 0% 100%, var(--crm-glow-b) 0%, transparent 62%),
+    linear-gradient(155deg, var(--crm-bg-1) 0%, var(--crm-bg-0) 60%, var(--crm-bg-deep) 100%) !important;
 }
 
 .crm-login__panel {
-  background: rgba(12, 20, 40, 0.72) !important;
+  background: var(--crm-side) !important;
   border: 1px solid var(--crm-line-strong) !important;
   border-radius: 20px !important;
   box-shadow: var(--crm-shadow) !important;
@@ -879,5 +890,264 @@
 }
 
 .crm-deal-task-row {
+  color: var(--crm-text-soft) !important;
+}
+
+/* ---------------------------------------------------------------
+   13. Темы CRM. Переключаются атрибутом data-crm-theme на <html>,
+   выбор хранится в localStorage (epas-crm-theme).
+   «asphalt» — значения по умолчанию из :root.
+   --------------------------------------------------------------- */
+
+/* Ночь: глубокий синий (прежний вариант) */
+[data-crm-theme="night"] {
+  --crm-bg-0: #0a1120;
+  --crm-bg-1: #0e1830;
+  --crm-bg-deep: #070d1a;
+  --crm-glow-a: rgba(64, 120, 220, 0.18);
+  --crm-glow-b: rgba(46, 90, 180, 0.14);
+  --crm-glow-c: rgba(30, 70, 150, 0.16);
+  --crm-glass: rgba(148, 178, 233, 0.06);
+  --crm-glass-strong: rgba(148, 178, 233, 0.1);
+  --crm-line: rgba(148, 178, 233, 0.14);
+  --crm-line-strong: rgba(148, 178, 233, 0.24);
+  --crm-text: #eef3fb;
+  --crm-text-soft: #c0cde2;
+  --crm-text-muted: #8ea0bd;
+  --crm-accent: #4d92ff;
+  --crm-accent-strong: #2f6fe0;
+  --crm-field: rgba(10, 18, 36, 0.55);
+  --crm-side: rgba(10, 17, 34, 0.72);
+  --crm-head: rgba(10, 17, 34, 0.55);
+  --crm-thead: rgba(10, 17, 34, 0.45);
+  --crm-card: rgba(10, 18, 36, 0.6);
+  --crm-panel-hi: rgba(148, 178, 233, 0.08);
+  --crm-panel-lo: rgba(148, 178, 233, 0.03);
+  --crm-shadow: 0 18px 44px rgba(3, 8, 20, 0.45);
+}
+
+/* Оникс: почти чёрный нейтральный с латунным акцентом —
+   под премиальную коммерческую недвижимость */
+[data-crm-theme="onyx"] {
+  --crm-bg-0: #131313;
+  --crm-bg-1: #1b1b1d;
+  --crm-bg-deep: #0d0d0e;
+  --crm-glow-a: rgba(212, 175, 90, 0.1);
+  --crm-glow-b: rgba(150, 130, 90, 0.07);
+  --crm-glow-c: rgba(120, 110, 90, 0.07);
+  --crm-glass: rgba(226, 216, 195, 0.05);
+  --crm-glass-strong: rgba(226, 216, 195, 0.09);
+  --crm-line: rgba(226, 216, 195, 0.12);
+  --crm-line-strong: rgba(226, 216, 195, 0.2);
+  --crm-text: #f2f0eb;
+  --crm-text-soft: #cdc9c0;
+  --crm-text-muted: #97938a;
+  --crm-accent: #d4af5a;
+  --crm-accent-strong: #b08c34;
+  --crm-field: rgba(10, 10, 11, 0.55);
+  --crm-side: rgba(16, 16, 17, 0.82);
+  --crm-head: rgba(16, 16, 17, 0.62);
+  --crm-thead: rgba(12, 12, 13, 0.55);
+  --crm-card: rgba(12, 12, 14, 0.68);
+  --crm-panel-hi: rgba(226, 216, 195, 0.06);
+  --crm-panel-lo: rgba(226, 216, 195, 0.02);
+  --crm-shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
+}
+
+/* Изумруд: тёмный зелёно-графитовый — цвет сделок и денег */
+[data-crm-theme="emerald"] {
+  --crm-bg-0: #101814;
+  --crm-bg-1: #16211b;
+  --crm-bg-deep: #0b110d;
+  --crm-glow-a: rgba(63, 191, 154, 0.12);
+  --crm-glow-b: rgba(52, 150, 120, 0.09);
+  --crm-glow-c: rgba(40, 120, 96, 0.09);
+  --crm-glass: rgba(178, 222, 202, 0.055);
+  --crm-glass-strong: rgba(178, 222, 202, 0.1);
+  --crm-line: rgba(178, 222, 202, 0.13);
+  --crm-line-strong: rgba(178, 222, 202, 0.22);
+  --crm-text: #ecf4ef;
+  --crm-text-soft: #c1d2c9;
+  --crm-text-muted: #8aa295;
+  --crm-accent: #35c493;
+  --crm-accent-strong: #1e9c70;
+  --crm-field: rgba(8, 14, 11, 0.55);
+  --crm-side: rgba(13, 19, 16, 0.82);
+  --crm-head: rgba(13, 19, 16, 0.6);
+  --crm-thead: rgba(10, 15, 12, 0.55);
+  --crm-card: rgba(10, 16, 13, 0.65);
+  --crm-panel-hi: rgba(178, 222, 202, 0.06);
+  --crm-panel-lo: rgba(178, 222, 202, 0.02);
+  --crm-shadow: 0 18px 44px rgba(3, 10, 7, 0.5);
+}
+
+/* Дневная: светлая офисная */
+[data-crm-theme="day"] {
+  --crm-bg-0: #e9edf3;
+  --crm-bg-1: #f4f6fa;
+  --crm-bg-deep: #dde3ec;
+  --crm-glow-a: rgba(47, 111, 224, 0.08);
+  --crm-glow-b: rgba(47, 111, 224, 0.05);
+  --crm-glow-c: rgba(47, 111, 224, 0.05);
+  --crm-glass: rgba(23, 43, 77, 0.05);
+  --crm-glass-strong: rgba(23, 43, 77, 0.09);
+  --crm-line: rgba(23, 43, 77, 0.13);
+  --crm-line-strong: rgba(23, 43, 77, 0.22);
+  --crm-text: #17233a;
+  --crm-text-soft: #3e4c66;
+  --crm-text-muted: #67748b;
+  --crm-accent: #2f6fe0;
+  --crm-accent-strong: #1f56b8;
+  --crm-field: #ffffff;
+  --crm-side: rgba(255, 255, 255, 0.88);
+  --crm-head: rgba(255, 255, 255, 0.82);
+  --crm-thead: rgba(23, 43, 77, 0.05);
+  --crm-card: #ffffff;
+  --crm-panel-hi: rgba(255, 255, 255, 0.92);
+  --crm-panel-lo: rgba(255, 255, 255, 0.75);
+  --crm-shadow: 0 14px 34px rgba(38, 58, 96, 0.12);
+}
+
+/* Дневная: активный пункт меню и бейджи — тёмные варианты цветов */
+[data-crm-theme="day"] .crm-nav__link.is-active {
+  color: var(--crm-accent-strong) !important;
+  background: rgba(47, 111, 224, 0.1) !important;
+  border-color: rgba(47, 111, 224, 0.3) !important;
+}
+
+[data-crm-theme="day"] .crm-pipeline-badge--new {
+  color: #1f56b8 !important;
+}
+
+[data-crm-theme="day"] .crm-pipeline-badge--in-progress {
+  color: #6a3fd8 !important;
+}
+
+[data-crm-theme="day"] .crm-pipeline-badge--showing {
+  color: #157a5e !important;
+}
+
+[data-crm-theme="day"] .crm-pipeline-badge--negotiation {
+  color: #9a6b17 !important;
+}
+
+[data-crm-theme="day"] .crm-pipeline-badge--closed {
+  color: #2e7d36 !important;
+}
+
+[data-crm-theme="day"] .crm-pipeline-badge--rejected {
+  color: #b3323f !important;
+}
+
+[data-crm-theme="day"] .crm-table__status {
+  color: #157a5e !important;
+}
+
+[data-crm-theme="day"] .crm-table__status--priority {
+  color: #9a6b17 !important;
+}
+
+/* ---------------------------------------------------------------
+   14. Переключатель темы CRM
+   --------------------------------------------------------------- */
+
+.crm-theme-switcher {
+  position: relative;
+  margin-left: auto;
+}
+
+.crm-theme-switcher__button {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  color: var(--crm-text-soft);
+  background: var(--crm-glass);
+  border: 1px solid var(--crm-line-strong);
+  border-radius: 11px;
+  cursor: pointer;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+
+.crm-theme-switcher__button:hover {
+  color: var(--crm-text);
+  background: var(--crm-glass-strong);
+}
+
+.crm-theme-switcher__button svg {
+  width: 21px;
+  height: 21px;
+}
+
+.crm-theme-switcher__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 230;
+  display: grid;
+  gap: 2px;
+  min-width: 200px;
+  padding: 6px;
+  background: var(--crm-bg-1);
+  border: 1px solid var(--crm-line-strong);
+  border-radius: 14px;
+  box-shadow: var(--crm-shadow);
+}
+
+.crm-theme-switcher__option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--crm-text);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.crm-theme-switcher__option:hover {
+  background: var(--crm-glass-strong);
+}
+
+.crm-theme-switcher__option.is-active {
+  background: var(--crm-glass);
+}
+
+.crm-theme-switcher__swatch {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid var(--crm-line-strong);
+}
+
+.crm-theme-switcher__check {
+  width: 17px;
+  height: 17px;
+  margin-left: auto;
+  color: var(--crm-accent);
+}
+
+/* Дневная: опасная кнопка — тёмно-красный текст на светло-розовом */
+[data-crm-theme="day"] .crm-button--danger {
+  color: #b3323f !important;
+  background: rgba(226, 96, 108, 0.12) !important;
+  border-color: rgba(226, 96, 108, 0.5) !important;
+}
+
+[data-crm-theme="day"] .crm-button--danger:hover {
+  background: rgba(226, 96, 108, 0.2) !important;
+}
+
+/* Дневная: «призрачные» кнопки — тёмный текст */
+[data-crm-theme="day"] .crm-button--ghost,
+[data-crm-theme="day"] .crm-button--secondary,
+[data-crm-theme="day"] .crm-action-button {
   color: var(--crm-text-soft) !important;
 }
