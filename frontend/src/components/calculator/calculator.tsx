@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, Zap } from 'lucide-react';
+import { Zap } from 'lucide-react';
 import type { CalcConfig, Selection } from '@/lib/calc/types';
 import { calculate, expressAvailability, minQtyFor, multiTotal, parseCounts } from '@/lib/calc/pricing';
 import { getCalculator } from '@/lib/calc/registry';
@@ -470,9 +470,8 @@ function CalculatorEngine({
 
   return (
     <div>
-      {/* Мобильное липкое превью — карточка остаётся на виду при прокрутке параметров.
-          top ≈ высота липкого хедера на мобиле. */}
-      <div className="sticky top-[104px] z-[15] mb-4 lg:hidden">
+      {/* Мобильное превью — статичное, прокручивается вместе со страницей. */}
+      <div className="mb-4 lg:hidden">
         <div className="rounded-xl border border-border bg-gradient-to-br from-surface-2 to-bg-2 p-3">
           <ProductPreview config={config} state={state} />
         </div>
@@ -658,8 +657,8 @@ function CalculatorEngine({
           )}
         </div>
 
-        {/* Десктоп: превью + цена (sticky). На мобиле превью — липкое сверху, здесь только цена. */}
-        <div className="space-y-4 lg:sticky lg:top-28 lg:self-start">
+        {/* Десктоп: превью + цена — статичная колонка, не следует за прокруткой. */}
+        <div className="space-y-4">
           <div className="hidden overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-surface-2 to-bg-2 p-6 lg:block">
             <ProductPreview config={config} state={state} />
           </div>
@@ -765,7 +764,7 @@ function CalculatorEngine({
             disabled={!canCheckout || confirming}
             className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-primary font-semibold text-primary-fg disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Оформить <ArrowRight size={16} />
+            Оформить
           </button>
         </div>
         )}

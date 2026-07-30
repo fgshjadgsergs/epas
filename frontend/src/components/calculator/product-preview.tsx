@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { RotateCw } from 'lucide-react';
 import type { CalcConfig, CalcState, SwatchMeta } from '@/lib/calc/types';
 
 function selectedOption(config: CalcConfig, groupId: string, state: CalcState) {
@@ -178,7 +177,7 @@ function CardPreview({ config, state }: { config: CalcConfig; state: CalcState }
         onClick={() => setFlipped((f) => !f)}
         className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted hover:text-fg"
       >
-        <RotateCw size={13} /> {flipped ? 'Лицо' : 'Оборот'}
+        {flipped ? 'Лицо' : 'Оборот'}
       </button>
     </div>
   );

@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Check, Link2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /**
@@ -62,7 +61,6 @@ export function ShareButton({ getUrl, className }: { getUrl?: () => string; clas
         data-share
         className="inline-flex h-10 items-center gap-2 rounded-xl border border-border px-3.5 text-sm font-medium text-fg transition-colors hover:border-primary/50 hover:text-primary"
       >
-        {status === 'ok' ? <Check size={15} className="text-success" /> : <Link2 size={15} />}
         Поделиться расчётом
       </button>
       <span aria-live="polite" className="text-xs text-muted">
