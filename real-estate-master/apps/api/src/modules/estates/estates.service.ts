@@ -88,6 +88,31 @@ export class EstatesService {
     };
   }
 
+  /** Объекты, отмеченные брокерами как приоритетные, — блок «Рекомендуем». */
+  async getRecommended(): Promise<Record<string, unknown>> {
+    const estates = await this.prisma.estate.findMany({
+      where: {
+        active: true,
+        deletedAt: null,
+        isPrivateSale: false,
+        priority: true,
+      },
+      include: {
+        images: true,
+      },
+      orderBy: [
+        {
+          id: "desc",
+        },
+      ],
+      take: 6,
+    });
+
+    return {
+      items: estates.map((estate) => this.mapper.toCard(estate)),
+    };
+  }
+
   async search(query: Record<string, string | string[] | undefined>): Promise<Record<string, unknown>> {
     const filters = this.parser.parseListing(query);
     const totalCount = await this.countByFilters(filters);

@@ -9,7 +9,7 @@ import {
   PublicApiError,
   PublicEstateDetail,
   getEstateDetail,
-  getListingData,
+  getRecommendedEstates,
   resolveStoragePath,
 } from "@/lib/public-api";
 import {
@@ -72,19 +72,10 @@ async function loadEstate(estateId: number) {
   }
 }
 
-async function loadSimilarEstates(estate: PublicEstateDetail) {
-  try {
-    const data = await getListingData({
-      deal_type: estate.dealType,
-      "per-page": "8",
-    });
-
-    return data.items.filter((item) => item.dbId !== estate.dbId).slice(0, 3);
-  } catch {
-    // Похожие объекты — второстепенный блок: если каталог не ответил,
-    // страница объекта всё равно должна открыться.
-    return [];
-  }
+async function loadRecommendedEstates(estate: PublicEstateDetail) {
+  const items = await getRecommendedEstates();
+  // на странице самого объекта его же в подборке не показываем
+  return items.filter((item) => item.dbId !== estate.dbId).slice(0, 3);
 }
 
 export async function generateMetadata({ params }: DetailPageProps): Promise<Metadata> {
@@ -168,7 +159,7 @@ export default async function DetailPage({ params }: DetailPageProps) {
   }
 
   const estate = await loadEstate(estateId);
-  const similarEstates = await loadSimilarEstates(estate);
+  const recommendedEstates = await loadRecommendedEstates(estate);
 
   const images = (estate.images.length > 0 ? estate.images : ["/static/img/logo-light.png"]).map((image) =>
     image.startsWith("/static/") ? image : resolveStoragePath(image),
@@ -237,13 +228,6 @@ export default async function DetailPage({ params }: DetailPageProps) {
                 dangerouslySetInnerHTML={{ __html: formatEstateDescription(estate.description) }}
               />
             </section>
-
-            {estate.areaDescription ? (
-              <section className="detail-app__section">
-                <h2>Расположение</h2>
-                <p className="detail-app__text">{estate.areaDescription}</p>
-              </section>
-            ) : null}
 
             <section className="detail-app__section">
               <h2>На карте</h2>
@@ -330,12 +314,12 @@ export default async function DetailPage({ params }: DetailPageProps) {
           </aside>
         </div>
 
-        {similarEstates.length > 0 ? (
+        {recommendedEstates.length > 0 ? (
           <section className="detail-app__similar">
-            <h2>Похожие объекты</h2>
+            <h2>Рекомендуем</h2>
 
             <div className="listing-grid">
-              {similarEstates.map((item) => (
+              {recommendedEstates.map((item) => (
                 <EstateCard key={item.dbId} estate={item} variant="listing" />
               ))}
             </div>

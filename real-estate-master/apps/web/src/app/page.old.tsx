@@ -15,7 +15,7 @@ import {
 import Link from "next/link";
 import { EstateCard } from "@/components/public/estate-card";
 import FiltersPanel from "@/components/public/filters-panel";
-import { getMainPageData } from "@/lib/public-api";
+import { getMainPageData, getRecommendedEstates } from "@/lib/public-api";
 import { getSingleValue, SearchParamsRecord } from "@/lib/public-query";
 
 export const metadata: Metadata = {
@@ -85,7 +85,11 @@ const STEPS = [
 export default async function HomePage({ searchParams }: HomePageProps) {
   const resolvedSearchParams = (await searchParams) ?? {};
   const data = await getMainPageData(getSingleValue(resolvedSearchParams.page));
-  const freshEstates = data.items.slice(0, 6);
+  const recommendedEstates = await getRecommendedEstates();
+
+  // Пока брокеры никого не отметили «Приоритетом», показываем свежие
+  // объекты — блок на главной не должен быть пустым.
+  const featuredEstates = recommendedEstates.length > 0 ? recommendedEstates : data.items.slice(0, 6);
 
   return (
     <main>
@@ -161,8 +165,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         <div className="container-xl">
           <div className="home-section__head home-section__head--row">
             <div>
-              <h2>Актуальные предложения</h2>
-              <p>Сначала — приоритетные объекты нашей базы.</p>
+              <h2>Рекомендуем</h2>
+              <p>Объекты, которые отобрали наши брокеры.</p>
             </div>
 
             <Link href="/listing" className="home-section__more">
@@ -170,9 +174,9 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             </Link>
           </div>
 
-          {freshEstates.length > 0 ? (
+          {featuredEstates.length > 0 ? (
             <div className="listing-grid">
-              {freshEstates.map((estate) => (
+              {featuredEstates.map((estate) => (
                 <EstateCard key={estate.dbId} estate={estate} variant="main" />
               ))}
             </div>

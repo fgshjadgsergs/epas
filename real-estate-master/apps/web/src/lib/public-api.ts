@@ -194,6 +194,20 @@ export async function getMainPageData(page?: string): Promise<MainPageResponse> 
   }
 }
 
+/**
+ * Блок «Рекомендуем»: объекты, отмеченные брокерами в CRM (флаг
+ * «Приоритет»). Набор один для всех страниц.
+ */
+export async function getRecommendedEstates(): Promise<PublicEstateCard[]> {
+  try {
+    const data = await fetchJson<{ items: PublicEstateCard[] }>("/api/v1/estates/recommended");
+    return data.items;
+  } catch (error) {
+    console.warn(`[PUBLIC API FETCH] fallback path=/api/v1/estates/recommended reason=${getErrorMessage(error)}`);
+    return [];
+  }
+}
+
 export async function getListingData(
   searchParams: Record<string, string | string[] | undefined>,
 ): Promise<ListingResponse> {
