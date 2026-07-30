@@ -76,9 +76,10 @@ h4,
   padding-block: 72px 88px;
 }
 
-/* Фон собран слоями, без растровой картинки:
-   1) глубокая база, 2) перспективная сетка, 3) две группы медленно
-   дрейфующих световых пятен, 4) виньетка и растворение в фоне страницы. */
+/* Ночная панорама города в четыре плана. Каждый план повторяется по
+   горизонтали и едет со своей скоростью: дальний почти стоит, ближний
+   идёт заметно быстрее — так возникает параллакс и глубина.
+   Слои — SVG по 5-14 КБ, вместе легче одной фотографии. */
 
 #searchbox-hero-1 .hero__bg {
   position: absolute;
@@ -86,43 +87,35 @@ h4,
   z-index: 0;
   overflow: hidden;
   background:
-    radial-gradient(120% 90% at 78% 8%, #16346f 0%, transparent 58%),
-    radial-gradient(90% 70% at 12% 22%, #123a63 0%, transparent 62%),
-    linear-gradient(168deg, #0b1730 0%, #081227 42%, #060a14 100%);
+    /* зарево над городом — тёплое у самого горизонта, холодное выше */
+    radial-gradient(140% 40% at 50% 100%, rgba(255, 176, 92, 0.2) 0%, transparent 60%),
+    radial-gradient(120% 58% at 50% 100%, rgba(56, 142, 236, 0.55) 0%, transparent 68%),
+    radial-gradient(70% 40% at 22% 96%, rgba(38, 178, 208, 0.28) 0%, transparent 72%),
+    /* ночное небо */
+    linear-gradient(180deg, #02050d 0%, #061024 30%, #0b2447 58%, #14406e 82%, #1b5288 100%);
 }
 
-/* Перспективная сетка — архитектурный подтекст и ощущение объёма.
-   Маска гасит её к краям, чтобы не выглядела наклейкой. */
+/* дальний план */
 #searchbox-hero-1 .hero__bg::before {
   content: "";
   position: absolute;
-  inset: -20% -10% -30%;
-  background-image:
-    repeating-linear-gradient(
-      90deg,
-      rgba(150, 190, 255, 0.09) 0 1px,
-      transparent 1px 92px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(150, 190, 255, 0.07) 0 1px,
-      transparent 1px 92px
-    );
-  transform: perspective(760px) rotateX(58deg) scale(1.5);
-  transform-origin: 50% 100%;
-  mask-image: radial-gradient(70% 62% at 50% 78%, #000 0%, transparent 72%);
-  -webkit-mask-image: radial-gradient(70% 62% at 50% 78%, #000 0%, transparent 72%);
-  animation: heroGridDrift 34s linear infinite;
+  inset: 0;
+  background: url("/static/img/hero/skyline-far.svg") repeat-x bottom center / auto 40%;
+  opacity: 0.55;
+  filter: blur(1.5px);
+  animation: heroPanFar 240s linear infinite;
+  will-change: background-position;
 }
 
-/* Мелкое зерно — убирает полосы на больших градиентах */
+/* средний план */
 #searchbox-hero-1 .hero__bg::after {
   content: "";
   position: absolute;
   inset: 0;
-  opacity: 0.05;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  background: url("/static/img/hero/skyline-mid.svg") repeat-x bottom center / auto 54%;
+  opacity: 0.95;
+  animation: heroPanMid 150s linear infinite;
+  will-change: background-position;
 }
 
 #searchbox-hero-1 .hero__overlay {
@@ -130,72 +123,75 @@ h4,
   inset: 0;
   z-index: 1;
   overflow: hidden;
-  background:
-    radial-gradient(115% 88% at 50% 42%, transparent 38%, rgba(4, 7, 14, 0.62) 100%),
-    linear-gradient(180deg, transparent 58%, rgba(6, 9, 17, 0.86) 86%, var(--e-bg) 100%);
+  /* атмосферная дымка между планами: сгущается к горизонту */
+  background: linear-gradient(180deg, transparent 46%, rgba(28, 78, 134, 0.28) 76%, rgba(14, 40, 72, 0.4) 100%);
 }
 
-/* Световые пятна: две группы, разные скорости и направления —
-   движение читается, но не отвлекает от формы поиска. */
-#searchbox-hero-1 .hero__overlay::before,
+/* ближний план — самый тёмный и самый быстрый */
+#searchbox-hero-1 .hero__overlay::before {
+  content: "";
+  display: block !important;
+  position: absolute;
+  inset: 0;
+  background: url("/static/img/hero/skyline-near.svg") repeat-x bottom center / auto 64%;
+  animation: heroPanNear 90s linear infinite !important;
+  will-change: background-position;
+  mix-blend-mode: normal;
+  filter: none;
+  opacity: 1;
+}
+
+/* Мягкая виньетка и растворение в фоне страницы.
+   Зерно вынесено отдельным слоем с малой непрозрачностью: под
+   background-blend-mode: overlay вся сцена уходила в серый. */
 #searchbox-hero-1 .hero__overlay::after {
   content: "";
   display: block !important;
   position: absolute;
-  inset: -35%;
+  inset: 0;
   pointer-events: none;
-  mix-blend-mode: screen;
-  will-change: transform;
-}
-
-#searchbox-hero-1 .hero__overlay::before {
+  animation: none !important;
+  mix-blend-mode: normal;
+  filter: none;
+  opacity: 1;
   background:
-    radial-gradient(30% 34% at 24% 32%, rgba(64, 132, 255, 0.5) 0%, transparent 66%),
-    radial-gradient(26% 30% at 74% 26%, rgba(38, 178, 208, 0.34) 0%, transparent 68%);
-  filter: blur(46px);
-  opacity: 0.72;
-  animation: heroAuroraA 26s ease-in-out infinite !important;
+    radial-gradient(130% 92% at 50% 30%, transparent 52%, rgba(3, 6, 12, 0.5) 100%),
+    linear-gradient(180deg, rgba(3, 6, 14, 0.4) 0%, transparent 22%, transparent 74%, rgba(6, 9, 17, 0.42) 92%, var(--e-bg) 100%);
 }
 
-#searchbox-hero-1 .hero__overlay::after {
-  background:
-    radial-gradient(28% 32% at 62% 62%, rgba(96, 84, 226, 0.42) 0%, transparent 68%),
-    radial-gradient(24% 26% at 34% 70%, rgba(58, 148, 255, 0.32) 0%, transparent 70%);
-  filter: blur(58px);
-  opacity: 0.6;
-  animation: heroAuroraB 38s ease-in-out infinite !important;
+/* лёгкое зерно против полос на градиентах */
+#searchbox-hero-1 .hero__bg > .hero-grain,
+#searchbox-hero-1 .hero__overlay {
+  --e-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-@keyframes heroAuroraA {
-  0% {
-    transform: translate3d(-3%, -2%, 0) scale(1);
+/* Двигаем только по X: если анимировать background-position целиком,
+   ключевые кадры перебьют вертикальную привязку горизонта, заданную
+   в мобильном блоке в пикселях. */
+@keyframes heroPanFar {
+  from {
+    background-position-x: 0;
   }
-  50% {
-    transform: translate3d(5%, 4%, 0) scale(1.16);
-  }
-  100% {
-    transform: translate3d(-3%, -2%, 0) scale(1);
+  to {
+    background-position-x: -2400px;
   }
 }
 
-@keyframes heroAuroraB {
-  0% {
-    transform: translate3d(4%, 3%, 0) scale(1.08);
+@keyframes heroPanMid {
+  from {
+    background-position-x: 0;
   }
-  50% {
-    transform: translate3d(-5%, -3%, 0) scale(1);
-  }
-  100% {
-    transform: translate3d(4%, 3%, 0) scale(1.08);
+  to {
+    background-position-x: -2400px;
   }
 }
 
-@keyframes heroGridDrift {
-  0% {
-    background-position: 0 0, 0 0;
+@keyframes heroPanNear {
+  from {
+    background-position-x: 0;
   }
-  100% {
-    background-position: 0 0, 0 92px;
+  to {
+    background-position-x: -2400px;
   }
 }
 
@@ -868,8 +864,49 @@ h4,
     padding-block: 48px 56px;
   }
 
+  /* На узком экране контент делает HERO очень высоким, и горизонт,
+     привязанный к низу блока, уходит далеко под сгиб. Поэтому на
+     мобильных линия горизонта задаётся в пикселях — город попадает
+     в первый экран, ниже фон снова уходит в темноту. */
   #searchbox-hero-1 .hero__bg {
-    background-position: center 32%;
+    background:
+      radial-gradient(150% 190px at 50% 760px, rgba(255, 176, 92, 0.18) 0%, transparent 70%),
+      radial-gradient(130% 300px at 50% 780px, rgba(56, 142, 236, 0.55) 0%, transparent 72%),
+      linear-gradient(
+        180deg,
+        #02050d 0px,
+        #061024 240px,
+        #0b2447 520px,
+        #14406e 700px,
+        #1b5288 780px,
+        #0a1a30 900px,
+        #060c18 100%
+      );
+  }
+
+  #searchbox-hero-1 .hero__bg::before {
+    background-size: auto 150px;
+    background-position: center 630px;
+  }
+
+  #searchbox-hero-1 .hero__bg::after {
+    background-size: auto 210px;
+    background-position: center 570px;
+  }
+
+  #searchbox-hero-1 .hero__overlay::before {
+    background-size: auto 260px;
+    background-position: center 520px;
+  }
+
+  #searchbox-hero-1 .hero__overlay {
+    background: none;
+  }
+
+  #searchbox-hero-1 .hero__overlay::after {
+    background:
+      radial-gradient(140% 620px at 50% 300px, transparent 55%, rgba(3, 6, 12, 0.45) 100%),
+      linear-gradient(180deg, rgba(3, 6, 14, 0.35) 0px, transparent 200px, transparent 74%, rgba(6, 9, 17, 0.4) 92%, var(--e-bg) 100%);
   }
 
   .filters-panel {
@@ -983,10 +1020,10 @@ h4,
     transform: none;
   }
 
-  /* Фон остаётся многослойным, но замирает */
+  /* Планы панорамы остаются, движение выключается */
   #searchbox-hero-1 .hero__bg::before,
-  #searchbox-hero-1 .hero__overlay::before,
-  #searchbox-hero-1 .hero__overlay::after {
+  #searchbox-hero-1 .hero__bg::after,
+  #searchbox-hero-1 .hero__overlay::before {
     animation: none !important;
   }
 }
