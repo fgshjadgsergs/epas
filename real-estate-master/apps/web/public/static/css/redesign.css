@@ -76,10 +76,9 @@ h4,
   padding-block: 72px 88px;
 }
 
-/* Ночная панорама города в четыре плана. Каждый план повторяется по
-   горизонтали и едет со своей скоростью: дальний почти стоит, ближний
-   идёт заметно быстрее — так возникает параллакс и глубина.
-   Слои — SVG по 5-14 КБ, вместе легче одной фотографии. */
+/* Каркасный «цифровой двойник» квартала: светящиеся контуры зданий
+   с поэтажными линиями стоят на перспективной сетке, по сцене идёт
+   сканирующий луч. Всё собрано из двух SVG и градиентов. */
 
 #searchbox-hero-1 .hero__bg {
   position: absolute;
@@ -87,34 +86,39 @@ h4,
   z-index: 0;
   overflow: hidden;
   background:
-    /* зарево над городом — тёплое у самого горизонта, холодное выше */
-    radial-gradient(140% 40% at 50% 100%, rgba(255, 176, 92, 0.2) 0%, transparent 60%),
-    radial-gradient(120% 58% at 50% 100%, rgba(56, 142, 236, 0.55) 0%, transparent 68%),
-    radial-gradient(70% 40% at 22% 96%, rgba(38, 178, 208, 0.28) 0%, transparent 72%),
-    /* ночное небо */
-    linear-gradient(180deg, #02050d 0%, #061024 30%, #0b2447 58%, #14406e 82%, #1b5288 100%);
+    radial-gradient(90% 60% at 50% 104%, rgba(46, 152, 220, 0.4) 0%, transparent 64%),
+    radial-gradient(60% 44% at 16% 8%, rgba(58, 96, 220, 0.22) 0%, transparent 70%),
+    linear-gradient(180deg, #03060f 0%, #050b1a 46%, #061426 78%, #071c30 100%);
 }
 
-/* дальний план */
+/* Перспективная сетка пола: уходит к горизонту и медленно едет
+   на зрителя — это и даёт ощущение движущейся системы. */
 #searchbox-hero-1 .hero__bg::before {
   content: "";
   position: absolute;
-  inset: 0;
-  background: url("/static/img/hero/skyline-far.svg") repeat-x bottom center / auto 40%;
-  opacity: 0.55;
-  filter: blur(1.5px);
-  animation: heroPanFar 240s linear infinite;
+  left: -60%;
+  right: -60%;
+  bottom: -34%;
+  height: 88%;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(90, 200, 255, 0.5) 0 1px, transparent 1px 96px),
+    repeating-linear-gradient(0deg, rgba(90, 200, 255, 0.42) 0 1px, transparent 1px 72px);
+  transform: perspective(560px) rotateX(76deg);
+  transform-origin: 50% 100%;
+  mask-image: linear-gradient(180deg, transparent 0%, #000 34%, #000 78%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 34%, #000 78%, transparent 100%);
+  animation: heroGridRun 7s linear infinite;
   will-change: background-position;
 }
 
-/* средний план */
+/* дальний каркас */
 #searchbox-hero-1 .hero__bg::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: url("/static/img/hero/skyline-mid.svg") repeat-x bottom center / auto 54%;
-  opacity: 0.95;
-  animation: heroPanMid 150s linear infinite;
+  background: url("/static/img/hero/wire-far.svg") repeat-x bottom center / auto 54%;
+  opacity: 0.85;
+  animation: heroPanFar 200s linear infinite;
   will-change: background-position;
 }
 
@@ -123,46 +127,48 @@ h4,
   inset: 0;
   z-index: 1;
   overflow: hidden;
-  /* атмосферная дымка между планами: сгущается к горизонту */
-  background: linear-gradient(180deg, transparent 46%, rgba(28, 78, 134, 0.28) 76%, rgba(14, 40, 72, 0.4) 100%);
+  background: linear-gradient(180deg, transparent 48%, rgba(12, 52, 92, 0.26) 80%, rgba(8, 26, 46, 0.36) 100%);
 }
 
-/* ближний план — самый тёмный и самый быстрый */
+/* ближний каркас */
 #searchbox-hero-1 .hero__overlay::before {
   content: "";
   display: block !important;
   position: absolute;
   inset: 0;
-  background: url("/static/img/hero/skyline-near.svg") repeat-x bottom center / auto 64%;
-  animation: heroPanNear 90s linear infinite !important;
+  background: url("/static/img/hero/wire-near.svg") repeat-x bottom center / auto 72%;
+  animation: heroPanNear 110s linear infinite !important;
   will-change: background-position;
   mix-blend-mode: normal;
   filter: none;
   opacity: 1;
 }
 
-/* Мягкая виньетка и растворение в фоне страницы.
-   Зерно вынесено отдельным слоем с малой непрозрачностью: под
-   background-blend-mode: overlay вся сцена уходила в серый. */
+/* Сканирующий луч + виньетка + растворение в фоне страницы */
 #searchbox-hero-1 .hero__overlay::after {
   content: "";
   display: block !important;
   position: absolute;
   inset: 0;
   pointer-events: none;
-  animation: none !important;
   mix-blend-mode: normal;
   filter: none;
   opacity: 1;
   background:
-    radial-gradient(130% 92% at 50% 30%, transparent 52%, rgba(3, 6, 12, 0.5) 100%),
-    linear-gradient(180deg, rgba(3, 6, 14, 0.4) 0%, transparent 22%, transparent 74%, rgba(6, 9, 17, 0.42) 92%, var(--e-bg) 100%);
-}
-
-/* лёгкое зерно против полос на градиентах */
-#searchbox-hero-1 .hero__bg > .hero-grain,
-#searchbox-hero-1 .hero__overlay {
-  --e-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(120, 220, 255, 0.09) 44%,
+      rgba(150, 235, 255, 0.16) 50%,
+      rgba(120, 220, 255, 0.09) 56%,
+      transparent 100%
+    ),
+    radial-gradient(130% 92% at 50% 30%, transparent 54%, rgba(2, 5, 11, 0.55) 100%),
+    linear-gradient(180deg, rgba(3, 6, 14, 0.42) 0%, transparent 24%, transparent 74%, rgba(6, 9, 17, 0.44) 92%, var(--e-bg) 100%);
+  background-size: 100% 46%, 100% 100%, 100% 100%;
+  background-repeat: no-repeat;
+  animation: heroScan 9s ease-in-out infinite !important;
+  will-change: background-position;
 }
 
 /* Двигаем только по X: если анимировать background-position целиком,
@@ -177,7 +183,7 @@ h4,
   }
 }
 
-@keyframes heroPanMid {
+@keyframes heroPanNear {
   from {
     background-position-x: 0;
   }
@@ -186,12 +192,21 @@ h4,
   }
 }
 
-@keyframes heroPanNear {
+@keyframes heroGridRun {
   from {
-    background-position-x: 0;
+    background-position: 0 0, 0 0;
   }
   to {
-    background-position-x: -2400px;
+    background-position: 0 0, 0 72px;
+  }
+}
+
+@keyframes heroScan {
+  0% {
+    background-position: 0 -50%, 0 0, 0 0;
+  }
+  100% {
+    background-position: 0 150%, 0 0, 0 0;
   }
 }
 
@@ -845,7 +860,539 @@ h4,
 }
 
 /* ---------------------------------------------------------------
-   6. Мобильная адаптация
+   6. App shell: шторки, нижняя панель, тулбар каталога
+   --------------------------------------------------------------- */
+
+/* --- универсальная шторка --- */
+.app-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+}
+
+.app-sheet__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 5, 11, 0.62);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: appFadeIn 0.18s ease;
+}
+
+.app-sheet__panel {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background: #0d1626;
+  border: 1px solid var(--e-line-strong);
+  box-shadow: 0 -24px 70px rgba(0, 0, 0, 0.55);
+}
+
+.app-sheet__grip {
+  display: none;
+}
+
+.app-sheet__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--e-line);
+  flex: 0 0 auto;
+}
+
+.app-sheet__title {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--e-text);
+}
+
+.app-sheet__close {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  font-size: 1.7rem;
+  line-height: 1;
+  color: var(--e-text-soft);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--e-line);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.app-sheet__close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.app-sheet__body {
+  padding: 20px 22px calc(24px + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* мобильные: снизу */
+@media (max-width: 900px) {
+  .app-sheet__panel {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: 88dvh;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-radius: 22px 22px 0 0;
+    animation: appSheetUp 0.24s ease;
+  }
+
+  .app-sheet__grip {
+    display: block;
+    width: 44px;
+    height: 4px;
+    margin: 10px auto 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.22);
+    flex: 0 0 auto;
+  }
+
+  .app-sheet__head {
+    padding: 10px 18px 14px;
+  }
+
+  .app-sheet__body {
+    padding: 18px 18px calc(24px + env(safe-area-inset-bottom));
+  }
+}
+
+/* десктоп: панель справа */
+@media (min-width: 901px) {
+  .app-sheet__panel {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(500px, 100%);
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 0;
+    animation: appDrawerIn 0.22s ease;
+  }
+}
+
+/* фильтры внутри шторки: панель без собственной рамки и стекла */
+.app-sheet .filters-panel--sheet {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* В узкой шторке диапазоны — в одну колонку, иначе поля сжимаются
+   до нечитаемых «500 0…» */
+.app-sheet .filters-panel--sheet .filters-row--sliders {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.app-sheet .filters-panel--sheet .filters-bottom {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.app-sheet .filters-panel--sheet .search-btn {
+  width: 100%;
+}
+
+/* --- шторка поиска --- */
+.app-search {
+  display: grid;
+  gap: 16px;
+}
+
+.app-search__field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.app-search__icon {
+  position: absolute;
+  left: 18px;
+  width: 22px;
+  height: 22px;
+  color: var(--e-text-muted);
+  pointer-events: none;
+}
+
+.app-search__field input {
+  width: 100%;
+  height: 60px;
+  padding: 0 18px 0 52px;
+  font-size: 1.12rem;
+  color: var(--e-text);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--e-line-strong);
+  border-radius: 14px;
+  outline: none;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.app-search__field input:focus {
+  border-color: var(--e-accent);
+  box-shadow: 0 0 0 4px rgba(77, 146, 255, 0.22);
+}
+
+.app-search__submit {
+  width: 100%;
+}
+
+.app-search__hint {
+  margin: 0;
+  font-size: 0.98rem;
+  color: var(--e-text-muted);
+}
+
+/* --- нижняя панель приложения --- */
+.app-bottom-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 110;
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .app-bottom-bar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    background: rgba(8, 13, 24, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--e-line-strong);
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+  }
+
+  /* контент не должен прятаться под панелью */
+  .page-shell {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+}
+
+.app-bottom-bar__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 58px;
+  padding: 4px 2px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--e-text-muted);
+  text-decoration: none;
+  background: none;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app-bottom-bar__item svg {
+  width: 23px;
+  height: 23px;
+}
+
+.app-bottom-bar__item.is-active {
+  color: var(--e-accent);
+}
+
+.app-bottom-bar__item:active {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.app-bottom-bar__item--call {
+  color: var(--e-rent);
+}
+
+/* --- липкий тулбар каталога --- */
+.listing-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  background: rgba(7, 11, 20, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--e-line);
+}
+
+.listing-toolbar__inner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 14px;
+  padding: 12px 0;
+}
+
+.listing-toolbar__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 280px;
+  max-width: 480px;
+}
+
+.listing-toolbar__search-icon {
+  position: absolute;
+  left: 15px;
+  width: 20px;
+  height: 20px;
+  color: var(--e-text-muted);
+  pointer-events: none;
+}
+
+.listing-toolbar__search input {
+  width: 100%;
+  height: 50px;
+  padding: 0 16px 0 46px;
+  font-size: 1.02rem;
+  color: var(--e-text);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--e-line-strong);
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.listing-toolbar__search input:focus {
+  border-color: var(--e-accent);
+  box-shadow: 0 0 0 4px rgba(77, 146, 255, 0.2);
+}
+
+.listing-toolbar__filters {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 50px;
+  padding: 0 20px;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--e-line-strong);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.16s ease, border-color 0.16s ease;
+}
+
+.listing-toolbar__filters:hover {
+  background: var(--e-accent-strong);
+  border-color: var(--e-accent);
+}
+
+.listing-toolbar__filters svg {
+  width: 20px;
+  height: 20px;
+}
+
+.listing-toolbar__badge {
+  display: grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 7px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #fff;
+  background: var(--e-accent-strong);
+  border-radius: 999px;
+}
+
+.listing-toolbar__chips {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 8px 0 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--e-text-soft);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--e-line-strong);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.filter-chip button {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  color: var(--e-text-muted);
+  background: rgba(255, 255, 255, 0.07);
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+
+.filter-chip button:hover {
+  color: #fff;
+  background: rgba(255, 82, 82, 0.5);
+}
+
+.filter-chip button svg {
+  width: 14px;
+  height: 14px;
+}
+
+.filter-chip--reset {
+  padding: 0 16px;
+  color: var(--e-text-muted);
+  background: transparent;
+  border-style: dashed;
+  cursor: pointer;
+}
+
+.filter-chip--reset:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.listing-toolbar__meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+  color: var(--e-text-soft);
+  font-size: 1rem;
+}
+
+.listing-toolbar__count strong {
+  color: #fff;
+}
+
+.listing-toolbar__per-page {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--e-text-muted);
+}
+
+.listing-toolbar__per-page select {
+  height: 42px;
+  padding: 0 10px;
+  font-size: 1rem;
+  color: var(--e-text);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--e-line-strong);
+  border-radius: 10px;
+  outline: none;
+}
+
+/* на мобильных поиск и фильтры живут в нижней панели */
+@media (max-width: 900px) {
+  .listing-toolbar__search,
+  .listing-toolbar__filters,
+  .listing-toolbar__per-page {
+    display: none;
+  }
+
+  .listing-toolbar__inner {
+    padding: 10px 0;
+  }
+
+  .listing-toolbar__meta {
+    margin-left: 0;
+  }
+}
+
+/* --- каркас экрана каталога --- */
+/* Легаси .page-shell белый; раньше тьму давали секции, которых на новом
+   экране каталога больше нет — фон задаёт сам экран. */
+.listing-app {
+  min-height: 60vh;
+  background: var(--e-bg);
+  color: var(--e-text);
+}
+
+.listing-app__content {
+  padding-top: 26px;
+  padding-bottom: 60px;
+}
+
+.listing-app__title {
+  margin: 0 0 22px;
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  color: var(--e-text);
+}
+
+.listing-app__empty {
+  padding: 70px 20px;
+  text-align: center;
+  color: var(--e-text-soft);
+}
+
+.listing-app__empty h2 {
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+@keyframes appFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes appSheetUp {
+  from {
+    transform: translateY(28px);
+    opacity: 0.4;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes appDrawerIn {
+  from {
+    transform: translateX(36px);
+    opacity: 0.4;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-sheet__backdrop,
+  .app-sheet__panel {
+    animation: none !important;
+  }
+}
+
+/* ---------------------------------------------------------------
+   7. Мобильная адаптация
    --------------------------------------------------------------- */
 
 @media (max-width: 1200px) {
@@ -864,39 +1411,32 @@ h4,
     padding-block: 48px 56px;
   }
 
-  /* На узком экране контент делает HERO очень высоким, и горизонт,
-     привязанный к низу блока, уходит далеко под сгиб. Поэтому на
-     мобильных линия горизонта задаётся в пикселях — город попадает
-     в первый экран, ниже фон снова уходит в темноту. */
+  /* На узком экране контент делает HERO высоким, и сцена, привязанная
+     к низу блока, уходит далеко под сгиб. Поэтому на мобильных линия
+     горизонта задаётся в пикселях: каркас попадает в первый экран. */
   #searchbox-hero-1 .hero__bg {
     background:
-      radial-gradient(150% 190px at 50% 760px, rgba(255, 176, 92, 0.18) 0%, transparent 70%),
-      radial-gradient(130% 300px at 50% 780px, rgba(56, 142, 236, 0.55) 0%, transparent 72%),
-      linear-gradient(
-        180deg,
-        #02050d 0px,
-        #061024 240px,
-        #0b2447 520px,
-        #14406e 700px,
-        #1b5288 780px,
-        #0a1a30 900px,
-        #060c18 100%
-      );
+      radial-gradient(140% 280px at 50% 720px, rgba(46, 152, 220, 0.42) 0%, transparent 68%),
+      radial-gradient(70% 220px at 18% 160px, rgba(58, 96, 220, 0.2) 0%, transparent 72%),
+      linear-gradient(180deg, #03060f 0px, #050b1a 320px, #061426 620px, #071c30 780px, #050c18 100%);
   }
 
+  /* сетка пола поднимается к линии горизонта первого экрана */
   #searchbox-hero-1 .hero__bg::before {
-    background-size: auto 150px;
-    background-position: center 630px;
+    bottom: auto;
+    top: 470px;
+    height: 320px;
+    transform: perspective(420px) rotateX(74deg);
   }
 
   #searchbox-hero-1 .hero__bg::after {
-    background-size: auto 210px;
-    background-position: center 570px;
+    background-size: auto 200px;
+    background-position: center 520px;
   }
 
   #searchbox-hero-1 .hero__overlay::before {
-    background-size: auto 260px;
-    background-position: center 520px;
+    background-size: auto 280px;
+    background-position: center 440px;
   }
 
   #searchbox-hero-1 .hero__overlay {
@@ -905,8 +1445,11 @@ h4,
 
   #searchbox-hero-1 .hero__overlay::after {
     background:
-      radial-gradient(140% 620px at 50% 300px, transparent 55%, rgba(3, 6, 12, 0.45) 100%),
-      linear-gradient(180deg, rgba(3, 6, 14, 0.35) 0px, transparent 200px, transparent 74%, rgba(6, 9, 17, 0.4) 92%, var(--e-bg) 100%);
+      linear-gradient(180deg, transparent 0%, rgba(120, 220, 255, 0.08) 44%, rgba(150, 235, 255, 0.14) 50%, rgba(120, 220, 255, 0.08) 56%, transparent 100%),
+      radial-gradient(140% 620px at 50% 300px, transparent 58%, rgba(2, 5, 11, 0.42) 100%),
+      linear-gradient(180deg, rgba(3, 6, 14, 0.34) 0px, transparent 200px, transparent 74%, rgba(6, 9, 17, 0.4) 92%, var(--e-bg) 100%);
+    background-size: 100% 40%, 100% 100%, 100% 100%;
+    background-repeat: no-repeat;
   }
 
   .filters-panel {
@@ -1020,10 +1563,11 @@ h4,
     transform: none;
   }
 
-  /* Планы панорамы остаются, движение выключается */
+  /* Сцена остаётся, движение и сканирующий луч выключаются */
   #searchbox-hero-1 .hero__bg::before,
   #searchbox-hero-1 .hero__bg::after,
-  #searchbox-hero-1 .hero__overlay::before {
+  #searchbox-hero-1 .hero__overlay::before,
+  #searchbox-hero-1 .hero__overlay::after {
     animation: none !important;
   }
 }
