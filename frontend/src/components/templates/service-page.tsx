@@ -45,15 +45,6 @@ import { getBreadcrumbs, getSiblings, type CatalogNode } from '@/data/catalog';
  * 9) перелинковка на смежные услуги; 10) CTA.
  */
 
-const anchors = [
-  { id: 'calculator', label: 'Калькулятор' },
-  { id: 'description', label: 'Характеристики' },
-  { id: 'examples', label: 'Примеры работ' },
-  { id: 'reviews', label: 'Отзывы' },
-  { id: 'faq', label: 'FAQ' },
-  { id: 'requirements', label: 'Макет' },
-];
-
 const steps = [
   { icon: FileCheck2, title: 'Рассчитайте цену', text: 'Выберите параметры в калькуляторе — цена и дата готовности обновляются сразу' },
   { icon: Download, title: 'Загрузите макет', text: 'PDF/AI/CDR с вылетами 3 мм — или закажите дизайн от 500 ₽' },
@@ -178,23 +169,6 @@ export function ServicePage({ node, seo }: { node: CatalogNode; seo?: SeoPage })
             </Button>
           </div>
           </Reveal>
-        </Container>
-      </div>
-
-      {/* Анкор-навигация (sticky) */}
-      <div className="border-y border-border bg-bg/90">
-        <Container>
-          <nav aria-label="Разделы страницы" className="flex gap-1 overflow-x-auto">
-            {anchors.map((a) => (
-              <a
-                key={a.id}
-                href={`#${a.id}`}
-                className="whitespace-nowrap px-3 py-3 text-sm font-medium text-muted hover:text-fg"
-              >
-                {a.label}
-              </a>
-            ))}
-          </nav>
         </Container>
       </div>
 
