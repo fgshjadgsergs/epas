@@ -89,6 +89,10 @@ export default function FiltersPanel({
 
     const slider = (sliderHost as SliderHost).noUiSlider;
 
+    // noUiSlider синхронно шлёт "update" в момент подписки — без гварда
+    // пустой драфт заполняется границами диапазона (0 и 500 000 000),
+    // и «Найти» добавляет фильтр, который пользователь не ставил.
+    syncingPriceSliderRef.current = true;
     slider?.on("update", (values) => {
       if (syncingPriceSliderRef.current) {
         return;
@@ -119,6 +123,7 @@ export default function FiltersPanel({
         priceRange: undefined,
       }));
     });
+    syncingPriceSliderRef.current = false;
 
     return () => {
       slider?.destroy();
@@ -144,6 +149,8 @@ export default function FiltersPanel({
 
     const slider = (sliderHost as SliderHost).noUiSlider;
 
+    // см. комментарий у ценового слайдера
+    syncingAreaSliderRef.current = true;
     slider?.on("update", (values) => {
       if (syncingAreaSliderRef.current) {
         return;
@@ -174,6 +181,7 @@ export default function FiltersPanel({
         areaRange: undefined,
       }));
     });
+    syncingAreaSliderRef.current = false;
 
     return () => {
       slider?.destroy();
@@ -278,6 +286,19 @@ export default function FiltersPanel({
     }
   }
 
+  function handleReset(): void {
+    setDraft({
+      searchByAddress: "",
+      dealType: "",
+      location: "",
+      priceFrom: "",
+      priceTo: "",
+      areaFrom: "",
+      areaTo: "",
+    });
+    setErrors({});
+  }
+
   return (
     <div className={`filters-panel ${variant === "sheet" ? "filters-panel--sheet" : "filters-panel--hero"}`}>
       <div className="filters-search">
@@ -299,45 +320,55 @@ export default function FiltersPanel({
         </button>
       </div>
 
-      <div className="filters-row filters-row--deal-types">
-        {Object.values(PUBLIC_DEAL_TYPES).map((item) => (
-          <button
-            key={item.key}
-            type="button"
-            className={`filter-btn ${draft.dealType === item.key ? "active" : ""}`}
-            onClick={() => {
-              handleDealTypeChange(item.key);
-            }}
-          >
-            {item.label}
-          </button>
-        ))}
+      <div className="fp-group">
+        <span className="fp-label">Тип сделки</span>
+
+        <div className="filters-row filters-row--deal-types">
+          {Object.values(PUBLIC_DEAL_TYPES).map((item) => (
+            <button
+              key={item.key}
+              type="button"
+              className={`filter-btn ${draft.dealType === item.key ? "active" : ""}`}
+              onClick={() => {
+                handleDealTypeChange(item.key);
+              }}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="filters-row filters-row--sliders">
         <div className="slider-block">
-          <span className="slider-label">Цена</span>
+          <span className="slider-label">Цена, ₽</span>
 
           <div className="slider-inputs">
-            <input
-              type="text"
-              inputMode="numeric"
-              value={formatNumberRu(draft.priceFrom)}
-              placeholder="0"
-              onChange={(event) => {
-                handleNumericDraftChange("priceFrom", event.target.value);
-              }}
-            />
+            <label className="range-field">
+              <span>от</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={formatNumberRu(draft.priceFrom)}
+                placeholder="0"
+                onChange={(event) => {
+                  handleNumericDraftChange("priceFrom", event.target.value);
+                }}
+              />
+            </label>
 
-            <input
-              type="text"
-              inputMode="numeric"
-              value={formatNumberRu(draft.priceTo)}
-              placeholder="500 000 000"
-              onChange={(event) => {
-                handleNumericDraftChange("priceTo", event.target.value);
-              }}
-            />
+            <label className="range-field">
+              <span>до</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={formatNumberRu(draft.priceTo)}
+                placeholder="любой"
+                onChange={(event) => {
+                  handleNumericDraftChange("priceTo", event.target.value);
+                }}
+              />
+            </label>
           </div>
 
           <div className="filters-slider" ref={priceRef} />
@@ -348,28 +379,34 @@ export default function FiltersPanel({
         </div>
 
         <div className="slider-block">
-          <span className="slider-label">Метраж</span>
+          <span className="slider-label">Площадь, м²</span>
 
           <div className="slider-inputs">
-            <input
-              type="text"
-              inputMode="numeric"
-              value={formatNumberRu(draft.areaFrom)}
-              placeholder="0"
-              onChange={(event) => {
-                handleNumericDraftChange("areaFrom", event.target.value);
-              }}
-            />
+            <label className="range-field">
+              <span>от</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={formatNumberRu(draft.areaFrom)}
+                placeholder="0"
+                onChange={(event) => {
+                  handleNumericDraftChange("areaFrom", event.target.value);
+                }}
+              />
+            </label>
 
-            <input
-              type="text"
-              inputMode="numeric"
-              value={formatNumberRu(draft.areaTo)}
-              placeholder="30 000"
-              onChange={(event) => {
-                handleNumericDraftChange("areaTo", event.target.value);
-              }}
-            />
+            <label className="range-field">
+              <span>до</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={formatNumberRu(draft.areaTo)}
+                placeholder="любой"
+                onChange={(event) => {
+                  handleNumericDraftChange("areaTo", event.target.value);
+                }}
+              />
+            </label>
           </div>
 
           <div className="filters-slider" ref={areaRef} />
@@ -381,24 +418,34 @@ export default function FiltersPanel({
       </div>
 
       <div className="filters-row filters-bottom">
-        <div className="region-buttons">
-          {Object.values(PUBLIC_LOCATIONS).map((item) => (
-            <button
-              key={item.key}
-              type="button"
-              className={`filter-btn ${draft.location === item.key ? "active" : ""}`}
-              onClick={() => {
-                handleLocationChange(item.key);
-              }}
-            >
-              {item.label}
-            </button>
-          ))}
+        <div className="fp-group">
+          <span className="fp-label">Расположение</span>
+
+          <div className="region-buttons">
+            {Object.values(PUBLIC_LOCATIONS).map((item) => (
+              <button
+                key={item.key}
+                type="button"
+                className={`filter-btn ${draft.location === item.key ? "active" : ""}`}
+                onClick={() => {
+                  handleLocationChange(item.key);
+                }}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <button type="button" className="search-btn" onClick={handleSearch}>
-          Найти
-        </button>
+        <div className="fp-actions">
+          <button type="button" className="fp-reset" onClick={handleReset}>
+            Сбросить
+          </button>
+
+          <button type="button" className="search-btn" onClick={handleSearch}>
+            Найти
+          </button>
+        </div>
       </div>
     </div>
   );
