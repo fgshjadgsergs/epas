@@ -8,12 +8,10 @@ import { site } from '@/lib/site';
 import { cn } from '@/lib/utils';
 import { Container } from '@/components/ui/container';
 
-const CLOSE_DELAY = 150;
-
 /**
  * Десктопный навбар + мегаменю (ТЗ навигации, п.4.1).
- * - Открытие: mouseenter / click / Enter / Space.
- * - Закрытие: mouseleave (с задержкой), клик вне, Escape.
+ * - Открытие: только клик / Enter / Space по пункту (наведение не открывает).
+ * - Закрытие: повторный клик, клик по ссылке панели, клик вне, Escape.
  * - Одновременно открыто не более одного.
  * - Все ссылки всегда в DOM; видимость — через CSS (требование SEO).
  *
@@ -22,25 +20,9 @@ const CLOSE_DELAY = 150;
  */
 export function DesktopNav({ nav = mainNav }: { nav?: NavItem[] }) {
   const [openId, setOpenId] = useState<string | null>(null);
-  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navRef = useRef<HTMLElement>(null);
 
-  const cancelClose = useCallback(() => {
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-  }, []);
-
-  const open = useCallback(
-    (id: string) => {
-      cancelClose();
-      setOpenId(id);
-    },
-    [cancelClose],
-  );
-
-  const scheduleClose = useCallback(() => {
-    cancelClose();
-    closeTimer.current = setTimeout(() => setOpenId(null), CLOSE_DELAY);
-  }, [cancelClose]);
+  const close = useCallback(() => setOpenId(null), []);
 
   // Клик вне хедера и Escape — закрывают мегаменю.
   useEffect(() => {
@@ -64,7 +46,6 @@ export function DesktopNav({ nav = mainNav }: { nav?: NavItem[] }) {
       ref={navRef}
       aria-label="Основная навигация"
       className="relative hidden border-t border-border bg-bg lg:block"
-      onMouseLeave={scheduleClose}
     >
       <Container>
         <ul className="flex items-stretch gap-1">
@@ -73,7 +54,6 @@ export function DesktopNav({ nav = mainNav }: { nav?: NavItem[] }) {
               key={item.id}
               item={item}
               isOpen={openId === item.id}
-              onOpen={() => open(item.id)}
               onToggle={() => setOpenId((cur) => (cur === item.id ? null : item.id))}
             />
           ))}
@@ -83,13 +63,7 @@ export function DesktopNav({ nav = mainNav }: { nav?: NavItem[] }) {
       {/* Панели мегаменю — все в DOM, активная показывается через CSS. */}
       {nav.map((item) =>
         item.mega ? (
-          <MegaPanel
-            key={item.id}
-            item={item}
-            isOpen={openId === item.id}
-            onMouseEnter={cancelClose}
-            onMouseLeave={scheduleClose}
-          />
+          <MegaPanel key={item.id} item={item} isOpen={openId === item.id} onNavigate={close} />
         ) : null,
       )}
     </nav>
@@ -99,19 +73,17 @@ export function DesktopNav({ nav = mainNav }: { nav?: NavItem[] }) {
 function NavBarItem({
   item,
   isOpen,
-  onOpen,
   onToggle,
 }: {
   item: NavItem;
   isOpen: boolean;
-  onOpen: () => void;
   onToggle: () => void;
 }) {
   const featured = item.featured;
 
   if (!item.mega) {
     return (
-      <li onMouseEnter={onOpen}>
+      <li>
         <Link
           href={item.href}
           className={cn(
@@ -127,7 +99,7 @@ function NavBarItem({
 
   // aria-expanded — только на кнопке-триггере: роль listitem его не поддерживает.
   return (
-    <li onMouseEnter={onOpen} className="flex">
+    <li className="flex">
       <button
         type="button"
         aria-haspopup="true"
@@ -150,13 +122,12 @@ function NavBarItem({
 function MegaPanel({
   item,
   isOpen,
-  onMouseEnter,
-  onMouseLeave,
+  onNavigate,
 }: {
   item: NavItem;
   isOpen: boolean;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
+  /** Закрыть панель при переходе по ссылке (хедер не размонтируется при навигации). */
+  onNavigate: () => void;
 }) {
   const mega = item.mega!;
   return (
@@ -165,8 +136,6 @@ function MegaPanel({
       role="region"
       aria-label={item.label}
       aria-hidden={!isOpen}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
       className={cn(
         'absolute left-0 right-0 top-full z-40 border-b border-border bg-bg-2 shadow-pop transition-[opacity,transform] duration-150',
         isOpen ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-1 opacity-0',
@@ -184,6 +153,7 @@ function MegaPanel({
                     <Link
                       href={link.href}
                       tabIndex={isOpen ? undefined : -1}
+                      onClick={onNavigate}
                       className={cn(
                         'text-sm text-muted transition-colors hover:text-primary',
                         link.label.startsWith('→') && 'font-medium text-primary/90',
@@ -204,6 +174,7 @@ function MegaPanel({
             <Link
               href={mega.promo.ctaHref}
               tabIndex={isOpen ? undefined : -1}
+              onClick={onNavigate}
               className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
             >
               {mega.promo.ctaLabel}

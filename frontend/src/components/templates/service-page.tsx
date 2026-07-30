@@ -207,10 +207,13 @@ export function ServicePage({ node, seo }: { node: CatalogNode; seo?: SeoPage })
       <Section className="bg-bg-2">
         <SectionHeading title="Как заказать" />
         <div className="relative">
-          {/* Линия маршрута между шагами (desktop, scroll-driven). */}
+          {/* Линия маршрута между шагами (desktop, scroll-driven).
+              Геометрия привязана к иконкам: top-8 — центр иконки (pt-2 + h-12/2),
+              left-10 — центр первой (px-4 + 24), right — центр последней
+              (треть сетки с gap-6 минус те же 40px). */}
           <div
             aria-hidden
-            className="step-line absolute left-[8%] right-[8%] top-6 hidden h-px bg-gradient-to-r from-primary via-accent to-primary md:block"
+            className="step-line absolute left-10 right-[calc(33.333%-56px)] top-8 hidden h-px bg-gradient-to-r from-primary via-accent to-primary md:block"
           />
           <Reveal as="ol" stagger className="grid gap-8 md:grid-cols-3 md:gap-6">
             {steps.map((s, i) => (
@@ -218,8 +221,8 @@ export function ServicePage({ node, seo }: { node: CatalogNode; seo?: SeoPage })
                 <div className="relative z-10 grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-primary to-accent text-primary-fg shadow-[0_12px_28px_-12px_rgb(var(--primary)/0.7)] transition-transform duration-300 group-hover:-rotate-3 group-hover:scale-110">
                   <s.icon size={22} />
                 </div>
-                <h3 className="mt-5 font-semibold">{s.title}</h3>
-                <p className="mt-1 max-w-xs text-sm text-muted">{s.text}</p>
+                <h3 className="mt-5 text-lg font-semibold">{s.title}</h3>
+                <p className="mt-2 max-w-xs text-sm text-muted">{s.text}</p>
               </li>
             ))}
           </Reveal>

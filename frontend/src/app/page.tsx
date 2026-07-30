@@ -290,10 +290,13 @@ export default function HomePage() {
       <Section className="bg-bg-2">
         <SectionHeading title="Как это работает" />
         <div className="relative">
-          {/* Линия маршрута между шагами (desktop, scroll-driven). */}
+          {/* Линия маршрута между шагами (desktop, scroll-driven).
+              Геометрия привязана к иконкам: top-8 — центр иконки (pt-2 + h-12/2),
+              left-10 — центр первой (px-4 + 24), right — центр последней
+              (треть сетки с gap-6 минус те же 40px). */}
           <div
             aria-hidden
-            className="step-line absolute left-[8%] right-[8%] top-6 hidden h-px bg-gradient-to-r from-primary via-accent to-primary md:block"
+            className="step-line absolute left-10 right-[calc(33.333%-56px)] top-8 hidden h-px bg-gradient-to-r from-primary via-accent to-primary md:block"
           />
           <Reveal as="ol" stagger className="grid gap-8 md:grid-cols-3 md:gap-6">
             {howItWorks.map((step, i) => {
