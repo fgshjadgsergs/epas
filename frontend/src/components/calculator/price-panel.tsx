@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { BadgePercent, Clock3, TrendingDown } from 'lucide-react';
+import { BadgePercent, Check, Clock3, Share2, TrendingDown, Upload, Wand2 } from 'lucide-react';
 import { cn, formatPrice } from '@/lib/utils';
 import { DEMO_PRICING_NOTICE, showDemoPricingNotice, type PricingMode } from '@/lib/demo-pricing';
 import type { CalcResult } from '@/lib/calc/pricing';
@@ -129,19 +129,20 @@ export function PricePanel({
         aria-disabled={checkoutDisabled}
         className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary font-semibold text-primary-fg hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-primary"
       >
-        Загрузить макет и заказать
+        <Upload size={17} /> Загрузить макет и заказать
       </button>
       <button
         onClick={share}
         className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-border text-sm font-medium hover:bg-surface-2"
       >
+        {copied ? <Check size={15} className="text-success" /> : <Share2 size={15} />}
         {copied ? 'Ссылка скопирована' : 'Поделиться расчётом'}
       </button>
       <a
         href="#"
         className="mt-3 flex items-center justify-center gap-1.5 text-sm text-primary hover:underline"
       >
-        Нет макета? Заказать дизайн
+        <Wand2 size={14} /> Нет макета? Заказать дизайн
       </a>
       <p className="mt-3 text-center text-xs text-subtle">
         Цена актуальна 15 минут. Не является публичной офертой.

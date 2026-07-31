@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { Upload, ArrowRight, Wand2 } from 'lucide-react';
 import { cn, formatPrice } from '@/lib/utils';
 
 /**
@@ -130,8 +131,8 @@ export function CalculatorStub({ basePrice = 1200 }: { basePrice?: number }) {
         </div>
       </div>
 
-      {/* Правая часть — итог (статичная колонка) */}
-      <div>
+      {/* Правая часть — итог (sticky на десктопе) */}
+      <div className="lg:sticky lg:top-24 lg:self-start">
         <div className="rounded-2xl border border-border bg-surface p-6">
           {/* B2B-переключатель */}
           <div className="mb-4 grid grid-cols-2 gap-1 rounded-xl border border-border p-1 text-sm">
@@ -171,16 +172,16 @@ export function CalculatorStub({ basePrice = 1200 }: { basePrice?: number }) {
           </dl>
 
           <button className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary font-semibold text-primary-fg hover:bg-primary-hover">
-            Перейти к оформлению
+            Перейти к оформлению <ArrowRight size={18} />
           </button>
           <button className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-border font-medium hover:bg-surface-2">
-            Загрузить макет
+            <Upload size={16} /> Загрузить макет
           </button>
           <a
             href="#"
             className="mt-3 flex items-center justify-center gap-1.5 text-sm text-primary hover:underline"
           >
-            Нет макета? Заказать дизайн
+            <Wand2 size={14} /> Нет макета? Заказать дизайн
           </a>
           <p className="mt-3 text-center text-xs text-subtle">
             Цена актуальна 15 минут. Не является публичной офертой.
@@ -195,7 +196,7 @@ export function CalculatorStub({ basePrice = 1200 }: { basePrice?: number }) {
           <p className="text-xl font-extrabold">{formatPrice(price)}</p>
         </div>
         <button className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-primary font-semibold text-primary-fg">
-          Оформить
+          Оформить <ArrowRight size={16} />
         </button>
       </div>
     </div>

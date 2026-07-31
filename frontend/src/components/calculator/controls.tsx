@@ -4,7 +4,7 @@ import { useId, useMemo, useRef, useState } from 'react';
 import { Minus, Plus, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { parseCounts, serializeCounts } from '@/lib/calc/pricing';
-import type { ParamGroup, ParamOption, QtyTier, SwatchMeta } from '@/lib/calc/types';
+import type { ParamGroup, ParamOption, QtyTier } from '@/lib/calc/types';
 
 /* ---------- Сегментированный переключатель ---------- */
 export function Segmented({
@@ -48,27 +48,9 @@ export function Segmented({
   );
 }
 
-/* ---------- Визуальные свотчи (бумага / ламинация / фольга) ---------- */
-function sheenStyle(meta?: SwatchMeta): React.CSSProperties {
-  if (!meta) return {};
-  if (meta.kind === 'foil') return { backgroundImage: meta.color };
-  const base = meta.color ?? '#eee';
-  switch (meta.sheen) {
-    case 'gloss':
-      return {
-        background: `linear-gradient(125deg, rgba(255,255,255,.85) 0%, rgba(255,255,255,0) 42%), ${base}`,
-      };
-    case 'matte':
-      return { background: `linear-gradient(180deg, rgba(255,255,255,.12), rgba(0,0,0,.06)), ${base}` };
-    case 'soft':
-      return {
-        background: `radial-gradient(60% 60% at 35% 30%, rgba(255,255,255,.4), rgba(0,0,0,.04)), ${base}`,
-      };
-    default:
-      return { background: base };
-  }
-}
-
+/* ---------- Материалы (бумага / ламинация / фольга) ----------
+ * Текстовые кнопки без картинок-свотчей — в один ряд с остальными
+ * параметрами (метаданные swatch остаются в конфиге для превью изделия). */
 export function Swatches({
   group,
   value,
@@ -81,7 +63,7 @@ export function Swatches({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-2.5">
+    <div className="flex flex-wrap gap-2">
       {group.options?.map((o: ParamOption) => {
         const disabled = disabledIds.includes(o.id);
         const active = value === o.id;
@@ -94,22 +76,15 @@ export function Swatches({
             title={disabled ? 'Недоступно для выбранных параметров' : o.label}
             onClick={() => onChange(o.id)}
             className={cn(
-              'group/sw flex w-[88px] flex-col items-center gap-1.5 rounded-xl border p-2 transition-all',
-              active ? 'border-primary ring-1 ring-primary' : 'border-border hover:border-primary/50',
-              disabled && 'cursor-not-allowed opacity-35',
+              'h-10 rounded-xl border px-3.5 text-sm font-medium transition-colors',
+              active
+                ? 'border-primary bg-primary/10 text-primary'
+                : 'border-border text-fg hover:border-primary/50',
+              disabled && 'cursor-not-allowed opacity-35 line-through hover:border-border',
             )}
           >
-            <span
-              aria-hidden
-              className="h-10 w-full rounded-lg border border-black/10 shadow-inner"
-              style={sheenStyle(o.swatch)}
-            />
-            <span className="text-center text-[11px] leading-tight text-fg">{o.label}</span>
-            {o.badge && (
-              <span className="rounded-full bg-accent/15 px-1.5 text-[10px] font-medium text-accent">
-                {o.badge}
-              </span>
-            )}
+            {o.label}
+            {o.badge && !active && <span className="ml-1.5 text-[11px] text-accent">{o.badge}</span>}
           </button>
         );
       })}
