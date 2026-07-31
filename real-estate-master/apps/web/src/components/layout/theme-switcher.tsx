@@ -8,8 +8,10 @@ const STORAGE_KEY = "epas-theme";
 const THEMES = [
   { id: "night", label: "Ночь", swatch: "#0b1a36" },
   { id: "graphite", label: "Графит", swatch: "#232323" },
+  { id: "malachite", label: "Малахит", swatch: "#0d3020" },
   { id: "light", label: "Светлая", swatch: "#f2f5fa" },
   { id: "sand", label: "Песочная", swatch: "#efe6d6" },
+  { id: "jade", label: "Жадеит", swatch: "#dcebe1" },
 ] as const;
 
 type ThemeId = (typeof THEMES)[number]["id"];

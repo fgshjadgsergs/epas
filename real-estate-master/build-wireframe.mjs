@@ -151,6 +151,74 @@ layers.push(
   },
 );
 
+// Малахит: зелёный каркас с золотыми узлами — премиальная тема сайта.
+layers.push(
+  {
+    name: "wire-far-malachite.svg",
+    seed: 9151,
+    widthRange: [70, 130],
+    heightRange: [150, 340],
+    stroke: "#3aa583",
+    strokeOpacity: 0.42,
+    faceFill: "rgba(18, 60, 45, 0.16)",
+    topFill: "rgba(50, 140, 110, 0.16)",
+    lineWidth: 1.1,
+    floorStep: 30,
+    gap: 26,
+    node: "#7fe0c0",
+    nodeRadius: 2.4,
+  },
+  {
+    name: "wire-near-malachite.svg",
+    seed: 33827,
+    widthRange: [150, 280],
+    heightRange: [280, 600],
+    stroke: "#4cc39c",
+    strokeOpacity: 0.7,
+    faceFill: "rgba(7, 26, 19, 0.55)",
+    topFill: "rgba(30, 110, 85, 0.3)",
+    lineWidth: 1.5,
+    floorStep: 34,
+    gap: 60,
+    node: "#ffd98a",
+    nodeRadius: 3.4,
+  },
+);
+
+// Жадеит: светлая зелёная тема — приглушённые зелёные контуры.
+layers.push(
+  {
+    name: "wire-far-jade.svg",
+    seed: 9151,
+    widthRange: [70, 130],
+    heightRange: [150, 340],
+    stroke: "#6f9484",
+    strokeOpacity: 0.5,
+    faceFill: "rgba(255, 255, 255, 0.45)",
+    topFill: "rgba(111, 148, 132, 0.14)",
+    lineWidth: 1.1,
+    floorStep: 30,
+    gap: 26,
+    node: "#1e7a58",
+    nodeRadius: 2.4,
+  },
+  {
+    name: "wire-near-jade.svg",
+    seed: 33827,
+    widthRange: [150, 280],
+    heightRange: [280, 600],
+    stroke: "#3f6d59",
+    strokeOpacity: 0.62,
+    faceFill: "rgba(250, 255, 252, 0.9)",
+    topFill: "rgba(63, 109, 89, 0.12)",
+    lineWidth: 1.5,
+    floorStep: 34,
+    gap: 60,
+    node: "#1e7a58",
+    nodeRadius: 3.4,
+  },
+);
+
 for (const layer of layers) {
   const svg = makeLayer(layer);
   await writeFile(join(OUT, layer.name), svg, "utf8");

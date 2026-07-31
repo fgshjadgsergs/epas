@@ -2357,24 +2357,22 @@ h4,
   --e-toolbar: rgba(251, 248, 241, 0.92);
   --e-media: #e7e0d2;
   --e-strong: #241f16;
-}
-
-/* --- светлые темы: переопределяем легаси-тьму шапки/футера/фона --- */
+}/* --- светлые темы: переопределяем легаси-тьму шапки/футера/фона --- */
 [data-theme="light"] body,
 [data-theme="sand"] body,
 [data-theme="light"] .page-shell,
-[data-theme="sand"] .page-shell {
+[data-theme="sand"] .page-shell,
+/* --- светлые темы: переопределяем легаси-тьму шапки/футера/фона --- */
+[data-theme="jade"] body,
+[data-theme="jade"] .page-shell {
   background: var(--e-bg) !important;
   color: var(--e-text) !important;
-}
-
-[data-theme="light"] .header,
-[data-theme="sand"] .header {
+}[data-theme="light"] .header,
+[data-theme="sand"] .header,
+[data-theme="jade"] .header {
   background: var(--e-surface) !important;
   border-bottom: 1px solid var(--e-line) !important;
-}
-
-[data-theme="light"] .header__logo,
+}[data-theme="light"] .header__logo,
 [data-theme="sand"] .header__logo,
 [data-theme="light"] .header__logo-mark,
 [data-theme="sand"] .header__logo-mark,
@@ -2383,53 +2381,55 @@ h4,
 [data-theme="light"] .header__link,
 [data-theme="sand"] .header__link,
 [data-theme="light"] .header__phone,
-[data-theme="sand"] .header__phone {
+[data-theme="sand"] .header__phone,
+[data-theme="jade"] .header__logo,
+[data-theme="jade"] .header__logo-mark,
+[data-theme="jade"] .header__logo-text,
+[data-theme="jade"] .header__link,
+[data-theme="jade"] .header__phone {
   color: var(--e-text) !important;
-}
-
-[data-theme="light"] .header__link:hover,
-[data-theme="sand"] .header__link:hover {
+}[data-theme="light"] .header__link:hover,
+[data-theme="sand"] .header__link:hover,
+[data-theme="jade"] .header__link:hover {
   color: var(--e-accent) !important;
-}
-
-[data-theme="light"] .header .btn--ghost,
-[data-theme="sand"] .header .btn--ghost {
+}[data-theme="light"] .header .btn--ghost,
+[data-theme="sand"] .header .btn--ghost,
+[data-theme="jade"] .header .btn--ghost {
   color: var(--e-text) !important;
   border-color: var(--e-line-strong) !important;
   background: transparent !important;
-}
-
-[data-theme="light"] footer,
+}[data-theme="light"] footer,
 [data-theme="sand"] footer,
 [data-theme="light"] footer.bg-light,
-[data-theme="sand"] footer.bg-light {
+[data-theme="sand"] footer.bg-light,
+[data-theme="jade"] footer,
+[data-theme="jade"] footer.bg-light {
   background: var(--e-surface) !important;
   color: var(--e-text-soft) !important;
   border-top: 1px solid var(--e-line) !important;
-}
-
-[data-theme="light"] footer p,
+}[data-theme="light"] footer p,
 [data-theme="sand"] footer p,
 [data-theme="light"] footer span,
 [data-theme="sand"] footer span,
 [data-theme="light"] footer small,
-[data-theme="sand"] footer small {
+[data-theme="sand"] footer small,
+[data-theme="jade"] footer p,
+[data-theme="jade"] footer span,
+[data-theme="jade"] footer small {
   color: var(--e-text-muted) !important;
-}
-
-[data-theme="light"] footer a,
-[data-theme="sand"] footer a {
+}[data-theme="light"] footer a,
+[data-theme="sand"] footer a,
+[data-theme="jade"] footer a {
   color: var(--e-text) !important;
-}
-
-/* Тени в светлых темах мягче */
+}/* Тени в светлых темах мягче */
 [data-theme="light"] .property-card,
-[data-theme="sand"] .property-card {
+[data-theme="sand"] .property-card,
+/* Тени в светлых темах мягче */
+[data-theme="jade"] .property-card {
   box-shadow: 0 10px 26px rgba(23, 38, 66, 0.1);
-}
-
-[data-theme="light"] .detail-cta,
-[data-theme="sand"] .detail-cta {
+}[data-theme="light"] .detail-cta,
+[data-theme="sand"] .detail-cta,
+[data-theme="jade"] .detail-cta {
   box-shadow: 0 14px 34px rgba(23, 38, 66, 0.14);
 }
 
@@ -2898,15 +2898,16 @@ h4,
     grid-template-columns: minmax(0, 1fr);
     gap: 24px;
   }
-}
-
-/* ---------------------------------------------------------------
+}/* ---------------------------------------------------------------
    11. Светлые темы: светлая сцена HERO и светлая панель фильтров
    --------------------------------------------------------------- */
 
-/* Небо: светлое сверху, плотнее к горизонту */
+/* Небо: светлое сверху,
+плотнее к горизонту */
 [data-theme="light"] #searchbox-hero-1 .hero__bg,
-[data-theme="sand"] #searchbox-hero-1 .hero__bg {
+[data-theme="sand"] #searchbox-hero-1 .hero__bg,
+плотнее к горизонту */
+[data-theme="jade"] #searchbox-hero-1 .hero__bg {
   background:
     radial-gradient(90% 55% at 50% 104%, rgba(47, 111, 224, 0.16) 0%, transparent 66%),
     linear-gradient(180deg, #f8fafd 0%, #e9f0f9 44%, #d7e3f2 78%, #c9d9ec 100%);
@@ -2916,11 +2917,11 @@ h4,
   background:
     radial-gradient(90% 55% at 50% 104%, rgba(176, 123, 46, 0.14) 0%, transparent 66%),
     linear-gradient(180deg, #faf7f1 0%, #f1ebdf 46%, #e5dcc9 80%, #dbd0b9 100%);
-}
-
-/* Сетка пола: тёмно-синие линии на светлом */
+}/* Сетка пола: тёмно-синие линии на светлом */
 [data-theme="light"] #searchbox-hero-1 .hero__bg::before,
-[data-theme="sand"] #searchbox-hero-1 .hero__bg::before {
+[data-theme="sand"] #searchbox-hero-1 .hero__bg::before,
+/* Сетка пола: тёмно-синие линии на светлом */
+[data-theme="jade"] #searchbox-hero-1 .hero__bg::before {
   background-image:
     repeating-linear-gradient(90deg, rgba(47, 86, 150, 0.2) 0 1px, transparent 1px 96px),
     repeating-linear-gradient(0deg, rgba(47, 86, 150, 0.16) 0 1px, transparent 1px 72px);
@@ -2930,34 +2931,34 @@ h4,
   background-image:
     repeating-linear-gradient(90deg, rgba(122, 92, 42, 0.2) 0 1px, transparent 1px 96px),
     repeating-linear-gradient(0deg, rgba(122, 92, 42, 0.16) 0 1px, transparent 1px 72px);
-}
-
-/* Каркас города: светлые варианты слоёв.
-   Меняем только background-image — геометрия (размер, позиция)
+}/* Каркас города: светлые варианты слоёв.
+   Меняем только background-image — геометрия (размер,
+позиция)
    наследуется из базовых и мобильных правил. */
 [data-theme="light"] #searchbox-hero-1 .hero__bg::after,
-[data-theme="sand"] #searchbox-hero-1 .hero__bg::after {
+[data-theme="sand"] #searchbox-hero-1 .hero__bg::after,
+позиция)
+   наследуется из базовых и мобильных правил. */
+[data-theme="jade"] #searchbox-hero-1 .hero__bg::after {
   background-image: url("/static/img/hero/wire-far-light.svg");
   opacity: 0.7;
-}
-
-[data-theme="light"] #searchbox-hero-1 .hero__overlay::before,
-[data-theme="sand"] #searchbox-hero-1 .hero__overlay::before {
+}[data-theme="light"] #searchbox-hero-1 .hero__overlay::before,
+[data-theme="sand"] #searchbox-hero-1 .hero__overlay::before,
+[data-theme="jade"] #searchbox-hero-1 .hero__overlay::before {
   background-image: url("/static/img/hero/wire-near-light.svg");
-}
-
-/* Дымка и виньетка — светлые */
+}/* Дымка и виньетка — светлые */
 [data-theme="light"] #searchbox-hero-1 .hero__overlay,
-[data-theme="sand"] #searchbox-hero-1 .hero__overlay {
+[data-theme="sand"] #searchbox-hero-1 .hero__overlay,
+/* Дымка и виньетка — светлые */
+[data-theme="jade"] #searchbox-hero-1 .hero__overlay {
   background: linear-gradient(180deg, transparent 50%, rgba(178, 197, 222, 0.24) 82%, rgba(160, 182, 210, 0.3) 100%);
 }
 
 [data-theme="sand"] #searchbox-hero-1 .hero__overlay {
   background: linear-gradient(180deg, transparent 50%, rgba(214, 200, 168, 0.26) 82%, rgba(202, 186, 150, 0.3) 100%);
-}
-
-[data-theme="light"] #searchbox-hero-1 .hero__overlay::after,
-[data-theme="sand"] #searchbox-hero-1 .hero__overlay::after {
+}[data-theme="light"] #searchbox-hero-1 .hero__overlay::after,
+[data-theme="sand"] #searchbox-hero-1 .hero__overlay::after,
+[data-theme="jade"] #searchbox-hero-1 .hero__overlay::after {
   background:
     linear-gradient(
       180deg,
@@ -2971,40 +2972,37 @@ h4,
     linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, transparent 22%, transparent 76%, var(--e-bg) 100%);
   background-size: 100% 46%, 100% 100%, 100% 100%;
   background-repeat: no-repeat;
-}
-
-/* Тексты HERO в светлых темах — тёмные */
+}/* Тексты HERO в светлых темах — тёмные */
 [data-theme="light"] #searchbox-hero-1 h1,
-[data-theme="sand"] #searchbox-hero-1 h1 {
+[data-theme="sand"] #searchbox-hero-1 h1,
+/* Тексты HERO в светлых темах — тёмные */
+[data-theme="jade"] #searchbox-hero-1 h1 {
   color: var(--e-text);
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
-}
-
-[data-theme="light"] .hero-subtitle,
-[data-theme="sand"] .hero-subtitle {
+}[data-theme="light"] .hero-subtitle,
+[data-theme="sand"] .hero-subtitle,
+[data-theme="jade"] .hero-subtitle {
   color: var(--e-text-soft);
   text-shadow: none;
-}
-
-[data-theme="light"] .hero-trust b,
-[data-theme="sand"] .hero-trust b {
+}[data-theme="light"] .hero-trust b,
+[data-theme="sand"] .hero-trust b,
+[data-theme="jade"] .hero-trust b {
   color: var(--e-text);
-}
-
-[data-theme="light"] .hero-trust li,
-[data-theme="sand"] .hero-trust li {
+}[data-theme="light"] .hero-trust li,
+[data-theme="sand"] .hero-trust li,
+[data-theme="jade"] .hero-trust li {
   color: var(--e-text-soft);
-}
-
-[data-theme="light"] .hero-trust span,
-[data-theme="sand"] .hero-trust span {
+}[data-theme="light"] .hero-trust span,
+[data-theme="sand"] .hero-trust span,
+[data-theme="jade"] .hero-trust span {
   color: var(--e-text-muted);
-}
-
-/* Панель фильтров — визитная карточка: красится в основной цвет темы.
-   Внутри — светлые поля на цветном фоне, как в ночной версии. */
+}/* Панель фильтров — визитная карточка: красится в основной цвет темы.
+   Внутри — светлые поля на цветном фоне,
+как в ночной версии. */
 [data-theme="light"] .filters-panel--hero,
-[data-theme="sand"] .filters-panel--hero {
+[data-theme="sand"] .filters-panel--hero,
+как в ночной версии. */
+[data-theme="jade"] .filters-panel--hero {
   --e-field: rgba(255, 255, 255, 0.14);
   --e-field-hover: rgba(255, 255, 255, 0.22);
   --e-tile: rgba(255, 255, 255, 0.1);
@@ -3044,25 +3042,25 @@ h4,
     background:
       radial-gradient(140% 280px at 50% 720px, rgba(176, 123, 46, 0.14) 0%, transparent 68%),
       linear-gradient(180deg, #faf7f1 0px, #f3edE1 320px, #e9e0cd 620px, #ded3bd 780px, var(--e-bg) 100%);
-  }
-
-  [data-theme="light"] #searchbox-hero-1 .hero__overlay,
-  [data-theme="sand"] #searchbox-hero-1 .hero__overlay {
+  }[data-theme="light"] #searchbox-hero-1 .hero__overlay,
+[data-theme="sand"] #searchbox-hero-1 .hero__overlay,
+[data-theme="jade"] #searchbox-hero-1 .hero__overlay {
     background: none;
-  }
-
-  [data-theme="light"] #searchbox-hero-1 .hero__overlay::after,
-  [data-theme="sand"] #searchbox-hero-1 .hero__overlay::after {
+  }[data-theme="light"] #searchbox-hero-1 .hero__overlay::after,
+[data-theme="sand"] #searchbox-hero-1 .hero__overlay::after,
+[data-theme="jade"] #searchbox-hero-1 .hero__overlay::after {
     background:
       radial-gradient(140% 620px at 50% 300px, transparent 60%, rgba(90, 115, 150, 0.12) 100%),
       linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0px, transparent 200px, transparent 74%, var(--e-bg) 100%);
   }
-}
-
-/* Легаси красит панель и её элементы напрямую (globals.css: .filters-panel
-   градиент, .filter-btn, .filters-search) — в светлых темах глушим. */
+}/* Легаси красит панель и её элементы напрямую (globals.css: .filters-panel
+   градиент,
+.filter-btn,
+.filters-search) — в светлых темах глушим. */
 [data-theme="light"] .filters-panel--hero,
-[data-theme="sand"] .filters-panel--hero {
+[data-theme="sand"] .filters-panel--hero,
+.filters-search) — в светлых темах глушим. */
+[data-theme="jade"] .filters-panel--hero {
   background: linear-gradient(160deg, #2f6fe0 0%, #1c4fae 100%) !important;
   border: 1px solid rgba(255, 255, 255, 0.24) !important;
   box-shadow: 0 26px 60px rgba(31, 86, 184, 0.35) !important;
@@ -3077,45 +3075,39 @@ h4,
 [data-theme="graphite"] .filters-panel--hero {
   background: rgba(23, 24, 29, 0.88) !important;
   border-color: rgba(255, 255, 255, 0.14) !important;
-}
-
-[data-theme="light"] .filters-panel--hero .filters-search,
-[data-theme="sand"] .filters-panel--hero .filters-search {
+}[data-theme="light"] .filters-panel--hero .filters-search,
+[data-theme="sand"] .filters-panel--hero .filters-search,
+[data-theme="jade"] .filters-panel--hero .filters-search {
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
-}
-
-[data-theme="light"] .filters-panel--hero .filters-search input,
-[data-theme="sand"] .filters-panel--hero .filters-search input {
+}[data-theme="light"] .filters-panel--hero .filters-search input,
+[data-theme="sand"] .filters-panel--hero .filters-search input,
+[data-theme="jade"] .filters-panel--hero .filters-search input {
   color: var(--e-text) !important;
   background: var(--e-field) !important;
   border: 1px solid var(--e-line-strong) !important;
   box-shadow: none !important;
-}
-
-[data-theme="light"] .filters-panel--hero .filters-search input::placeholder,
-[data-theme="sand"] .filters-panel--hero .filters-search input::placeholder {
+}[data-theme="light"] .filters-panel--hero .filters-search input::placeholder,
+[data-theme="sand"] .filters-panel--hero .filters-search input::placeholder,
+[data-theme="jade"] .filters-panel--hero .filters-search input::placeholder {
   color: var(--e-text-muted) !important;
-}
-
-[data-theme="light"] .filters-panel--hero .filters-search button,
-[data-theme="sand"] .filters-panel--hero .filters-search button {
+}[data-theme="light"] .filters-panel--hero .filters-search button,
+[data-theme="sand"] .filters-panel--hero .filters-search button,
+[data-theme="jade"] .filters-panel--hero .filters-search button {
   color: var(--e-text-soft) !important;
   background: transparent !important;
-}
-
-[data-theme="light"] .filters-panel--hero .filter-btn,
-[data-theme="sand"] .filters-panel--hero .filter-btn {
+}[data-theme="light"] .filters-panel--hero .filter-btn,
+[data-theme="sand"] .filters-panel--hero .filter-btn,
+[data-theme="jade"] .filters-panel--hero .filter-btn {
   color: var(--e-text-soft) !important;
   background: var(--e-field) !important;
   border: 1px solid var(--e-line-strong) !important;
   box-shadow: none !important;
   text-shadow: none !important;
-}
-
-[data-theme="light"] .filters-panel--hero .filter-btn:hover,
-[data-theme="sand"] .filters-panel--hero .filter-btn:hover {
+}[data-theme="light"] .filters-panel--hero .filter-btn:hover,
+[data-theme="sand"] .filters-panel--hero .filter-btn:hover,
+[data-theme="jade"] .filters-panel--hero .filter-btn:hover {
   color: var(--e-text) !important;
   background: var(--e-field-hover) !important;
 }
@@ -3144,28 +3136,219 @@ h4,
   color: #8a5c18 !important;
   background: #ffffff !important;
   box-shadow: 0 10px 26px rgba(60, 40, 8, 0.28) !important;
+}/* заливка слайдера — белая на цветном фоне */
+[data-theme="light"] .filters-panel--hero .filters-slider.noUi-horizontal .noUi-connect,
+[data-theme="sand"] .filters-panel--hero .filters-slider.noUi-horizontal .noUi-connect,
+/* заливка слайдера — белая на цветном фоне */
+[data-theme="jade"] .filters-panel--hero .filters-slider.noUi-horizontal .noUi-connect {
+  background: rgba(255, 255, 255, 0.92) !important;
+}[data-theme="light"] .filters-panel--hero .slider-block,
+[data-theme="sand"] .filters-panel--hero .slider-block,
+[data-theme="jade"] .filters-panel--hero .slider-block {
+  background: var(--e-tile) !important;
+  border: 1px solid var(--e-line) !important;
+}[data-theme="light"] .filters-panel--hero .slider-label,
+[data-theme="sand"] .filters-panel--hero .slider-label,
+[data-theme="jade"] .filters-panel--hero .slider-label {
+  color: var(--e-text-soft) !important;
+}/* Заголовок HERO: bootstrap-класс text-white держит цвет с !important */
+[data-theme="light"] #searchbox-hero-1 h1.text-white,
+[data-theme="sand"] #searchbox-hero-1 h1.text-white,
+/* Заголовок HERO: bootstrap-класс text-white держит цвет с !important */
+[data-theme="jade"] #searchbox-hero-1 h1.text-white {
+  color: var(--e-text) !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55) !important;
 }
 
-/* заливка слайдера — белая на цветном фоне */
-[data-theme="light"] .filters-panel--hero .filters-slider.noUi-horizontal .noUi-connect,
-[data-theme="sand"] .filters-panel--hero .filters-slider.noUi-horizontal .noUi-connect {
+/* ---------------------------------------------------------------
+   12. Зелёные премиальные темы: «Малахит» (тёмная) и «Жадеит» (светлая)
+   --------------------------------------------------------------- */
+
+/* Малахит: глубокий зелёный + латунь */
+[data-theme="malachite"] {
+  --e-bg: #081310;
+  --e-surface: #0f1f19;
+  --e-surface-hover: #142921;
+  --e-line: rgba(190, 225, 205, 0.11);
+  --e-line-strong: rgba(190, 225, 205, 0.2);
+  --e-text: #f0f6f1;
+  --e-text-soft: #c2d4c8;
+  --e-text-muted: #8ba396;
+  --e-accent: #d4b06a;
+  --e-accent-strong: #a9853c;
+  --e-field: rgba(190, 225, 205, 0.06);
+  --e-field-hover: rgba(190, 225, 205, 0.11);
+  --e-tile: rgba(190, 225, 205, 0.045);
+  --e-track: rgba(190, 225, 205, 0.16);
+  --e-sheet: #0e1e17;
+  --e-bar: rgba(8, 19, 15, 0.94);
+  --e-toolbar: rgba(8, 19, 15, 0.88);
+  --e-media: #0b1912;
+  --e-strong: #ffffff;
+}
+
+/* Жадеит: светлая — тёплый белый и глубокий зелёный */
+[data-theme="jade"] {
+  --e-bg: #edf2ee;
+  --e-surface: #ffffff;
+  --e-surface-hover: #f2f7f3;
+  --e-line: rgba(24, 60, 44, 0.13);
+  --e-line-strong: rgba(24, 60, 44, 0.22);
+  --e-text: #16281f;
+  --e-text-soft: #3c5548;
+  --e-text-muted: #64796d;
+  --e-accent: #1e7a58;
+  --e-accent-strong: #135c41;
+  --e-field: rgba(24, 60, 44, 0.05);
+  --e-field-hover: rgba(24, 60, 44, 0.1);
+  --e-tile: rgba(24, 60, 44, 0.04);
+  --e-track: rgba(24, 60, 44, 0.16);
+  --e-sheet: #ffffff;
+  --e-bar: rgba(255, 255, 255, 0.96);
+  --e-toolbar: rgba(255, 255, 255, 0.92);
+  --e-media: #dfe9e2;
+  --e-strong: #10231a;
+}
+
+/* --- Малахит: тёмная сцена HERO в зелёном с золотыми огнями --- */
+[data-theme="malachite"] #searchbox-hero-1 .hero__bg {
+  background:
+    radial-gradient(90% 60% at 50% 104%, rgba(63, 191, 154, 0.3) 0%, transparent 64%),
+    radial-gradient(60% 44% at 16% 8%, rgba(212, 176, 106, 0.1) 0%, transparent 70%),
+    linear-gradient(180deg, #04100b 0%, #071811 46%, #0a2418 78%, #0d3020 100%);
+}
+
+[data-theme="malachite"] #searchbox-hero-1 .hero__bg::before {
+  background-image:
+    repeating-linear-gradient(90deg, rgba(90, 210, 165, 0.45) 0 1px, transparent 1px 96px),
+    repeating-linear-gradient(0deg, rgba(90, 210, 165, 0.38) 0 1px, transparent 1px 72px);
+}
+
+[data-theme="malachite"] #searchbox-hero-1 .hero__bg::after {
+  background-image: url("/static/img/hero/wire-far-malachite.svg");
+}
+
+[data-theme="malachite"] #searchbox-hero-1 .hero__overlay::before {
+  background-image: url("/static/img/hero/wire-near-malachite.svg");
+}
+
+[data-theme="malachite"] #searchbox-hero-1 .hero__overlay {
+  background: linear-gradient(180deg, transparent 48%, rgba(12, 46, 34, 0.28) 80%, rgba(8, 28, 21, 0.38) 100%);
+}
+
+[data-theme="malachite"] #searchbox-hero-1 .hero__overlay::after {
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(212, 176, 106, 0.05) 44%,
+      rgba(212, 176, 106, 0.1) 50%,
+      rgba(212, 176, 106, 0.05) 56%,
+      transparent 100%
+    ),
+    radial-gradient(130% 92% at 50% 30%, transparent 54%, rgba(2, 10, 7, 0.55) 100%),
+    linear-gradient(180deg, rgba(3, 12, 9, 0.42) 0%, transparent 24%, transparent 74%, rgba(4, 12, 9, 0.44) 92%, var(--e-bg) 100%);
+  background-size: 100% 46%, 100% 100%, 100% 100%;
+  background-repeat: no-repeat;
+}
+
+/* Малахит: панель — глубокий зелёный, «Найти» — латунь с тёмным текстом */
+[data-theme="malachite"] .filters-panel--hero {
+  background: rgba(10, 26, 19, 0.84);
+  border-color: rgba(212, 176, 106, 0.22);
+}
+
+[data-theme="malachite"] .search-btn,
+[data-theme="malachite"] .home-more-btn,
+[data-theme="malachite"] .detail-cta__request {
+  color: #201607 !important;
+  text-shadow: none;
+}
+
+[data-theme="malachite"] .cta-banner {
+  background: linear-gradient(135deg, #123527 0%, #0d5c41 100%);
+}
+
+[data-theme="malachite"] .cta-banner__call {
+  color: #123527;
+}
+
+/* --- Жадеит: светлая сцена в зелёном --- */
+[data-theme="jade"] #searchbox-hero-1 .hero__bg {
+  background:
+    radial-gradient(90% 55% at 50% 104%, rgba(30, 122, 88, 0.16) 0%, transparent 66%),
+    linear-gradient(180deg, #f7fbf8 0%, #e8f2ea 44%, #d5e6da 78%, #c6dccd 100%);
+}
+
+[data-theme="jade"] #searchbox-hero-1 .hero__bg::before {
+  background-image:
+    repeating-linear-gradient(90deg, rgba(36, 92, 68, 0.2) 0 1px, transparent 1px 96px),
+    repeating-linear-gradient(0deg, rgba(36, 92, 68, 0.16) 0 1px, transparent 1px 72px);
+}
+
+[data-theme="jade"] #searchbox-hero-1 .hero__bg::after {
+  background-image: url("/static/img/hero/wire-far-jade.svg");
+  opacity: 0.7;
+}
+
+[data-theme="jade"] #searchbox-hero-1 .hero__overlay::before {
+  background-image: url("/static/img/hero/wire-near-jade.svg");
+}
+
+[data-theme="jade"] #searchbox-hero-1 .hero__overlay {
+  background: linear-gradient(180deg, transparent 50%, rgba(176, 210, 190, 0.24) 82%, rgba(156, 194, 172, 0.3) 100%);
+}
+
+[data-theme="jade"] #searchbox-hero-1 .hero__overlay::after {
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(30, 122, 88, 0.05) 44%,
+      rgba(30, 122, 88, 0.09) 50%,
+      rgba(30, 122, 88, 0.05) 56%,
+      transparent 100%
+    ),
+    radial-gradient(130% 92% at 50% 30%, transparent 60%, rgba(70, 110, 90, 0.14) 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, transparent 22%, transparent 76%, var(--e-bg) 100%);
+  background-size: 100% 46%, 100% 100%, 100% 100%;
+  background-repeat: no-repeat;
+}
+
+/* Жадеит: панель — глубокий зелёный градиент, инверсия как в светлых */
+[data-theme="jade"] .filters-panel--hero {
+  background: linear-gradient(160deg, #1e7a58 0%, #124a35 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  box-shadow: 0 26px 60px rgba(19, 92, 65, 0.35) !important;
+}
+
+[data-theme="jade"] .filters-panel--hero .filter-btn.active {
+  color: #124a35 !important;
+  background: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+[data-theme="jade"] .filters-panel--hero .search-btn {
+  color: #124a35 !important;
+  background: #ffffff !important;
+  box-shadow: 0 10px 26px rgba(8, 40, 28, 0.28) !important;
+}
+
+[data-theme="jade"] .filters-panel--hero .filters-slider.noUi-horizontal .noUi-connect {
   background: rgba(255, 255, 255, 0.92) !important;
 }
 
-[data-theme="light"] .filters-panel--hero .slider-block,
-[data-theme="sand"] .filters-panel--hero .slider-block {
-  background: var(--e-tile) !important;
-  border: 1px solid var(--e-line) !important;
-}
+/* --- мобильный якорь горизонта для обеих зелёных тем --- */
+@media (max-width: 900px) {
+  [data-theme="malachite"] #searchbox-hero-1 .hero__bg {
+    background:
+      radial-gradient(140% 280px at 50% 720px, rgba(63, 191, 154, 0.3) 0%, transparent 68%),
+      linear-gradient(180deg, #04100b 0px, #06150e 320px, #0a2015 620px, #0d2c1d 780px, var(--e-bg) 100%);
+  }
 
-[data-theme="light"] .filters-panel--hero .slider-label,
-[data-theme="sand"] .filters-panel--hero .slider-label {
-  color: var(--e-text-soft) !important;
-}
-
-/* Заголовок HERO: bootstrap-класс text-white держит цвет с !important */
-[data-theme="light"] #searchbox-hero-1 h1.text-white,
-[data-theme="sand"] #searchbox-hero-1 h1.text-white {
-  color: var(--e-text) !important;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+  [data-theme="jade"] #searchbox-hero-1 .hero__bg {
+    background:
+      radial-gradient(140% 280px at 50% 720px, rgba(30, 122, 88, 0.16) 0%, transparent 68%),
+      linear-gradient(180deg, #f7fbf8 0px, #eaf3ec 320px, #dcebe1 620px, #cfe3d5 780px, var(--e-bg) 100%);
+  }
 }
