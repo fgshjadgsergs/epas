@@ -2906,7 +2906,6 @@ h4,
 плотнее к горизонту */
 [data-theme="light"] #searchbox-hero-1 .hero__bg,
 [data-theme="sand"] #searchbox-hero-1 .hero__bg,
-плотнее к горизонту */
 [data-theme="jade"] #searchbox-hero-1 .hero__bg {
   background:
     radial-gradient(90% 55% at 50% 104%, rgba(47, 111, 224, 0.16) 0%, transparent 66%),
@@ -2937,8 +2936,6 @@ h4,
    наследуется из базовых и мобильных правил. */
 [data-theme="light"] #searchbox-hero-1 .hero__bg::after,
 [data-theme="sand"] #searchbox-hero-1 .hero__bg::after,
-позиция)
-   наследуется из базовых и мобильных правил. */
 [data-theme="jade"] #searchbox-hero-1 .hero__bg::after {
   background-image: url("/static/img/hero/wire-far-light.svg");
   opacity: 0.7;
@@ -3001,7 +2998,6 @@ h4,
 как в ночной версии. */
 [data-theme="light"] .filters-panel--hero,
 [data-theme="sand"] .filters-panel--hero,
-как в ночной версии. */
 [data-theme="jade"] .filters-panel--hero {
   --e-field: rgba(255, 255, 255, 0.14);
   --e-field-hover: rgba(255, 255, 255, 0.22);
@@ -3059,7 +3055,6 @@ h4,
 .filters-search) — в светлых темах глушим. */
 [data-theme="light"] .filters-panel--hero,
 [data-theme="sand"] .filters-panel--hero,
-.filters-search) — в светлых темах глушим. */
 [data-theme="jade"] .filters-panel--hero {
   background: linear-gradient(160deg, #2f6fe0 0%, #1c4fae 100%) !important;
   border: 1px solid rgba(255, 255, 255, 0.24) !important;
