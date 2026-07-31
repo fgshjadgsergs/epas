@@ -55,8 +55,23 @@
   min-height: 100vh;
 }
 
+.crm-shell__content,
+.crm-shell__main,
+.crm-stack,
+.crm-stack > *,
+.crm-panel,
+.crm-page-header {
+  min-width: 0;
+}
+
 .crm-shell__main {
   padding: 22px 26px 46px;
+}
+
+/* широкий контент (таблицы) прокручивается внутри своей рамки,
+   а не растягивает страницу */
+.crm-table-wrap {
+  max-width: 100%;
 }
 
 /* тонкие тёмные скроллбары */
@@ -823,8 +838,15 @@
     gap: 10px;
   }
 
-  .crm-page-header .crm-button {
-    width: 100%;
+  .crm-page-header__action {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .crm-page-header__action .crm-button {
+    flex: 1 1 45%;
+    width: auto;
   }
 
   /* тач-цели */
