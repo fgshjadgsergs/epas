@@ -24,6 +24,7 @@ import type { Metadata } from 'next';
 import { Section, SectionHeading } from '@/components/ui/section';
 import { Container } from '@/components/ui/container';
 import { Button } from '@/components/ui/button';
+import { MobileCarousel } from '@/components/ui/mobile-carousel';
 import { SearchForm } from '@/components/navigation/search-form';
 import { Faq } from '@/components/faq';
 import { MiniCalc } from '@/components/home/mini-calc';
@@ -196,92 +197,88 @@ export default function HomePage() {
       {/* Блок 2 — Быстрый доступ к услугам. */}
       <Section>
         <SectionHeading title="Популярные услуги" link={{ label: 'Все услуги', href: '/poligrafiya/' }} />
-        {/* Мобила: компактный вертикальный список (иконка слева, текст справа).
+        {/* Мобила: карусель с автопрокруткой (до первого взаимодействия) — узкие
+            высокие карточки, следующая выглядывает из-за края.
             С планшета: bento-сетка — первая карточка витринная (2×2). */}
-        <Reveal
-          as="div"
-          stagger
-          className="flex flex-col gap-3 sm:grid sm:grid-cols-2 sm:gap-4 lg:grid-cols-4"
-        >
-          {quickServices.map((s, i) => {
-            const meta = quickCardMeta[i] ?? quickCardMeta[0];
-            const featured = i === 0;
-            return (
-              <Link
-                key={s.href}
-                href={s.href}
-                className={`lift spotlight card-glow group relative flex items-center gap-4 overflow-hidden rounded-2xl border border-border bg-surface p-4 hover:border-primary sm:flex-col sm:items-stretch sm:gap-0 sm:rounded-3xl ${
-                  featured ? 'sm:col-span-2 sm:p-6 lg:row-span-2 lg:p-8' : 'sm:p-6'
-                }`}
-              >
-                {/* Световое пятно в углу — оживает при наведении. */}
-                <div
-                  aria-hidden
-                  className={`pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full ${meta.glow} opacity-60 blur-3xl transition-all duration-500 group-hover:scale-125 group-hover:opacity-100`}
-                />
-                {/* Крупная иконка-«водяной знак» — дизайнерский фон карточки (desktop). */}
-                <meta.icon
-                  aria-hidden
-                  size={featured ? 200 : 120}
-                  strokeWidth={0.75}
-                  className={`pointer-events-none absolute -bottom-8 -right-8 hidden -rotate-12 sm:block ${meta.tint} opacity-[0.07] transition-all duration-500 group-hover:-rotate-6 group-hover:scale-105 group-hover:opacity-[0.12]`}
-                />
-
-                <div className="relative flex items-start justify-between gap-3 max-sm:contents">
+        <Reveal>
+          <MobileCarousel className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-4 px-4 pb-2 no-scrollbar sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
+            {quickServices.map((s, i) => {
+              const meta = quickCardMeta[i] ?? quickCardMeta[0];
+              const featured = i === 0;
+              return (
+                <Link
+                  key={s.href}
+                  href={s.href}
+                  className={`lift spotlight card-glow group relative flex flex-col overflow-hidden rounded-3xl border border-border bg-surface p-5 hover:border-primary max-sm:w-[68%] max-sm:shrink-0 max-sm:snap-start sm:p-6 ${
+                    featured ? 'sm:col-span-2 lg:row-span-2 lg:p-8' : ''
+                  }`}
+                >
+                  {/* Световое пятно в углу — оживает при наведении. */}
                   <div
-                    className={`grid shrink-0 place-items-center rounded-xl ${featured ? 'h-12 w-12 sm:h-14 sm:w-14 sm:rounded-2xl' : 'h-12 w-12'} ${meta.chip} ${meta.tint} transition-transform duration-300 group-hover:-rotate-3 group-hover:scale-110`}
-                  >
-                    <meta.icon size={featured ? 24 : 21} />
-                  </div>
-                  {featured && (
-                    <span className="hidden items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-accent px-3 py-1 text-xs font-semibold text-white sm:inline-flex">
-                      <Sparkles size={12} /> Хит
-                    </span>
-                  )}
-                </div>
+                    aria-hidden
+                    className={`pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full ${meta.glow} opacity-60 blur-3xl transition-all duration-500 group-hover:scale-125 group-hover:opacity-100`}
+                  />
+                  {/* Крупная иконка-«водяной знак» — дизайнерский фон карточки. */}
+                  <meta.icon
+                    aria-hidden
+                    size={featured ? 200 : 120}
+                    strokeWidth={0.75}
+                    className={`pointer-events-none absolute -bottom-8 -right-8 -rotate-12 ${meta.tint} opacity-[0.07] transition-all duration-500 group-hover:-rotate-6 group-hover:scale-105 group-hover:opacity-[0.12]`}
+                  />
 
-                <div className={`relative min-w-0 flex-1 ${featured ? 'sm:mt-auto sm:flex-none sm:pt-14 lg:pt-24' : 'sm:mt-8 sm:flex-none'}`}>
-                  {featured && (
-                    <div className="mb-4 hidden flex-wrap gap-2 sm:flex">
-                      {['Паспорт РФ', 'Загранпаспорт', 'Шенгенская виза', 'СНИЛС'].map((c) => (
-                        <span
-                          key={c}
-                          className="rounded-full border border-border bg-surface-2/80 px-3 py-1 text-xs text-muted"
-                        >
-                          {c}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                  <h3 className={`font-bold group-hover:text-primary ${featured ? 'text-base sm:text-2xl' : 'text-base sm:text-lg'}`}>
-                    {s.title}
-                  </h3>
-                  <p className={`mt-0.5 truncate text-xs text-muted sm:mt-1 sm:whitespace-normal sm:text-sm ${featured ? 'sm:max-w-md sm:text-base' : ''}`}>
-                    {s.desc}
-                  </p>
-                  <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-2 sm:mt-4 sm:gap-x-4">
-                    <span
-                      className={`font-extrabold tracking-tight ${featured ? 'text-lg sm:text-3xl' : 'text-lg sm:text-xl'}`}
+                  <div className="relative flex items-start justify-between gap-3">
+                    <div
+                      className={`grid shrink-0 place-items-center rounded-xl ${featured ? 'h-12 w-12 sm:h-14 sm:w-14 sm:rounded-2xl' : 'h-12 w-12'} ${meta.chip} ${meta.tint} transition-transform duration-300 group-hover:-rotate-3 group-hover:scale-110`}
                     >
-                      {s.price}
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-2 px-2.5 py-1 text-xs font-medium text-muted">
-                      <Clock size={12} className={meta.tint} /> {s.term}
+                      <meta.icon size={featured ? 24 : 21} />
+                    </div>
+                    {featured && (
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-accent px-3 py-1 text-xs font-semibold text-white">
+                        <Sparkles size={12} /> Хит
+                      </span>
+                    )}
+                  </div>
+
+                  <div className={`relative mt-6 min-w-0 flex-1 ${featured ? 'sm:mt-auto sm:flex-none sm:pt-14 lg:pt-24' : 'sm:mt-8 sm:flex-none'}`}>
+                    {featured && (
+                      <div className="mb-4 hidden flex-wrap gap-2 sm:flex">
+                        {['Паспорт РФ', 'Загранпаспорт', 'Шенгенская виза', 'СНИЛС'].map((c) => (
+                          <span
+                            key={c}
+                            className="rounded-full border border-border bg-surface-2/80 px-3 py-1 text-xs text-muted"
+                          >
+                            {c}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <h3 className={`font-bold group-hover:text-primary ${featured ? 'text-lg sm:text-2xl' : 'text-base sm:text-lg'}`}>
+                      {s.title}
+                    </h3>
+                    <p className={`mt-1 line-clamp-2 text-xs text-muted sm:text-sm ${featured ? 'sm:max-w-md sm:text-base' : ''}`}>
+                      {s.desc}
+                    </p>
+                    <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 sm:mt-4 sm:gap-x-4">
+                      <span
+                        className={`font-extrabold tracking-tight ${featured ? 'text-xl sm:text-3xl' : 'text-lg sm:text-xl'}`}
+                      >
+                        {s.price}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-2 px-2.5 py-1 text-xs font-medium text-muted">
+                        <Clock size={12} className={meta.tint} /> {s.term}
+                      </span>
+                    </div>
+                    <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary sm:mt-5">
+                      Рассчитать
+                      <span className="grid h-7 w-7 place-items-center rounded-full bg-primary/10 transition-all duration-300 group-hover:bg-primary group-hover:text-primary-fg">
+                        <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
+                      </span>
                     </span>
                   </div>
-                  <span className="mt-5 hidden items-center gap-2 text-sm font-semibold text-primary sm:inline-flex">
-                    Рассчитать
-                    <span className="grid h-7 w-7 place-items-center rounded-full bg-primary/10 transition-all duration-300 group-hover:bg-primary group-hover:text-primary-fg">
-                      <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
-                    </span>
-                  </span>
-                </div>
-
-                {/* Мобильная стрелка-шеврон справа. */}
-                <ArrowRight size={18} className="shrink-0 text-subtle sm:hidden" aria-hidden />
-              </Link>
-            );
-          })}
+                </Link>
+              );
+            })}
+          </MobileCarousel>
         </Reveal>
       </Section>
 
@@ -298,16 +295,23 @@ export default function HomePage() {
             aria-hidden
             className="step-line absolute left-10 right-[calc(33.333%-56px)] top-8 hidden h-px bg-gradient-to-r from-primary via-accent to-primary md:block"
           />
-          <Reveal as="ol" stagger className="grid gap-8 md:grid-cols-3 md:gap-6">
+          {/* Мобила: компактный вертикальный таймлайн — линия сквозь иконки. */}
+          <div
+            aria-hidden
+            className="absolute bottom-6 left-6 top-6 w-px bg-gradient-to-b from-primary via-accent to-primary md:hidden"
+          />
+          <Reveal as="ol" stagger className="grid gap-6 md:grid-cols-3">
             {howItWorks.map((step, i) => {
               const StepIcon = howItWorksIcons[i];
               return (
-                <li key={i} className="group relative pt-2 md:px-4">
-                  <div className="relative z-10 grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-primary to-accent text-primary-fg shadow-[0_12px_28px_-12px_rgb(var(--primary)/0.7)] transition-transform duration-300 group-hover:-rotate-3 group-hover:scale-110">
+                <li key={i} className="group relative flex items-start gap-4 md:block md:px-4 md:pt-2">
+                  <div className="relative z-10 grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-primary to-accent text-primary-fg shadow-[0_12px_28px_-12px_rgb(var(--primary)/0.7)] transition-transform duration-300 group-hover:-rotate-3 group-hover:scale-110">
                     <StepIcon size={22} />
                   </div>
-                  <h3 className="mt-5 text-lg font-semibold">{step.title}</h3>
-                  <p className="mt-2 max-w-xs text-sm text-muted">{step.text}</p>
+                  <div className="min-w-0 pt-1 md:pt-0">
+                    <h3 className="text-lg font-semibold md:mt-5">{step.title}</h3>
+                    <p className="mt-1 max-w-xs text-sm text-muted md:mt-2">{step.text}</p>
+                  </div>
                 </li>
               );
             })}
@@ -319,9 +323,11 @@ export default function HomePage() {
           + полоса статистики со счётчиками. */}
       <Section>
         <SectionHeading title="Почему выбирают нас" />
-        <Reveal as="div" stagger className="grid gap-10 md:grid-cols-3 md:gap-8">
+        {/* Мобила: карусель с автопрокруткой до первого взаимодействия. */}
+        <Reveal>
+          <MobileCarousel className="-mx-4 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-px-4 px-4 pb-2 no-scrollbar md:mx-0 md:grid md:snap-none md:grid-cols-3 md:gap-8 md:overflow-visible md:px-0 md:pb-0">
           {whyUs.map((w, i) => (
-            <div key={w.title} className="group relative">
+            <div key={w.title} className="group relative max-md:w-[78%] max-md:shrink-0 max-md:snap-start">
               <span
                 aria-hidden
                 className="block bg-gradient-to-br from-primary to-accent bg-clip-text text-6xl font-extrabold leading-none tracking-tighter text-transparent opacity-80 transition-opacity duration-300 group-hover:opacity-100 sm:text-7xl"
@@ -343,6 +349,7 @@ export default function HomePage() {
               </ul>
             </div>
           ))}
+          </MobileCarousel>
         </Reveal>
 
         {/* Полоса статистики (макет): счётчики оживают при появлении. */}
@@ -428,11 +435,13 @@ export default function HomePage() {
             </span>
           </span>
         </div>
-        <Reveal as="div" stagger className="grid gap-4 md:grid-cols-3">
+        {/* Мобила: карусель с автопрокруткой до первого взаимодействия. */}
+        <Reveal>
+          <MobileCarousel className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-2 no-scrollbar md:mx-0 md:grid md:snap-none md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0">
           {reviews.map((r) => (
             <figure
               key={r.name}
-              className="lift card-glow relative overflow-hidden rounded-2xl border border-border bg-surface p-5"
+              className="lift card-glow relative overflow-hidden rounded-2xl border border-border bg-surface p-5 max-md:w-[82%] max-md:shrink-0 max-md:snap-start"
             >
               {/* Декоративная кавычка. */}
               <Quote
@@ -461,13 +470,16 @@ export default function HomePage() {
               <blockquote className="relative mt-2 text-sm leading-relaxed text-muted">{r.text}</blockquote>
             </figure>
           ))}
+          </MobileCarousel>
         </Reveal>
       </Section>
 
       {/* Блок 9 — Блог: обложки с дуотоном и тематическим водяным знаком. */}
       <Section className="bg-bg-2">
         <SectionHeading title="Полезные статьи" link={{ label: 'Все статьи', href: '/blog/' }} />
-        <Reveal as="div" stagger className="grid gap-4 md:grid-cols-3">
+        {/* Мобила: карусель БЕЗ автопрокрутки. */}
+        <Reveal>
+          <MobileCarousel auto={false} className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-2 no-scrollbar md:mx-0 md:grid md:snap-none md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0">
           {blogPosts.map((post, i) => {
             const CoverIcon = blogCoverIcons[i] ?? FileText;
             const accent = i % 2 === 1;
@@ -475,7 +487,7 @@ export default function HomePage() {
               <Link
                 key={post.href}
                 href={post.href}
-                className="lift spotlight card-glow group overflow-hidden rounded-2xl border border-border bg-surface hover:border-primary"
+                className="lift spotlight card-glow group overflow-hidden rounded-2xl border border-border bg-surface hover:border-primary max-md:w-[78%] max-md:shrink-0 max-md:snap-start"
               >
                 <div
                   className={`relative aspect-[16/9] overflow-hidden bg-gradient-to-br ${
@@ -509,6 +521,7 @@ export default function HomePage() {
               </Link>
             );
           })}
+          </MobileCarousel>
         </Reveal>
       </Section>
 

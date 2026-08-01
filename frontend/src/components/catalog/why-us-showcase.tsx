@@ -7,7 +7,8 @@ import { FileCheck2, Layers, Palette, Truck, Zap } from 'lucide-react';
  * «Почему заказывают … у нас» — интерактивная витрина.
  * Слева большая панель активного преимущества (номер, иконка, текст),
  * справа список из 5 пунктов с прогресс-баром автопереключения.
- * Наведение/клик выбирает пункт и ставит автоплей на паузу.
+ * Автопереключение идёт до ПЕРВОГО взаимодействия (наведение, клик/тап,
+ * фокус) — после него останавливается навсегда, выбор только ручной.
  * На мобиле — вертикальный список-аккордеон без панели.
  */
 const ITEMS = [
@@ -42,21 +43,26 @@ const INTERVAL = 3400;
 
 export function WhyUsShowcase() {
   const [active, setActive] = useState(0);
-  const [paused, setPaused] = useState(false);
+  // Любое взаимодействие (наведение, клик/тап, фокус) — стоп навсегда.
+  const [stopped, setStopped] = useState(false);
+  const stop = () => setStopped(true);
 
   useEffect(() => {
-    if (paused) return;
+    if (stopped) return;
+    if (typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
     const id = setInterval(() => setActive((a) => (a + 1) % ITEMS.length), INTERVAL);
     return () => clearInterval(id);
-  }, [paused]);
+  }, [stopped]);
 
   const item = ITEMS[active];
 
   return (
     <div
       className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr] lg:gap-6"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      onMouseEnter={stop}
+      onPointerDown={stop}
     >
       {/* Панель активного пункта (desktop). */}
       <div className="relative hidden overflow-hidden rounded-3xl border border-border bg-surface p-8 lg:block">
@@ -94,8 +100,14 @@ export function WhyUsShowcase() {
               type="button"
               role="tab"
               aria-selected={isActive}
-              onClick={() => setActive(i)}
-              onFocus={() => setActive(i)}
+              onClick={() => {
+                stop();
+                setActive(i);
+              }}
+              onFocus={() => {
+                stop();
+                setActive(i);
+              }}
               className={`group relative overflow-hidden rounded-2xl border px-5 py-4 text-left transition-all duration-300 ${
                 isActive
                   ? 'border-primary/60 bg-primary/5'
@@ -123,8 +135,8 @@ export function WhyUsShowcase() {
               </div>
               {/* Текст пункта — на мобиле (панели нет) раскрывается под активным. */}
               {isActive && <p className="mt-2 pl-[4.75rem] text-sm text-muted lg:hidden">{w.text}</p>}
-              {/* Прогресс автопереключения. */}
-              {isActive && !paused && (
+              {/* Прогресс автопереключения (после остановки не показывается). */}
+              {isActive && !stopped && (
                 <span
                   key={`p-${active}`}
                   aria-hidden
