@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -74,71 +75,29 @@ export default function HomePage() {
       <LocalBusinessJsonLd />
       <FaqJsonLd items={homeFaq} />
 
-      {/* Блок 1 — Hero. */}
+      {/* Блок 1 — Hero: фирменное фото (флэтлей типографии) фоном.
+          Файл public/hero.jpg — сейчас временная подложка в тон фото,
+          подменяется настоящим снимком без правок кода. */}
       <section className="relative overflow-hidden border-b border-border">
-        <div
-          aria-hidden
-          className="glow-pulse pointer-events-none absolute inset-0 bg-[radial-gradient(60%_60%_at_70%_-10%,rgb(var(--primary)/0.18),transparent),radial-gradient(40%_40%_at_10%_10%,rgb(var(--accent)/0.12),transparent)]"
-        />
-        <div
-          aria-hidden
-          className="parallax-slow aurora-b pointer-events-none absolute -right-16 top-8 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgb(var(--accent)/0.18),transparent_70%)] blur-2xl"
-        />
-        <div
-          aria-hidden
-          className="aurora-a pointer-events-none absolute -left-10 bottom-0 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgb(var(--primary)/0.16),transparent_70%)] blur-2xl"
-        />
-        {/* Сцена с глубиной: растр → перспективный «пол» → дальний размытый план →
-            ближний чёткий план → виньетка. Всё CSS, без картинок. */}
-        <div aria-hidden className="halftone pointer-events-none absolute inset-0" />
-        <div aria-hidden className="hero-grid pointer-events-none absolute inset-x-[-10%] bottom-[-14%] h-[70%]" />
-        {/* Дальний план: маленькие, размытые, тусклые — как не в фокусе. */}
-        <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 hidden w-[42%] lg:block">
-          <div className="float-c absolute right-[64%] top-[12%] h-16 w-28 scale-90 rounded-lg border border-border/60 bg-surface/50 p-2 opacity-50 blur-[2px]">
-            <div className="h-1.5 w-10 rounded-full bg-primary/40" />
-            <div className="mt-1.5 h-1 w-16 rounded-full bg-border" />
-            <div className="mt-1 h-1 w-12 rounded-full bg-border" />
-          </div>
-          <div className="float-b absolute right-[6%] top-[8%] h-24 w-20 scale-90 rounded-lg border border-border/60 bg-surface/50 p-2 opacity-40 blur-[3px]">
-            <div className="h-12 rounded-md bg-gradient-to-br from-primary/20 to-accent/15" />
-            <div className="mt-1.5 h-1 w-10 rounded-full bg-border" />
-          </div>
-          <div className="float-a absolute right-[70%] top-[72%] h-20 w-16 scale-90 rounded-lg border border-border/60 bg-surface/50 opacity-40 blur-[3px]" />
+        <div aria-hidden className="absolute inset-0">
+          <Image
+            src="/hero.jpg"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[72%_center]"
+          />
+          {/* Тонировка в цвет активной темы (токен --bg): плотная только под
+              текстом слева, правая половина фото остаётся открытой. */}
+          <div className="absolute inset-0 bg-gradient-to-r from-bg via-bg/70 via-50% to-transparent" />
+          {/* Нижняя кромка растворяется в фоне страницы. */}
+          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-bg to-transparent" />
         </div>
-        {/* Ближний план: чёткие макеты с глубокой тенью, парят с парой скоростей. */}
-        <div aria-hidden className="parallax-slow pointer-events-none absolute inset-y-0 right-0 hidden w-[40%] lg:block">
-          {/* Визитка */}
-          <div className="float-a absolute right-[46%] top-[16%] h-24 w-40 rounded-xl border border-border bg-surface/90 p-3 shadow-[0_32px_64px_-24px_rgb(0_0_0/0.7)]">
-            <div className="h-2 w-16 rounded-full bg-gradient-to-r from-primary to-accent" />
-            <div className="mt-2 h-1.5 w-24 rounded-full bg-border" />
-            <div className="mt-1.5 h-1.5 w-20 rounded-full bg-border" />
-            <div className="mt-3 flex items-center gap-1.5">
-              <div className="h-4 w-4 rounded-full bg-primary/30" />
-              <div className="h-1.5 w-12 rounded-full bg-border" />
-            </div>
-          </div>
-          {/* Фото на документы */}
-          <div className="float-b absolute right-[12%] top-[38%] h-32 w-[104px] rounded-lg border border-border bg-surface/90 p-2 shadow-[0_32px_64px_-24px_rgb(0_0_0/0.7)]">
-            <div className="grid h-[72px] place-items-center rounded-md bg-gradient-to-br from-primary/25 to-accent/20">
-              <div className="h-8 w-8 rounded-full bg-primary/35" />
-            </div>
-            <div className="mt-2 h-1.5 w-14 rounded-full bg-border" />
-            <div className="mt-1 h-1.5 w-10 rounded-full bg-border" />
-          </div>
-          {/* Лист А4 */}
-          <div className="float-c absolute right-[38%] top-[60%] h-36 w-28 rounded-lg border border-border bg-surface/90 p-3 shadow-[0_32px_64px_-24px_rgb(0_0_0/0.7)]">
-            <div className="h-2 w-14 rounded-full bg-accent/40" />
-            <div className="mt-2.5 space-y-1.5">
-              {[16, 20, 18, 12, 19, 14].map((w, j) => (
-                <div key={j} className="h-1 rounded-full bg-border" style={{ width: `${w * 4}px` }} />
-              ))}
-            </div>
-          </div>
-        </div>
-        {/* Виньетка: края темнее — взгляд к центру, сцена глубже. */}
+        {/* Лёгкая фирменная тонировка поверх фото. */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_95%_at_50%_8%,transparent_58%,rgb(var(--bg)/0.85))]"
+          className="glow-pulse pointer-events-none absolute inset-0 bg-[radial-gradient(60%_60%_at_70%_-10%,rgb(var(--primary)/0.14),transparent),radial-gradient(40%_40%_at_10%_10%,rgb(var(--accent)/0.10),transparent)]"
         />
         <Container className="relative py-16 lg:py-24">
           <div className="max-w-3xl">
