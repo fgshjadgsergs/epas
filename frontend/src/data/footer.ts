@@ -25,6 +25,7 @@ export const footerColumns: FooterColumn[] = [
     title: 'Клиентам',
     links: [
       { label: 'Доставка и самовывоз', href: '/dostavka-i-samovyvoz/' },
+      { label: 'Пункты выдачи', href: '/punkty-vydachi/' },
       { label: 'Оплата', href: '/oplata/' },
       { label: 'Требования к макетам', href: '/trebovaniya-k-maketam/' },
       { label: 'Портфолио', href: '/portfolio/' },
@@ -53,4 +54,6 @@ export const deliveryMethods = ['СДЭК', 'Почта России'];
 export const legalLinks: MegaLink[] = [
   { label: 'Политика конфиденциальности', href: '/politika-konfidencialnosti/' },
   { label: 'Договор оферты', href: '/dogovor-oferty/' },
+  { label: 'Пользовательское соглашение', href: '/polzovatelskoe-soglashenie/' },
+  { label: 'Согласие на обработку ПД', href: '/soglasie-na-obrabotku-personalnyh-dannyh/' },
 ];

@@ -2,10 +2,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
   ArrowRight,
+  BadgeCheck,
   BookOpen,
+  Calculator,
+  CreditCard,
   Images,
   LayoutGrid,
-  ShoppingCart,
+  PackageCheck,
   Sparkles,
   Star,
   Upload,
@@ -51,13 +54,16 @@ const types = [
   },
 ];
 
-/** Как создать фотокнигу онлайн (макет: 4 шага). */
+/** Как создать фотокнигу онлайн — 4 шага по ТЗ страницы фотокниги (блок 6). */
 const steps = [
-  { icon: BookOpen, title: 'Выберите формат и переплёт', text: 'LayFlat, Hardcover или Softcover, размер и бумага.' },
-  { icon: Upload, title: 'Загрузите фотографии', text: 'JPG, PNG, HEIC — прямо в браузере, с проверкой качества.' },
-  { icon: LayoutGrid, title: 'Расставьте фото по страницам', text: '9 готовых раскладок разворота, фон и подписи.' },
-  { icon: ShoppingCart, title: 'Оформите заказ', text: 'Доставка курьером, СДЭК и Почтой России по всей стране.' },
+  { icon: Calculator, title: 'Рассчитайте стоимость', text: 'Формат, переплёт и число разворотов — цена сразу в калькуляторе.' },
+  { icon: LayoutGrid, title: 'Откройте конструктор', text: 'Загрузите фото и расставьте по готовым раскладкам прямо в браузере.' },
+  { icon: CreditCard, title: 'Оплатите онлайн', text: 'Карта, СБП или счёт для юридических лиц.' },
+  { icon: PackageCheck, title: 'Получите готовую книгу', text: 'Курьер, СДЭК, Почта России или самовывоз.' },
 ];
+
+/** Цепочка действий в конструкторе (ТЗ, блок 4). */
+const constructorChain = ['Загрузить фото', 'Выбрать шаблон', 'Расставить фото', 'Добавить текст', 'Оплатить'];
 
 /** Сравнение типов страниц (ТЗ страницы фотокниги, блок 8). */
 const pageTypes: { rows: [string, string, string, string][] } = {
@@ -135,6 +141,19 @@ export function PhotobookPage({ node, seo }: { node: CatalogNode; seo?: SeoPage 
                   Рассчитать стоимость
                 </Button>
               </Reveal>
+
+              {/* Строка доверия (ТЗ фотокниги, hero). */}
+              <Reveal delay={300} className="mt-8 flex flex-wrap gap-x-6 gap-y-3">
+                {[
+                  { icon: Star, text: `${site.rating.value} · ${site.rating.count} отзывов` },
+                  { icon: PackageCheck, text: '50 000+ выполненных заказов' },
+                  { icon: BadgeCheck, text: 'Перепечатаем за наш счёт, если брак' },
+                ].map((c) => (
+                  <span key={c.text} className="inline-flex items-center gap-2 text-sm text-muted">
+                    <c.icon size={15} className="text-accent" /> {c.text}
+                  </span>
+                ))}
+              </Reveal>
             </div>
             <Reveal
               delay={200}
@@ -199,8 +218,24 @@ export function PhotobookPage({ node, seo }: { node: CatalogNode; seo?: SeoPage 
         </Reveal>
       </Section>
 
-      {/* Превью конструктора */}
+      {/* Превью конструктора (ТЗ, блок 4): заголовок + цепочка шагов. */}
       <Section className="bg-bg-2">
+        <SectionHeading title="Создайте фотокнигу прямо сейчас" />
+        <Reveal className="mb-6 flex flex-wrap items-center gap-x-2 gap-y-2">
+          {constructorChain.map((step, i) => (
+            <span key={step} className="inline-flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-sm font-medium">
+                <span className="grid h-5 w-5 place-items-center rounded-full bg-primary/10 text-[11px] font-bold text-primary">
+                  {i + 1}
+                </span>
+                {step}
+              </span>
+              {i < constructorChain.length - 1 && (
+                <ArrowRight size={14} className="text-subtle" aria-hidden />
+              )}
+            </span>
+          ))}
+        </Reveal>
         <div className="overflow-hidden rounded-3xl border border-border bg-surface">
           <div className="grid gap-0 lg:grid-cols-[220px_1fr_200px]">
             {/* левая панель — фото */}
@@ -384,6 +419,25 @@ export function PhotobookPage({ node, seo }: { node: CatalogNode; seo?: SeoPage 
           </div>
         </Section>
       )}
+
+      {/* Pre-footer CTA (ТЗ фотокниги, финальный блок). */}
+      <section className="border-t border-border">
+        <Container className="flex flex-col items-center gap-5 py-14 text-center">
+          <h2 className="text-2xl font-bold sm:text-3xl">Создайте фотокнигу — начните прямо сейчас</h2>
+          <p className="max-w-xl text-muted">
+            Онлайн-конструктор работает в браузере: загрузите фото, соберите развороты и оформите
+            заказ за один вечер.
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button href={KONSTRUKTOR} size="lg">
+              Открыть конструктор <ArrowRight size={18} />
+            </Button>
+            <Button href="#calculator" size="lg" variant="outline">
+              Рассчитать стоимость
+            </Button>
+          </div>
+        </Container>
+      </section>
     </>
   );
 }

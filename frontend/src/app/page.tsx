@@ -48,7 +48,7 @@ import {
 } from '@/data/home';
 
 export const metadata: Metadata = buildMetadata({
-  title: `${site.tagline} в ${site.city}`,
+  title: `${site.tagline} в ${site.cityLoc}`,
   description: site.description,
   path: '/',
 });
@@ -114,7 +114,7 @@ export default function HomePage() {
               delay={80}
               className="mt-5 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl"
             >
-              Типография в {site.city} — печать полиграфии с{' '}
+              {site.name} — типография в {site.cityLoc} с{' '}
               <span className="text-gradient">доставкой по России</span>
             </Reveal>
             <Reveal as="p" delay={160} className="mt-5 max-w-2xl text-lg text-muted">
@@ -520,9 +520,9 @@ export default function HomePage() {
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium uppercase tracking-wide text-accent">
                 <Building2 size={14} /> Для бизнеса
               </span>
+              {/* Заголовок и CTA — по ТЗ главной, блок 8. */}
               <h2 className="mt-4 text-2xl font-bold sm:text-3xl lg:text-4xl">
-                Корпоративная печать и работа с{' '}
-                <span className="text-gradient">юридическими лицами</span>
+                Работаем с <span className="text-gradient">юридическими лицами</span>
               </h2>
               <p className="mt-3 max-w-xl text-[rgb(154_167_189)]">
                 Выставляем счёт, работаем с НДС 20%, закрывающие документы — Диадок и СБИС. Персональный
@@ -537,7 +537,7 @@ export default function HomePage() {
               </ul>
               <div className="mt-7 flex flex-wrap gap-3">
                 <Button href="/dlya-biznesa-b2b/#request" size="lg">
-                  Оставить заявку <ArrowRight size={18} />
+                  Запросить коммерческое предложение <ArrowRight size={18} />
                 </Button>
                 <Button
                   href="/dlya-biznesa-b2b/"

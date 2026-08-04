@@ -42,6 +42,9 @@ const INFO_SLUGS = new Set([
   '/nashi-ofisy/',
   '/politika-konfidencialnosti/',
   '/dogovor-oferty/',
+  '/polzovatelskoe-soglashenie/',
+  '/soglasie-na-obrabotku-personalnyh-dannyh/',
+  '/punkty-vydachi/',
   '/karta-sayta-html/',
 ]);
 
@@ -154,6 +157,9 @@ const META: Record<string, { priceFrom?: string; term?: string }> = {
   '/suveniry/shoppery/': { priceFrom: 'от 700 ₽', term: '2–3 дня' },
   '/suveniry/lanyardy-bejdzi/': { priceFrom: 'от 90 ₽', term: '2–3 дня' },
   '/otkrytki/': { priceFrom: 'от 45 ₽', term: '1–2 дня' },
+  '/foto-na-dokumenty/pensionnoe-udostoverenie/': { priceFrom: 'от 300 ₽', term: 'за 5 минут' },
+  '/buklety/a4/': { priceFrom: 'от 3 900 ₽', term: '2–3 дня' },
+  '/buklety/a5/': { priceFrom: 'от 3 200 ₽', term: '2–3 дня' },
   '/sertifikaty/': { priceFrom: 'от 60 ₽', term: '1–2 дня' },
   '/birki-bejdzi-blanki/': { priceFrom: 'от 4 ₽', term: '1–2 дня' },
   '/menyu/': { priceFrom: 'от 180 ₽', term: '1–2 дня' },

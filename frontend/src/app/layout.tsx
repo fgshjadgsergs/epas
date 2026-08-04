@@ -8,6 +8,7 @@ import { Footer } from '@/components/navigation/footer';
 import { mainNav } from '@/data/navigation';
 import { fetchCategories, overlayNav } from '@/lib/catalog/remote';
 import { CursorFX } from '@/components/fx/cursor-fx';
+import { Metrika } from '@/components/analytics/metrika';
 import { SiteJsonLd } from '@/components/seo/json-ld';
 import { site } from '@/lib/site';
 
@@ -46,6 +47,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             К основному содержимому
           </a>
           <SiteJsonLd />
+          <Metrika />
           <Header nav={nav} />
           <main id="main" className="flex-1">
             {children}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, Minus, Plus, Truck } from 'lucide-react';
 import { cn, formatPrice } from '@/lib/utils';
@@ -145,6 +145,17 @@ export function PhotobookConfigurator() {
 
   const result = useMemo(() => pricePhotobook(params, spreads), [params, spreads]);
 
+  // Конкретная дата готовности с днём недели (ТЗ фотокниги, блок 3).
+  // Дата зависит от «сейчас» — считаем после маунта, чтобы SSR-разметка совпала.
+  const [readyDate, setReadyDate] = useState('');
+  useEffect(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + result.days);
+    const date = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long' }).format(d);
+    const wd = new Intl.DateTimeFormat('ru-RU', { weekday: 'short' }).format(d);
+    setReadyDate(`${date}, ${wd}`);
+  }, [result.days]);
+
   return (
     <div className="grid gap-6 rounded-2xl border border-border bg-surface p-6 lg:grid-cols-[1.5fr_1fr] lg:p-8">
       <div>
@@ -215,8 +226,8 @@ export function PhotobookConfigurator() {
         </p>
         <dl className="mt-5 space-y-2 border-t border-border pt-4 text-sm">
           <div className="flex justify-between gap-3">
-            <dt className="text-muted">Изготовление</dt>
-            <dd className="font-medium">от {result.days} рабочих дней</dd>
+            <dt className="text-muted">Готовность</dt>
+            <dd className="font-medium">{readyDate ? `к ${readyDate}` : `от ${result.days} рабочих дней`}</dd>
           </div>
           <div className="flex items-center justify-between gap-3">
             <dt className="text-muted">Доставка</dt>

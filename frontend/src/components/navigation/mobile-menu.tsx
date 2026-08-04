@@ -92,9 +92,18 @@ export function MobileMenu({ nav = mainNav }: { nav?: NavItem[] }) {
                     </Accordion.Header>
                     <Accordion.Content className="overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
                       <ul className="space-y-0.5 py-1 pl-3">
-                        {item.mega.groups
-                          .flatMap((g) => g.links)
-                          .map((link) => (
+                        {/* «→ Все …» — в конец плоского списка (ТЗ навигации, п.3.3);
+                            дубли по href схлопываем, оставляя самую общую (последнюю). */}
+                        {(() => {
+                          const links = item.mega.groups.flatMap((g) => g.links);
+                          const regular = links.filter((l) => !l.label.startsWith('→'));
+                          const alls = [
+                            ...new Map(
+                              links.filter((l) => l.label.startsWith('→')).map((l) => [l.href, l]),
+                            ).values(),
+                          ];
+                          return [...regular, ...alls];
+                        })().map((link) => (
                             <li key={link.href + link.label}>
                               <Link
                                 href={link.href}

@@ -27,7 +27,6 @@ import {
   UserRound,
   UtensilsCrossed,
   Wallet,
-  Zap,
 } from 'lucide-react';
 import { Container } from '@/components/ui/container';
 import { Section, SectionHeading } from '@/components/ui/section';
@@ -118,9 +117,9 @@ const whyUs = [
     text: 'Договор, счёт-фактура и акт. Работаем с НДС 20%.',
   },
   {
-    icon: Zap,
-    title: 'Срочное производство',
-    text: 'Корпоративные заказы в приоритете. Изготовление от 1 часа.',
+    icon: Banknote,
+    title: 'Безналичная оплата с НДС',
+    text: 'Счёт за 15 минут, НДС 20% отдельной строкой, закрывающие документы.',
   },
   {
     icon: Percent,
@@ -237,15 +236,16 @@ const reviews = [
 
 export function B2BPage({ node, seo }: { node: CatalogNode; seo?: SeoPage }) {
   const h1 = seo?.h1 ?? 'Корпоративная полиграфия и печать для бизнеса';
+  // Фолбэк-вопросы — список из ТЗ B2B (блок FAQ).
   const faq = seo?.faq?.length
     ? faqItems(seo.faq)
     : faqItems([
-        'Работаете ли по безналичному расчёту?',
-        'Можно ли работать без договора?',
-        'Как получить документы с НДС?',
-        'Есть ли скидки для постоянных клиентов?',
+        'Работаете ли по официальному договору?',
+        'Возможна ли отсрочка платежа?',
         'Работаете ли по ЭДО?',
-        'Какой минимальный заказ для корпоративных клиентов?',
+        'Есть ли условия для регулярных заказов?',
+        'Какая минимальная сумма заказа?',
+        'Как получить документы с НДС?',
       ]);
 
   return (
@@ -290,6 +290,20 @@ export function B2BPage({ node, seo }: { node: CatalogNode; seo?: SeoPage }) {
                 <Button href={site.phone.href} size="lg" variant="outline">
                   <Phone size={18} /> Позвонить менеджеру
                 </Button>
+              </Reveal>
+
+              {/* Строка доверия (ТЗ B2B, hero): рейтинг, клиенты, стаж, документы. */}
+              <Reveal delay={300} className="mt-8 flex flex-wrap gap-x-6 gap-y-3">
+                {[
+                  { icon: Star, text: `${site.rating.value} · ${site.rating.count} отзывов` },
+                  { icon: Building2, text: '500+ компаний-клиентов' },
+                  { icon: PackageCheck, text: '12 лет на рынке' },
+                  { icon: FileCheck2, text: 'НДС 20% и ЭДО' },
+                ].map((c) => (
+                  <span key={c.text} className="inline-flex items-center gap-2 text-sm text-muted">
+                    <c.icon size={15} className="text-accent" /> {c.text}
+                  </span>
+                ))}
               </Reveal>
             </div>
 
@@ -571,7 +585,15 @@ export function B2BPage({ node, seo }: { node: CatalogNode; seo?: SeoPage }) {
                 </label>
                 <label className="mt-3 flex items-start gap-2 text-sm text-[rgb(154_167_189)]">
                   <input type="checkbox" className="mt-1" />
-                  Согласен на обработку персональных данных
+                  <span>
+                    Согласен на{' '}
+                    <Link
+                      href="/soglasie-na-obrabotku-personalnyh-dannyh/"
+                      className="underline hover:text-accent"
+                    >
+                      обработку персональных данных
+                    </Link>
+                  </span>
                 </label>
                 {/* Заглушка: реальная отправка + валидация + CSRF — фаза 5.
                     type="button" — чтобы клик не перезагружал страницу GET-сабмитом. */}
@@ -632,7 +654,8 @@ export function B2BPage({ node, seo }: { node: CatalogNode; seo?: SeoPage }) {
           ))}
         </Reveal>
 
-        <SectionHeading title="Нам доверяют компании" className="mt-14" link={{ label: 'Все отзывы', href: '/portfolio/' }} />
+        {/* «Все отзывы» — внешняя страница на Яндекс.Картах (ТЗ B2B). */}
+        <SectionHeading title="Нам доверяют компании" className="mt-14" link={{ label: 'Все отзывы', href: site.reviewsUrl }} />
         <Reveal as="div" stagger className="grid gap-4 md:grid-cols-3">
           {reviews.map((r) => (
             <figure
@@ -678,6 +701,25 @@ export function B2BPage({ node, seo }: { node: CatalogNode; seo?: SeoPage }) {
           </div>
         </div>
       </Section>
+
+      {/* Pre-footer CTA (ТЗ B2B, финальный блок). */}
+      <section className="border-t border-border">
+        <Container className="flex flex-col items-center gap-5 py-14 text-center">
+          <h2 className="text-2xl font-bold sm:text-3xl">Обсудим ваш проект?</h2>
+          <p className="max-w-xl text-muted">
+            Работаем с компаниями любого масштаба — от ИП до федеральных сетей. Рассчитаем стоимость
+            и подготовим коммерческое предложение в течение 1 рабочего часа.
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button href="#request" size="lg">
+              Запросить КП
+            </Button>
+            <Button href={site.phone.href} size="lg" variant="outline">
+              <Phone size={18} /> Позвонить
+            </Button>
+          </div>
+        </Container>
+      </section>
     </>
   );
 }

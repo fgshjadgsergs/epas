@@ -76,7 +76,7 @@ export const mainNav: NavItem[] = [
           title: 'Прочее',
           links: [
             { label: 'Фото для детей', href: '/foto-na-dokumenty/detskie-dokumenty/' },
-            { label: 'Студенческий билет / Зачётка', href: '/foto-na-dokumenty/detskie-dokumenty/' },
+            { label: 'Студенческий билет / Зачётная книжка', href: '/foto-na-dokumenty/detskie-dokumenty/' },
             { label: '→ Полный список документов', href: '/foto-na-dokumenty/' },
           ],
         },
@@ -178,8 +178,8 @@ export const mainNav: NavItem[] = [
           title: 'По типу переплёта',
           links: [
             { label: 'Фотокниги Lay-flat (без шва)', href: '/fotoknigi/layflat/' },
-            { label: 'Фотокниги Hardcover', href: '/fotoknigi/hardcover/' },
-            { label: 'Фотокниги Softcover', href: '/fotoknigi/softcover/' },
+            { label: 'Фотокниги Hardcover (твёрдая обложка)', href: '/fotoknigi/hardcover/' },
+            { label: 'Фотокниги Softcover (мягкая обложка)', href: '/fotoknigi/softcover/' },
           ],
         },
         {
@@ -226,7 +226,9 @@ export const mainNav: NavItem[] = [
             { label: 'Листовки А4', href: '/listovki/a4/' },
             { label: 'Листовки А5', href: '/listovki/a5/' },
             { label: 'Флаеры (А6, DL)', href: '/listovki/a6-flyery/' },
-            { label: 'Буклеты', href: '/buklety/' },
+            { label: 'Буклет евроформат', href: '/buklety/evroformat/' },
+            { label: 'Буклет А4', href: '/buklety/a4/' },
+            { label: 'Буклет А5', href: '/buklety/a5/' },
             { label: '→ Все листовки и буклеты', href: '/listovki/' },
           ],
         },
@@ -237,6 +239,7 @@ export const mainNav: NavItem[] = [
             { label: 'Сертификаты и дипломы', href: '/sertifikaty/' },
             { label: 'Бирки, бейджи, бланки', href: '/birki-bejdzi-blanki/' },
             { label: 'Меню для ресторанов', href: '/menyu/' },
+            { label: 'Календари', href: '/kalendari/' },
             { label: '→ Весь каталог полиграфии', href: '/poligrafiya/' },
           ],
         },
@@ -346,7 +349,7 @@ export const mainNav: NavItem[] = [
           title: 'По назначению',
           links: [
             { label: 'Печать для ООО и ИП', href: '/pechati-shtampy/' },
-            { label: 'Штамп «ОПЛАЧЕНО», «КОПИЯ ВЕРНА»', href: '/pechati-shtampy/avtomaticheskie/' },
+            { label: 'Штампы «ОПЛАЧЕНО», «ВХОДЯЩИЙ», «КОПИЯ ВЕРНА»', href: '/pechati-shtampy/avtomaticheskie/' },
             { label: 'Корпоративные штампы', href: '/pechati-shtampy/avtomaticheskie/' },
           ],
         },

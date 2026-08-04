@@ -14,7 +14,7 @@ export function buildMetadata(params: {
   ogImage?: string;
   noindex?: boolean;
 }): Metadata {
-  const { title, description, path, ogImage = '/og-default.png', noindex } = params;
+  const { title, description, path, ogImage = '/og-default.jpg', noindex } = params;
   const url = new URL(path, site.url).toString();
   const fullTitle = `${title} — ${site.name}`;
 

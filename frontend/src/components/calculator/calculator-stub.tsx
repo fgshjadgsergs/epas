@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Upload, ArrowRight, Wand2 } from 'lucide-react';
+import { Upload, ArrowRight, Check, Wand2 } from 'lucide-react';
 import { cn, formatPrice } from '@/lib/utils';
 
 /**
@@ -63,6 +63,13 @@ const DEMO_PARAMS: ParamGroup[] = [
   },
 ];
 
+/** Апселлы (ТЗ калькулятора, блок «Дополнительно») — фикс-надбавка к тиражу. */
+const DEMO_UPSELLS = [
+  { id: 'design', label: 'Дизайн макета', add: 500 },
+  { id: 'rounded', label: 'Скругление углов', add: 300 },
+  { id: 'pack', label: 'Подарочная упаковка', add: 200 },
+];
+
 function readyDateLabel(express: boolean): string {
   const d = new Date();
   d.setDate(d.getDate() + (express ? 0 : 2));
@@ -79,6 +86,7 @@ export function CalculatorStub({ basePrice = 1200 }: { basePrice?: number }) {
     term: 'std',
   });
   const [b2b, setB2b] = useState(false);
+  const [upsells, setUpsells] = useState<string[]>([]);
 
   // Индикативная цена (НЕ реальная): база × множитель тиража + надбавки.
   const price = useMemo(() => {
@@ -88,11 +96,14 @@ export function CalculatorStub({ basePrice = 1200 }: { basePrice?: number }) {
     const expressAdd = selected.term === 'express' ? 0.5 : 0;
     const perUnit = basePrice / 100;
     let total = perUnit * (qty / 100) * 100 * (1 + lamAdd + paperAdd + expressAdd);
+    total += DEMO_UPSELLS.filter((u) => upsells.includes(u.id)).reduce((s, u) => s + u.add, 0);
     if (b2b) total *= 1.2;
     return Math.round(total / 10) * 10;
-  }, [selected, b2b, basePrice]);
+  }, [selected, b2b, upsells, basePrice]);
 
   const set = (g: string, o: string) => setSelected((s) => ({ ...s, [g]: o }));
+  const toggleUpsell = (id: string) =>
+    setUpsells((s) => (s.includes(id) ? s.filter((u) => u !== id) : [...s, id]));
 
   return (
     <div className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
@@ -129,6 +140,34 @@ export function CalculatorStub({ basePrice = 1200 }: { basePrice?: number }) {
             </div>
           ))}
         </div>
+
+        {/* Апселлы (ТЗ калькулятора): дизайн, скругление углов, упаковка. */}
+        <div className="mt-6 border-t border-border pt-5">
+          <p className="mb-2 text-sm text-muted">Дополнительно</p>
+          <div className="flex flex-wrap gap-2">
+            {DEMO_UPSELLS.map((u) => {
+              const active = upsells.includes(u.id);
+              return (
+                <button
+                  key={u.id}
+                  type="button"
+                  onClick={() => toggleUpsell(u.id)}
+                  aria-pressed={active}
+                  className={cn(
+                    'inline-flex h-9 items-center gap-1.5 rounded-lg border px-3 text-sm transition-colors',
+                    active
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-border text-fg hover:border-primary/50',
+                  )}
+                >
+                  {active && <Check size={14} />}
+                  {u.label}
+                  <span className="text-xs text-muted">+{u.add} ₽</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       {/* Правая часть — итог (sticky на десктопе) */}
@@ -148,7 +187,7 @@ export function CalculatorStub({ basePrice = 1200 }: { basePrice?: number }) {
               onClick={() => setB2b(true)}
               className={cn('h-9 rounded-lg font-medium', b2b ? 'bg-primary text-primary-fg' : 'text-muted')}
             >
-              Юрлицо
+              Юридическое лицо
             </button>
           </div>
 

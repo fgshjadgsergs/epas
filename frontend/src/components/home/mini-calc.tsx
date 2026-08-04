@@ -1,21 +1,32 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, CalendarCheck } from 'lucide-react';
 import { AnimatedPrice } from '@/components/fx/animated-price';
 
 /**
  * Мини-калькулятор главной (макет «Рассчитайте стоимость за минуту»):
- * акцентная панель, выбор чипами — услуга, тираж, ламинация; цена и «Заказать».
- * Оценка примерная, точный расчёт — в калькуляторе услуги.
+ * акцентная панель, выбор чипами — услуга, тираж, ламинация; цена, дата
+ * готовности и «Перейти к заказу». Оценка примерная, точный расчёт — в
+ * калькуляторе услуги.
  */
 const SERVICES = [
-  { label: 'Визитки', base: 1200, href: '/vizitki/', lam: true },
-  { label: 'Листовки', base: 1900, href: '/listovki/', lam: true },
-  { label: 'Баннеры', base: 1400, href: '/shirokoformat/bannery/', lam: false },
-  { label: 'Фото на документы', base: 300, href: '/foto-na-dokumenty/', lam: false },
+  { label: 'Визитки', base: 1200, href: '/vizitki/', lam: true, days: 1 },
+  { label: 'Листовки', base: 1900, href: '/listovki/', lam: true, days: 1 },
+  { label: 'Баннеры', base: 1400, href: '/shirokoformat/bannery/', lam: false, days: 2 },
+  { label: 'Фото на документы', base: 300, href: '/foto-na-dokumenty/', lam: false, days: 0 },
 ];
+
+/** Дата готовности с днём недели: «сегодня», «завтра, вт» или «7 августа, чт». */
+function readyLabel(days: number): string {
+  if (days === 0) return 'сегодня';
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  const date = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long' }).format(d);
+  const wd = new Intl.DateTimeFormat('ru-RU', { weekday: 'short' }).format(d);
+  return days === 1 ? `завтра, ${wd}` : `${date}, ${wd}`;
+}
 const QTYS = [100, 200, 500, 1000];
 // Чем больше тираж — тем дешевле за штуку (грубая модель для оценки).
 const FACTOR: Record<number, number> = { 100: 1, 200: 1.7, 500: 3.4, 1000: 5.6 };
@@ -61,6 +72,10 @@ export function MiniCalc() {
     const withLam = service.lam ? perQty * LAMS[lam].k : perQty;
     return Math.round(withLam / 10) * 10;
   }, [service, qty, lam]);
+
+  // Дата зависит от «сейчас» — считаем после маунта, чтобы SSR-разметка совпала.
+  const [ready, setReady] = useState('');
+  useEffect(() => setReady(readyLabel(service.days)), [service]);
 
   return (
     /* Фон (градиент на всю ширину) рисует секция на главной — здесь только контент. */
@@ -133,12 +148,17 @@ export function MiniCalc() {
         <div>
           <p className="text-sm text-primary-fg/70">Примерная стоимость</p>
           <AnimatedPrice value={price} className="text-4xl font-extrabold tracking-tight" />
+          {ready && (
+            <p className="mt-1.5 inline-flex items-center gap-1.5 text-sm text-primary-fg/80">
+              <CalendarCheck size={15} /> Готовность: {ready}
+            </p>
+          )}
         </div>
         <Link
           href={service.href}
           className="group inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary-fg px-7 font-semibold text-primary shadow-[0_16px_32px_-12px_rgb(0_0_0/0.4)] transition-transform hover:-translate-y-0.5"
         >
-          Заказать
+          Перейти к заказу
           <ArrowRight size={18} className="transition-transform group-hover:translate-x-0.5" />
         </Link>
       </div>

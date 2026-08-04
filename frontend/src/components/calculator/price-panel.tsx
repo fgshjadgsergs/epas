@@ -79,7 +79,7 @@ export function PricePanel({
           onClick={() => onB2b(true)}
           className={cn('h-9 rounded-lg font-medium', b2b ? 'bg-primary text-primary-fg' : 'text-muted')}
         >
-          Юрлицо
+          Юридическое лицо
         </button>
       </div>
 

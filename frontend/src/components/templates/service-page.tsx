@@ -63,6 +63,7 @@ function configCharacteristics(config?: CalcConfig): [string, string][] {
     return [
       ['Размер', 'стандартные форматы и произвольный'],
       ['Бумага / материал', 'мелованная, дизайнерская и др.'],
+      ['Цветность', '4+0 (односторонняя), 4+4 (двусторонняя), ч/б'],
       ['Покрытие', 'без, матовое, глянцевое, Soft Touch'],
       ['Мин. тираж', 'от 1 шт.'],
       ['Срок', 'стандарт 1–2 дня / экспресс от 1 часа'],
@@ -78,6 +79,11 @@ function configCharacteristics(config?: CalcConfig): [string, string][] {
     if (rows.length >= 6) break;
     rows.push([g.label, g.options.map((o) => o.label).join(', ')]);
   }
+  // Цветность — обязательная строка таблицы по ТЗ; если у калькулятора нет
+  // групп «color»/«sides», показываем стандартный набор.
+  if (!config.groups.some((g) => g.id === 'color' || g.id === 'sides')) {
+    rows.push(['Цветность', '4+0 (односторонняя), 4+4 (двусторонняя)']);
+  }
   const minQty = config.qtyTiers?.[0]?.qty ?? config.qtyRange?.min ?? 1;
   rows.push(['Мин. тираж', `от ${minQty.toLocaleString('ru-RU')} шт.`]);
   rows.push([
@@ -90,14 +96,52 @@ function configCharacteristics(config?: CalcConfig): [string, string][] {
   return rows;
 }
 
+/** Пул типовых вопросов — добивка FAQ услуги до 6 позиций (ТЗ: 5–6 вопросов). */
+const GENERIC_FAQ = [
+  'Как быстро выполняется заказ?',
+  'Можно ли заказать без готового макета?',
+  'Какие форматы файлов принимаете?',
+  'Как осуществляется доставка?',
+  'Можно ли оплатить безналичным расчётом с НДС?',
+  'Есть ли скидки при большом тираже?',
+];
+
 export function ServicePage({ node, seo }: { node: CatalogNode; seo?: SeoPage }) {
   const h1 = seo?.h1 ?? `${node.name} в ${site.city}`;
-  const faq = seo?.faq?.length ? faqItems(seo.faq) : [];
+  const seoFaq = seo?.faq?.length ? faqItems(seo.faq) : [];
+  // До 6 вопросов: дополняем типовыми, пропуская дубли (сравниваем по ответу —
+  // близкие формулировки вроде «Какой минимальный тираж?» дают один ответ).
+  const faq = seoFaq.length
+    ? [
+        ...seoFaq,
+        ...faqItems(GENERIC_FAQ).filter(
+          (g) => !seoFaq.some((f) => f.answer === g.answer || f.question === g.question),
+        ),
+      ].slice(0, 6)
+    : [];
   const siblings = getSiblings(node.slug);
   const price = priceNumber(node);
   const calc = getCalculator(node.slug);
   const characteristics = configCharacteristics(calc?.config);
   const minQty = calc?.config.qtyTiers?.[0]?.qty ?? calc?.config.qtyRange?.min ?? 1;
+  const nameLower = node.name.toLowerCase();
+
+  // SEO-текст с H3-структурой (ТЗ услуги, блок 9) — как на странице категории:
+  // вступление + подразделы; границы через floor(i·n/3), при 1–2 предложениях
+  // рендерим столько подразделов, сколько есть текста.
+  const paragraphs = seo?.seoText ? seo.seoText.split(/(?<=\.)\s+(?=[А-ЯA-Z])/) : [];
+  const seoIntro = paragraphs[0];
+  const seoRest = paragraphs.slice(1);
+  const H3_TITLES = [`Виды: ${nameLower}`, `Как заказать ${nameLower} онлайн`, `Стоимость: ${nameLower}`];
+  const seoSections: { h3: string; text: string }[] =
+    seoRest.length >= 3
+      ? H3_TITLES.map((h3, i) => ({
+          h3,
+          text: seoRest
+            .slice(Math.floor((i * seoRest.length) / 3), Math.floor(((i + 1) * seoRest.length) / 3))
+            .join(' '),
+        }))
+      : seoRest.map((text, i) => ({ h3: H3_TITLES[i], text }));
 
   // Анкор-навигация (ТЗ услуги, блок 1). Таб «FAQ» — только если секция
   // реально рендерится (без seo-данных её нет — иначе таб был бы битым якорем).
@@ -372,8 +416,13 @@ export function ServicePage({ node, seo }: { node: CatalogNode; seo?: SeoPage })
                 <h2 className="mb-4 text-2xl font-bold">{seo.h2?.[0] ?? 'Подробнее об услуге'}</h2>
                 <ReadMore>
                   <div className="space-y-3 text-muted">
-                    {seo.seoText.split(/(?<=\.)\s+(?=[А-ЯA-Z])/).map((p, i) => (
-                      <p key={i}>{p}</p>
+                    {seoIntro && <p>{seoIntro}</p>}
+                    {/* H3-структура SEO-текста (ТЗ услуги, блок 9). */}
+                    {seoSections.map((s) => (
+                      <div key={s.h3}>
+                        <h3 className="mb-1.5 mt-4 text-base font-semibold text-fg">{s.h3}</h3>
+                        <p>{s.text}</p>
+                      </div>
                     ))}
                   </div>
                 </ReadMore>

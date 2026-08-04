@@ -96,7 +96,7 @@ export const whyUsStats = [
 export const popularConfigs = [
   { title: 'Визитки 100 шт., мел. 350 г', price: '1 200 ₽', href: '/vizitki/?qty=100&paper=coated-350' },
   { title: 'Листовки А5, 500 шт., 4+4', price: '2 400 ₽', href: '/listovki/a5/?qty=500' },
-  { title: 'Баннер 2×1 м, люверсы', price: '1 400 ₽', href: '/bannery/?w=2&h=1' },
+  { title: 'Баннер 2×1 м, люверсы', price: '1 400 ₽', href: '/shirokoformat/bannery/?w=2&h=1' },
   { title: 'Фото на паспорт РФ', price: '300 ₽', href: '/foto-na-dokumenty/pasport-rf/' },
 ];
 

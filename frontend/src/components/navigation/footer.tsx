@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { MessageCircle, Phone, Send, Star } from 'lucide-react';
 import { Container } from '@/components/ui/container';
 import { Logo } from './logo';
+import { FooterColumns } from './footer-columns';
 import { footerColumns, paymentMethods, deliveryMethods, legalLinks } from '@/data/footer';
 import { site } from '@/lib/site';
 
@@ -55,24 +56,11 @@ export function Footer() {
           </p>
         </div>
 
-        {/* Колонки 2–4 — ссылки. */}
-        {footerColumns.map((col) => (
-          <nav key={col.title} aria-label={col.title}>
-            <h3 className="mb-3 text-sm font-semibold text-fg">{col.title}</h3>
-            <ul className="space-y-2">
-              {col.links.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className="text-sm text-muted hover:text-primary">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        ))}
+        {/* Колонки 2–4 — ссылки; на мобиле — аккордеоны (ТЗ навигации, п.4.2). */}
+        <FooterColumns columns={footerColumns} />
 
         {/* Колонка 5 — контакты. */}
-        <div>
+        <div className="col-span-2 md:col-span-1">
           <h3 className="mb-3 text-sm font-semibold text-fg">Контакты</h3>
           <a href={site.phone.href} className="text-lg font-bold hover:text-primary">
             {site.phone.display}

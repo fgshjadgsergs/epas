@@ -13,6 +13,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: [
         '/api/',
+        '/admin/',
         '/lichnyy-kabinet/',
         '/korzina/',
         '/oformlenie-zakaza/',
