@@ -129,7 +129,7 @@ export function PhotobookPage({ node, seo }: { node: CatalogNode; seo?: SeoPage 
                 <Button href={KONSTRUKTOR} size="lg">
                   Создать фотокнигу <ArrowRight size={18} />
                 </Button>
-                <Button href="#calc" size="lg" variant="outline">
+                <Button href="#calculator" size="lg" variant="outline">
                   Рассчитать стоимость
                 </Button>
               </Reveal>
@@ -147,8 +147,8 @@ export function PhotobookPage({ node, seo }: { node: CatalogNode; seo?: SeoPage 
         </Container>
       </section>
 
-      {/* Калькулятор — сразу после hero (ТЗ страницы фотокниги, блок 3). */}
-      <Section id="calc" className="scroll-mt-28">
+      {/* Калькулятор — сразу после hero (ТЗ страницы фотокниги, блок 3, анкор id="calculator"). */}
+      <Section id="calculator" className="scroll-mt-28">
         <SectionHeading title="Рассчитайте стоимость" />
         <PhotobookConfigurator />
       </Section>

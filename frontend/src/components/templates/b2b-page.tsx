@@ -455,13 +455,13 @@ export function B2BPage({ node, seo }: { node: CatalogNode; seo?: SeoPage }) {
       <Section>
         <SectionHeading title="Скидки от объёма" />
         <Reveal>
-          <div className="overflow-hidden rounded-2xl border border-border">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto rounded-2xl border border-border">
+            <table className="w-full min-w-[560px] text-sm">
               <thead>
                 <tr className="bg-surface-2 text-left">
                   <th className="px-4 py-3 font-semibold sm:px-6">Оборот в месяц</th>
                   <th className="px-4 py-3 font-semibold sm:px-6">Скидка</th>
-                  <th className="hidden px-4 py-3 font-semibold sm:table-cell sm:px-6">Доп. условия</th>
+                  <th className="px-4 py-3 font-semibold sm:px-6">Доп. условия</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -477,7 +477,7 @@ export function B2BPage({ node, seo }: { node: CatalogNode; seo?: SeoPage }) {
                         </span>
                       )}
                     </td>
-                    <td className="hidden px-4 py-3.5 text-muted sm:table-cell sm:px-6">{terms}</td>
+                    <td className="px-4 py-3.5 text-muted sm:px-6">{terms}</td>
                   </tr>
                 ))}
               </tbody>
@@ -544,9 +544,9 @@ export function B2BPage({ node, seo }: { node: CatalogNode; seo?: SeoPage }) {
               >
                 <div className="grid gap-4 sm:grid-cols-2">
                   <DarkField label="Ваше имя" required />
-                  <DarkField label="Компания" />
+                  <DarkField label="Компания" required />
                   <DarkField label="Телефон" required type="tel" />
-                  <DarkField label="E-mail" type="email" />
+                  <DarkField label="E-mail" required type="email" />
                 </div>
                 <label className="mt-4 block text-sm">
                   <span className="mb-1.5 block text-[rgb(154_167_189)]">Что нужно напечатать *</span>
@@ -573,8 +573,9 @@ export function B2BPage({ node, seo }: { node: CatalogNode; seo?: SeoPage }) {
                   <input type="checkbox" className="mt-1" />
                   Согласен на обработку персональных данных
                 </label>
-                {/* Заглушка: реальная отправка + валидация + CSRF — фаза 5. */}
-                <Button href="#" className="mt-5 w-full">
+                {/* Заглушка: реальная отправка + валидация + CSRF — фаза 5.
+                    type="button" — чтобы клик не перезагружал страницу GET-сабмитом. */}
+                <Button type="button" className="mt-5 w-full">
                   <Send size={17} /> Отправить запрос
                 </Button>
                 <p className="mt-3 text-center text-xs text-[rgb(110_122_143)]">

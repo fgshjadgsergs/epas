@@ -178,7 +178,7 @@ export function CalculatorStub({ basePrice = 1200 }: { basePrice?: number }) {
             <Upload size={16} /> Загрузить макет
           </button>
           <a
-            href="#"
+            href="#requirements"
             className="mt-3 flex items-center justify-center gap-1.5 text-sm text-primary hover:underline"
           >
             <Wand2 size={14} /> Нет макета? Заказать дизайн

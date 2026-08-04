@@ -29,6 +29,7 @@ import type { CalcConfig } from '@/lib/calc/types';
 import { Reveal } from '@/components/reveal';
 import { PortfolioTile } from '@/components/catalog/portfolio-tile';
 import { RelatedCard } from '@/components/catalog/related-card';
+import { plural } from '@/lib/utils';
 import { site } from '@/lib/site';
 import { faqItems, type SeoPage } from '@/data/seo';
 import { getBreadcrumbs, getSiblings, type CatalogNode } from '@/data/catalog';
@@ -44,15 +45,6 @@ import { getBreadcrumbs, getSiblings, type CatalogNode } from '@/data/catalog';
  * 8) требования к макету + помощь с дизайном;
  * 9) перелинковка на смежные услуги; 10) CTA.
  */
-
-/** Анкор-навигация (ТЗ услуги, блок 1): Калькулятор | Описание | Примеры | Отзывы | FAQ. */
-const anchors = [
-  { id: 'calculator', label: 'Калькулятор' },
-  { id: 'description', label: 'Описание' },
-  { id: 'examples', label: 'Примеры работ' },
-  { id: 'reviews', label: 'Отзывы' },
-  { id: 'faq', label: 'FAQ' },
-];
 
 const steps = [
   { icon: FileCheck2, title: 'Рассчитайте цену', text: 'Выберите параметры в калькуляторе — цена и дата готовности обновляются сразу' },
@@ -72,7 +64,7 @@ function configCharacteristics(config?: CalcConfig): [string, string][] {
       ['Размер', 'стандартные форматы и произвольный'],
       ['Бумага / материал', 'мелованная, дизайнерская и др.'],
       ['Покрытие', 'без, матовое, глянцевое, Soft Touch'],
-      ['Мин. тираж', 'от 1–100 шт.'],
+      ['Мин. тираж', 'от 1 шт.'],
       ['Срок', 'стандарт 1–2 дня / экспресс от 1 часа'],
       ['Доставка', 'курьер, СДЭК, Почта России, самовывоз'],
     ];
@@ -106,6 +98,16 @@ export function ServicePage({ node, seo }: { node: CatalogNode; seo?: SeoPage })
   const calc = getCalculator(node.slug);
   const characteristics = configCharacteristics(calc?.config);
   const minQty = calc?.config.qtyTiers?.[0]?.qty ?? calc?.config.qtyRange?.min ?? 1;
+
+  // Анкор-навигация (ТЗ услуги, блок 1). Таб «FAQ» — только если секция
+  // реально рендерится (без seo-данных её нет — иначе таб был бы битым якорем).
+  const anchors = [
+    { id: 'calculator', label: 'Калькулятор' },
+    { id: 'description', label: 'Описание' },
+    { id: 'examples', label: 'Примеры работ' },
+    { id: 'reviews', label: 'Отзывы' },
+    ...(seo?.seoText || faq.length > 0 ? [{ id: 'faq', label: 'FAQ' }] : []),
+  ];
 
   return (
     <>
@@ -156,15 +158,15 @@ export function ServicePage({ node, seo }: { node: CatalogNode; seo?: SeoPage })
                 {node.priceFrom}
               </span>
             )}
+            {/* Порядок чипов по ТЗ (блок 2): цена, тираж, срок, доставка. */}
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-sm">
+              <Layers size={14} className="text-primary" /> тираж от {minQty.toLocaleString('ru-RU')} шт.
+            </span>
             {node.term && (
               <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-sm">
                 <Clock size={14} className="text-primary" /> срок {node.term}
               </span>
             )}
-            {/* Тираж и доставка — обязательные параметры строки (ТЗ услуги, блок 2). */}
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-sm">
-              <Layers size={14} className="text-primary" /> тираж от {minQty.toLocaleString('ru-RU')} шт.
-            </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-sm">
               <Truck size={14} className="text-primary" /> доставка по России
             </span>
@@ -173,7 +175,7 @@ export function ServicePage({ node, seo }: { node: CatalogNode; seo?: SeoPage })
             </span>
             <span className="inline-flex items-center gap-1 rounded-full border border-border bg-surface px-3 py-1.5 text-sm">
               <Star size={14} className="fill-warning text-warning" />
-              {site.rating.value} · {site.rating.count} отзывов
+              {site.rating.value} · {site.rating.count} {plural(site.rating.count, ['отзыв', 'отзыва', 'отзывов'])}
             </span>
           </div>
           <div className="mt-5 flex flex-wrap gap-3">
@@ -277,6 +279,7 @@ export function ServicePage({ node, seo }: { node: CatalogNode; seo?: SeoPage })
         <SectionHeading title="Примеры наших работ" />
         {/* Карточки под реальные фото с подписью «название + техника»
             (ТЗ услуги, блок 6) + плитка «Всё портфолио» с шевронами. */}
+        {/* 6 работ (ТЗ: 4–6) + плитка «Всё портфолио» на два ряда. */}
         <Reveal as="div" stagger className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {['Цифровая печать', 'Офсетная печать', 'Премиум-отделка'].map((tech) => (
             <figure
@@ -288,7 +291,17 @@ export function ServicePage({ node, seo }: { node: CatalogNode; seo?: SeoPage })
               </figcaption>
             </figure>
           ))}
-          <PortfolioTile className="aspect-square" />
+          <PortfolioTile className="row-span-2 md:col-start-4" />
+          {['Тиснение фольгой', 'Дизайнерская бумага', 'Срочный тираж'].map((tech) => (
+            <figure
+              key={tech}
+              className="lift relative aspect-square overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-surface-2 to-bg-2"
+            >
+              <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-bg/90 to-transparent p-3 pt-8 text-xs font-medium">
+                {node.name} — {tech}
+              </figcaption>
+            </figure>
+          ))}
         </Reveal>
       </Section>
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { FileCheck2, Palette, Receipt, Truck, Zap } from 'lucide-react';
+import { FileCheck2, Receipt, Truck, Zap } from 'lucide-react';
 
 /**
  * «Почему заказывают … у нас» — интерактивная витрина.
@@ -16,11 +16,6 @@ const ITEMS = [
     icon: Zap,
     title: 'Срочно за 1 час',
     text: 'Экспресс-изготовление популярных позиций: визитки, листовки и фото на документы заберёте в день заказа.',
-  },
-  {
-    icon: Palette,
-    title: 'Точная цветопередача',
-    text: 'Профессиональная цифровая и офсетная печать на калиброванном оборудовании — цвета макета совпадают с тиражом.',
   },
   {
     icon: FileCheck2,

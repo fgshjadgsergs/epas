@@ -33,6 +33,7 @@ import { ExamplesGallery } from '@/components/home/examples-gallery';
 import { Reveal, StatCounter } from '@/components/reveal';
 import { FaqJsonLd, LocalBusinessJsonLd, OrganizationJsonLd } from '@/components/seo/json-ld';
 import { buildMetadata } from '@/lib/seo';
+import { plural } from '@/lib/utils';
 import { site } from '@/lib/site';
 import {
   b2bPerks,
@@ -140,10 +141,10 @@ export default function HomePage() {
             {/* Строка доверия (ТЗ hero): рейтинг, количество заказов, годы работы. */}
             <Reveal delay={400} className="mt-9 flex flex-wrap gap-x-6 gap-y-3">
               {[
-                { icon: Star, text: `${site.rating.value} · ${site.rating.count} отзывов` },
+                { icon: Star, text: `${site.rating.value} · ${site.rating.count} ${plural(site.rating.count, ['отзыв', 'отзыва', 'отзывов'])}` },
                 { icon: PackageCheck, text: '50 000+ выполненных заказов' },
                 { icon: BadgeCheck, text: '12 лет на рынке' },
-                { icon: Zap, text: 'Изготовление от 1 часа' },
+                { icon: Zap, text: 'Срочная печать за 3 часа' },
               ].map((c) => (
                 <span key={c.text} className="inline-flex items-center gap-2 text-sm text-muted">
                   <c.icon size={15} className="text-primary" /> {c.text}
@@ -279,7 +280,7 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* Блок 4 — Почему выбирают нас (макет): крупные номера 01–03 с пунктами
+      {/* Блок 4 — Почему выбирают нас: 6 пунктов ТЗ с номерами 01–06
           + полоса статистики со счётчиками. */}
       <Section>
         <SectionHeading title="Почему выбирают нас" />
@@ -391,7 +392,7 @@ export default function HomePage() {
             <Star size={15} className="fill-warning text-warning" />
             <strong>{site.rating.value}</strong>
             <span className="text-muted">
-              · {site.rating.count} отзывов · {site.rating.source}
+              · {site.rating.count} {plural(site.rating.count, ['отзыв', 'отзыва', 'отзывов'])} · {site.rating.source}
             </span>
           </span>
         </div>
@@ -419,7 +420,9 @@ export default function HomePage() {
                 </span>
                 <div>
                   <figcaption className="text-sm font-semibold">{r.name}</figcaption>
-                  <p className="text-xs text-subtle">{r.date}</p>
+                  <p className="text-xs text-subtle">
+                    {r.date} · {site.rating.source}
+                  </p>
                 </div>
               </div>
               <div className="relative mt-3 flex gap-0.5 text-warning" aria-label="5 из 5">
@@ -583,7 +586,7 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* Блок 11 — FAQ: две колонки — липкая шапка с мини-CTA + аккордеон. */}
+      {/* Блок 10 — FAQ: две колонки — липкая шапка с мини-CTA + аккордеон. */}
       <Section>
         <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="lg:sticky lg:top-32 lg:self-start">

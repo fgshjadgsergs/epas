@@ -35,17 +35,21 @@ export function CategoryPage({
   const paragraphs = seo?.seoText ? seo.seoText.split(/(?<=\.)\s+(?=[А-ЯA-Z])/) : [];
   const popular = getPopularOrders(node.slug);
 
-  // SEO-текст с H3-структурой (ТЗ категории, блок 10): вступление + три
-  // подраздела; абзацы после первого распределяются по подзаголовкам.
+  // SEO-текст с H3-структурой (ТЗ категории, блок 10): вступление + подразделы.
+  // Границы через floor(i·n/3) — при n≥3 все три части гарантированно непустые;
+  // при 1–2 предложениях рендерим столько подразделов, сколько есть текста.
   const seoIntro = paragraphs[0];
   const seoRest = paragraphs.slice(1);
+  const H3_TITLES = ['Что входит в категорию', 'Сроки и стоимость', 'Как заказать онлайн'];
   const seoSections: { h3: string; text: string }[] =
     seoRest.length >= 3
-      ? ['Что входит в категорию', 'Сроки и стоимость', 'Как заказать онлайн'].map((h3, i, arr) => {
-          const per = Math.ceil(seoRest.length / arr.length);
-          return { h3, text: seoRest.slice(i * per, (i + 1) * per).join(' ') };
-        }).filter((s) => s.text)
-      : [];
+      ? H3_TITLES.map((h3, i) => ({
+          h3,
+          text: seoRest
+            .slice(Math.floor((i * seoRest.length) / 3), Math.floor(((i + 1) * seoRest.length) / 3))
+            .join(' '),
+        }))
+      : seoRest.map((text, i) => ({ h3: H3_TITLES[i], text }));
 
   /** Краткое описание подкатегории (1 строка) — первое предложение её SEO-описания. */
   const briefOf = (slug: string) => getSeo(slug)?.description?.split(/(?<=\.)\s/)[0];

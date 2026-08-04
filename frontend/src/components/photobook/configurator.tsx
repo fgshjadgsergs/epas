@@ -146,7 +146,7 @@ export function PhotobookConfigurator() {
   const result = useMemo(() => pricePhotobook(params, spreads), [params, spreads]);
 
   return (
-    <div id="calc" className="grid scroll-mt-24 gap-6 rounded-2xl border border-border bg-surface p-6 lg:grid-cols-[1.5fr_1fr] lg:p-8">
+    <div className="grid gap-6 rounded-2xl border border-border bg-surface p-6 lg:grid-cols-[1.5fr_1fr] lg:p-8">
       <div>
         <h2 className="text-xl font-bold">Параметры фотокниги</h2>
         <div className="mt-4">
@@ -201,7 +201,13 @@ export function PhotobookConfigurator() {
 
       {/* Панель цены */}
       <aside className="flex flex-col rounded-2xl border border-border bg-gradient-to-br from-surface to-bg-2 p-6 lg:sticky lg:top-28 lg:self-start">
-        <p className="text-sm text-muted">Примерная стоимость</p>
+        {/* Описание выбранной конфигурации (ТЗ фотокниги, блок 3). */}
+        <p className="text-sm font-medium">
+          {BINDING.find((o) => o.id === params.binding)?.label} ·{' '}
+          {SIZE.find((o) => o.id === params.size)?.label} ·{' '}
+          {PAPER.find((o) => o.id === params.paper)?.label} · {spreads} разв. · {params.copies} шт.
+        </p>
+        <p className="mt-3 text-sm text-muted">Примерная стоимость</p>
         <p className="mt-1 text-4xl font-extrabold tabular-nums">{formatPrice(result.price)}</p>
         <p className="mt-1 text-sm text-muted">
           {formatPrice(result.perUnit)} за экземпляр
@@ -224,6 +230,14 @@ export function PhotobookConfigurator() {
           className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary font-semibold text-primary-fg hover:bg-primary-hover"
         >
           Перейти в конструктор <ArrowRight size={18} />
+        </button>
+        {/* Вторичная кнопка (ТЗ фотокниги, блок 3): загрузка готового макета —
+            тем же флоу конструктора, файл добавляется на первом шаге. */}
+        <button
+          onClick={() => router.push('/fotoknigi/konstruktor/')}
+          className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-border text-sm font-medium hover:bg-surface-2"
+        >
+          Загрузить готовый макет
         </button>
         <p className="mt-2 text-center text-xs text-subtle">
           Цена не является публичной офертой. Точная — в конструкторе.

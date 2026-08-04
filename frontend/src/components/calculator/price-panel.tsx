@@ -150,7 +150,7 @@ export function PricePanel({
         {copied ? 'Ссылка скопирована' : 'Поделиться расчётом'}
       </button>
       <a
-        href="#"
+        href="#requirements"
         className="mt-3 flex items-center justify-center gap-1.5 text-sm text-primary hover:underline"
       >
         <Wand2 size={14} /> Нет макета? Заказать дизайн

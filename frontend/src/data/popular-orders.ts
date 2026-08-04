@@ -23,7 +23,7 @@ const BY_SECTION: Record<string, PopularOrder[]> = {
     { title: 'Листовки А5', params: '500 шт · 130 г · 4+4', price: '2 400 ₽', href: '/listovki/a5/?qty=500' },
     { title: 'Листовки А4', params: '500 шт · 130 г · 4+4', price: '3 900 ₽', href: '/listovki/a4/?qty=500' },
     { title: 'Флаеры Евро', params: '1 000 шт · 115 г · 4+4', price: '3 200 ₽', href: '/listovki/a6-flyery/?qty=1000' },
-    { title: 'Листовки А6', params: '1 000 шт · 130 г · 4+0', price: '2 600 ₽', href: '/listovki/a6-flyery/?qty=1000' },
+    { title: 'Листовки А4, большой тираж', params: '1 000 шт · 130 г · 4+4', price: '6 900 ₽', href: '/listovki/a4/?qty=1000' },
   ],
   '/foto-na-dokumenty/': [
     { title: 'Фото на паспорт РФ', params: '4 шт · 35×45 мм · матовая', price: '300 ₽', href: '/foto-na-dokumenty/pasport-rf/' },
@@ -71,7 +71,7 @@ const BY_SECTION: Record<string, PopularOrder[]> = {
     { title: 'Печать ООО', params: 'автоматическая оснастка', price: '900 ₽', href: '/pechati-shtampy/avtomaticheskie/' },
     { title: 'Печать ИП', params: 'карманная оснастка', price: '700 ₽', href: '/pechati-shtampy/karmannye/' },
     { title: 'Факсимиле', params: 'подпись · оснастка', price: '1 200 ₽', href: '/pechati-shtampy/faksimile/' },
-    { title: 'Штамп «Оплачено»', params: 'стандартный · 38×14 мм', price: '600 ₽', href: '/pechati-shtampy/avtomaticheskie/' },
+    { title: 'Пломбиратор', params: 'металлический · под пластилин', price: '1 900 ₽', href: '/pechati-shtampy/plombiratory/' },
   ],
   '/buklety/': [
     { title: 'Буклет евро', params: '500 шт · 2 фальца · 130 г', price: '4 900 ₽', href: '/buklety/evroformat/?qty=500' },

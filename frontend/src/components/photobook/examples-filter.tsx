@@ -26,13 +26,12 @@ export function PhotobookExamples() {
 
   return (
     <div>
-      <div className="flex flex-wrap gap-2" role="tablist" aria-label="Тематика фотокниг">
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Тематика фотокниг">
         {CATS.map((c) => (
           <button
             key={c}
             type="button"
-            role="tab"
-            aria-selected={active === c}
+            aria-pressed={active === c}
             onClick={() => setActive(c)}
             className={`h-9 rounded-full border px-4 text-sm font-medium transition-colors ${
               active === c

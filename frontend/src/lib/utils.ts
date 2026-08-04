@@ -19,3 +19,13 @@ export function formatPrice(value: number): string {
 export function formatFrom(value: number): string {
   return `от ${formatPrice(value)}`;
 }
+
+/** Русское склонение по числу: plural(1241, ['отзыв', 'отзыва', 'отзывов']) → «отзыв». */
+export function plural(n: number, forms: [string, string, string]): string {
+  const abs = Math.abs(n) % 100;
+  const d = abs % 10;
+  if (abs > 10 && abs < 20) return forms[2];
+  if (d > 1 && d < 5) return forms[1];
+  if (d === 1) return forms[0];
+  return forms[2];
+}
