@@ -163,7 +163,7 @@ export function PhotobookPage({ node, seo }: { node: CatalogNode; seo?: SeoPage 
             <div key={t.id} className="card-glow lift group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface">
               {/* Фото типа (public/img/catalog/fotoknigi/<id>.jpg); фолбэк — CSS-сцена. */}
               <div
-                className={`relative aspect-[16/10] overflow-hidden bg-gradient-to-br ${ti % 2 ? 'from-accent/15 via-surface-2 to-bg-2' : 'from-primary/15 via-surface-2 to-bg-2'}`}
+                className={`photo-tint relative aspect-[16/10] overflow-hidden bg-gradient-to-br ${ti % 2 ? 'from-accent/15 via-surface-2 to-bg-2' : 'from-primary/15 via-surface-2 to-bg-2'}`}
                 aria-hidden
               >
                 {catalogImage(`/fotoknigi/${t.id}/`) && (

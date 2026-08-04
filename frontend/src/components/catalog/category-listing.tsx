@@ -223,7 +223,7 @@ export function CategoryListing({ items }: { items: ListingItem[] }) {
                 href={c.slug}
                 className="lift group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface hover:border-primary"
               >
-                <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-surface-2 to-bg-2" aria-hidden>
+                <div className="photo-tint relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-surface-2 to-bg-2" aria-hidden>
                   {c.image && (
                     // eslint-disable-next-line @next/next/no-img-element -- клиентский листинг, файл уже оптимизирован
                     <img

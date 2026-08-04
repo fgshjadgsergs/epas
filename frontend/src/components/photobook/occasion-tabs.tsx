@@ -97,7 +97,7 @@ export function OccasionTabs({
         <Tabs.Content key={o.id} value={o.id} className="mt-6 focus:outline-none">
           <div className="grid items-center gap-6 overflow-hidden rounded-3xl border border-border bg-surface lg:grid-cols-[1fr_1.1fr]">
             {/* Фото работы (public/img/catalog); фолбэк — CSS-сцена. */}
-            <div className={cn('relative aspect-[4/3] bg-gradient-to-br lg:aspect-auto lg:h-full', o.tint)} aria-hidden>
+            <div className={cn('photo-tint relative aspect-[4/3] overflow-hidden bg-gradient-to-br lg:aspect-auto lg:h-full', o.tint)} aria-hidden>
               {images[o.id] ? (
                 // eslint-disable-next-line @next/next/no-img-element -- клиентский компонент, файл уже оптимизирован
                 <img

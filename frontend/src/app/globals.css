@@ -245,6 +245,39 @@ body {
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
+/* Тонировка фото под активную тему: полупрозрачный оверлей в цвет фона
+ * (токен --bg) приглушает светлые снимки в тёмных темах; в светлых почти
+ * невидим. Вешается на контейнер фото (relative + overflow-hidden). */
+.photo-tint::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: rgb(var(--bg) / 0.12);
+  pointer-events: none;
+}
+
+/* ЭКСПЕРИМЕНТ: растр офсетной печати проступает на фото при наведении
+ * на карточку (.group). Точки в цвете фона темы — «печатный» полутон. */
+.photo-halftone::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 21;
+  background-image: radial-gradient(rgb(var(--bg) / 0.35) 1px, transparent 1.4px);
+  background-size: 7px 7px;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+.group:hover .photo-halftone::before { opacity: 1; }
+/* В светлых темах точки «краской» (--fg), а не белым — как настоящий растр. */
+[data-theme='light'] .photo-halftone::before,
+[data-theme='gold-light'] .photo-halftone::before,
+[data-theme='cmyk-light'] .photo-halftone::before {
+  background-image: radial-gradient(rgb(var(--fg) / 0.16) 1px, transparent 1.4px);
+}
+
 /* Плавный вход контента при переходах между страницами (template.tsx ремоунтит). */
 @keyframes page-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 .page-enter { animation: page-enter 0.32s cubic-bezier(0.16, 1, 0.3, 1) both; }
