@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Calculator, Clock, Download, LayoutGrid, MessageCircle, Phone, Upload } from 'lucide-react';
 import { Container } from '@/components/ui/container';
@@ -13,6 +14,7 @@ import { WhyUsShowcase } from '@/components/catalog/why-us-showcase';
 import { PortfolioTile } from '@/components/catalog/portfolio-tile';
 import { RelatedCard } from '@/components/catalog/related-card';
 import { deriveFacets } from '@/lib/catalog/facets';
+import { catalogImage } from '@/lib/catalog/images';
 import { site } from '@/lib/site';
 import { faqItems, getSeo, type SeoPage } from '@/data/seo';
 import { getBreadcrumbs, getRelatedSections, type CatalogNode } from '@/data/catalog';
@@ -115,7 +117,18 @@ export function CategoryPage({
                 href={c.slug}
                 className="lift card-glow group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface hover:border-primary"
               >
-                <div className="aspect-[4/3] bg-gradient-to-br from-surface-2 to-bg-2" aria-hidden />
+                {/* Фото продукта (public/img/catalog/<slug>.jpg); пока нет — заглушка. */}
+                <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-surface-2 to-bg-2" aria-hidden>
+                  {catalogImage(c.slug) && (
+                    <Image
+                      src={catalogImage(c.slug)!}
+                      alt=""
+                      fill
+                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  )}
+                </div>
                 <div className="flex flex-1 flex-col p-5">
                   <h3 className="font-semibold group-hover:text-primary">{c.name}</h3>
                   {/* Краткое описание в 1 строку (ТЗ категории, блок 3). */}
@@ -145,7 +158,7 @@ export function CategoryPage({
       <Section id="services" className="scroll-mt-24 bg-bg-2">
         <SectionHeading title="Все услуги раздела" />
         {items.length > 0 ? (
-          <CategoryListing items={items.map(deriveFacets)} />
+          <CategoryListing items={items.map((c) => ({ ...deriveFacets(c), image: catalogImage(c.slug) }))} />
         ) : (
           <p className="text-muted">Услуги раздела скоро появятся. Позвоните — подберём решение.</p>
         )}

@@ -11,6 +11,8 @@ export interface ListingItem {
   name: string;
   priceFrom?: string;
   term?: string;
+  /** Фото продукта (из public/img/catalog); нет — градиентная заглушка. */
+  image?: string;
   price: number;
   tirazh: string[];
   paper: string[];
@@ -221,7 +223,17 @@ export function CategoryListing({ items }: { items: ListingItem[] }) {
                 href={c.slug}
                 className="lift group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface hover:border-primary"
               >
-                <div className="aspect-[16/10] bg-gradient-to-br from-surface-2 to-bg-2" aria-hidden />
+                <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-surface-2 to-bg-2" aria-hidden>
+                  {c.image && (
+                    // eslint-disable-next-line @next/next/no-img-element -- клиентский листинг, файл уже оптимизирован
+                    <img
+                      src={c.image}
+                      alt=""
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  )}
+                </div>
                 <div className="flex flex-1 flex-col p-5">
                   <h3 className="font-semibold group-hover:text-primary">{c.name}</h3>
                   <div className="mt-2 flex items-center gap-3 text-sm text-muted">
