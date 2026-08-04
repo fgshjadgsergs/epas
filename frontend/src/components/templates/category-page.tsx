@@ -118,7 +118,7 @@ export function CategoryPage({
                 className="lift card-glow group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface hover:border-primary"
               >
                 {/* Фото продукта (public/img/catalog/<slug>.jpg); пока нет — заглушка. */}
-                <div className="photo-tint photo-halftone relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-surface-2 to-bg-2" aria-hidden>
+                <div className="photo-tint relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-surface-2 to-bg-2" aria-hidden>
                   {catalogImage(c.slug) && (
                     <Image
                       src={catalogImage(c.slug)!}
