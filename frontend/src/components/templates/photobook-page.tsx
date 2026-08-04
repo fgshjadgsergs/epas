@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -21,6 +22,7 @@ import { RelatedCard } from '@/components/catalog/related-card';
 import { PhotobookConfigurator } from '@/components/photobook/configurator';
 import { OccasionTabs } from '@/components/photobook/occasion-tabs';
 import { PhotobookExamples } from '@/components/photobook/examples-filter';
+import { catalogImage } from '@/lib/catalog/images';
 import { site } from '@/lib/site';
 import { faqItems, type SeoPage } from '@/data/seo';
 import { getBreadcrumbs, type CatalogNode } from '@/data/catalog';
@@ -159,11 +161,20 @@ export function PhotobookPage({ node, seo }: { node: CatalogNode; seo?: SeoPage 
         <Reveal as="div" stagger className="grid gap-4 md:grid-cols-3">
           {types.map((t, ti) => (
             <div key={t.id} className="card-glow lift group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface">
-              {/* Обложка-сцена: раскрытая книга в перспективе. */}
+              {/* Фото типа (public/img/catalog/fotoknigi/<id>.jpg); фолбэк — CSS-сцена. */}
               <div
                 className={`relative aspect-[16/10] overflow-hidden bg-gradient-to-br ${ti % 2 ? 'from-accent/15 via-surface-2 to-bg-2' : 'from-primary/15 via-surface-2 to-bg-2'}`}
                 aria-hidden
               >
+                {catalogImage(`/fotoknigi/${t.id}/`) && (
+                  <Image
+                    src={catalogImage(`/fotoknigi/${t.id}/`)!}
+                    alt=""
+                    fill
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    className="z-10 object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                )}
                 <div className="absolute inset-0 grid place-items-center">
                   <div className="grid h-1/2 w-2/3 grid-cols-2 gap-[2%] rounded-md bg-surface p-[3%] shadow-xl [transform:perspective(400px)_rotateX(18deg)] transition-transform duration-500 group-hover:[transform:perspective(400px)_rotateX(10deg)]">
                     <div className={`rounded-sm bg-gradient-to-br ${ti % 2 ? 'from-accent/40 to-primary/30' : 'from-primary/40 to-accent/30'}`} />
@@ -237,7 +248,14 @@ export function PhotobookPage({ node, seo }: { node: CatalogNode; seo?: SeoPage 
       {/* Виды фотокниг по поводу (ТЗ страницы фотокниги, блок 5). */}
       <Section>
         <SectionHeading title="Фотокнига по поводу" />
-        <OccasionTabs constructorHref={KONSTRUKTOR} />
+        <OccasionTabs
+          constructorHref={KONSTRUKTOR}
+          images={{
+            wedding: catalogImage('/fotoknigi/svadebnye/'),
+            kids: catalogImage('/fotoknigi/detskie/'),
+            grad: catalogImage('/fotoknigi/vypusknye-albomy/'),
+          }}
+        />
       </Section>
 
       {/* Как создать фотокнигу онлайн */}

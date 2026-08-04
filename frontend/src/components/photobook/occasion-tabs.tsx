@@ -64,7 +64,14 @@ const OCCASIONS = [
   },
 ];
 
-export function OccasionTabs({ constructorHref }: { constructorHref: string }) {
+export function OccasionTabs({
+  constructorHref,
+  images = {},
+}: {
+  constructorHref: string;
+  /** Фото по id повода (из public/img/catalog); нет — CSS-сцена. */
+  images?: Partial<Record<string, string | undefined>>;
+}) {
   return (
     <Tabs.Root defaultValue={OCCASIONS[0].id}>
       <Tabs.List
@@ -89,14 +96,24 @@ export function OccasionTabs({ constructorHref }: { constructorHref: string }) {
       {OCCASIONS.map((o) => (
         <Tabs.Content key={o.id} value={o.id} className="mt-6 focus:outline-none">
           <div className="grid items-center gap-6 overflow-hidden rounded-3xl border border-border bg-surface lg:grid-cols-[1fr_1.1fr]">
-            {/* Изображение работы (заглушка до реальных фото). */}
+            {/* Фото работы (public/img/catalog); фолбэк — CSS-сцена. */}
             <div className={cn('relative aspect-[4/3] bg-gradient-to-br lg:aspect-auto lg:h-full', o.tint)} aria-hidden>
-              <div className="absolute inset-0 grid place-items-center">
-                <div className="grid h-1/2 w-2/3 grid-cols-2 gap-[2%] rounded-md bg-surface p-[3%] shadow-xl [transform:perspective(500px)_rotateX(14deg)]">
-                  <div className="rounded-sm bg-gradient-to-br from-primary/40 to-accent/30" />
-                  <div className="rounded-sm bg-gradient-to-br from-accent/40 to-primary/30" />
+              {images[o.id] ? (
+                // eslint-disable-next-line @next/next/no-img-element -- клиентский компонент, файл уже оптимизирован
+                <img
+                  src={images[o.id]!}
+                  alt=""
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              ) : (
+                <div className="absolute inset-0 grid place-items-center">
+                  <div className="grid h-1/2 w-2/3 grid-cols-2 gap-[2%] rounded-md bg-surface p-[3%] shadow-xl [transform:perspective(500px)_rotateX(14deg)]">
+                    <div className="rounded-sm bg-gradient-to-br from-primary/40 to-accent/30" />
+                    <div className="rounded-sm bg-gradient-to-br from-accent/40 to-primary/30" />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             <div className="p-6 lg:p-8">
               <h3 className="text-xl font-bold sm:text-2xl">{o.title}</h3>
