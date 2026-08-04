@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { BadgePercent, Check, Clock3, Share2, TrendingDown, Upload, Wand2 } from 'lucide-react';
+import { ArrowRight, BadgePercent, Check, Clock3, Share2, TrendingDown, Upload, Wand2 } from 'lucide-react';
 import { cn, formatPrice } from '@/lib/utils';
 import { DEMO_PRICING_NOTICE, showDemoPricingNotice, type PricingMode } from '@/lib/demo-pricing';
 import type { CalcResult } from '@/lib/calc/pricing';
@@ -123,13 +123,24 @@ export function PricePanel({
         </div>
       </dl>
 
+      {/* Кнопки по ТЗ услуги (блок 3): основная «Перейти к оформлению» и
+          вторичная «Загрузить макет» — обе ведут в оформление: файл макета
+          прикрепляется к заказу на следующем шаге. */}
       <button
         onClick={onCheckout}
         disabled={checkoutDisabled}
         aria-disabled={checkoutDisabled}
         className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary font-semibold text-primary-fg hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-primary"
       >
-        <Upload size={17} /> Загрузить макет и заказать
+        Перейти к оформлению <ArrowRight size={17} />
+      </button>
+      <button
+        onClick={onCheckout}
+        disabled={checkoutDisabled}
+        aria-disabled={checkoutDisabled}
+        className="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-border text-sm font-medium hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        <Upload size={16} /> Загрузить макет
       </button>
       <button
         onClick={share}

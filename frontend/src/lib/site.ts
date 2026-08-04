@@ -24,6 +24,8 @@ export const site = {
     whatsapp: 'https://wa.me/74950000000',
   },
   rating: { value: 4.9, count: 1241, source: 'Яндекс.Карты' },
+  /** Внешняя страница отзывов на Яндекс.Картах (ТЗ: кнопка «Читать все отзывы»). */
+  reviewsUrl: 'https://yandex.ru/maps/org/kidsprint/reviews/',
   legal: { inn: '0000000000', ogrn: '0000000000000' },
   yandexMetrikaId: 0, // подставляется из env на проде
 } as const;

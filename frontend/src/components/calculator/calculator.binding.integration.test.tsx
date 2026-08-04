@@ -214,7 +214,7 @@ describe('Binding страниц-вариантов (/listovki/a4/)', () => {
     render(<Calculator slug="/listovki/a4/" name="Листовки A4" />);
     await screen.findByText('Евро (DL)');
     expect(screen.queryByText('Онлайн-расчёт временно недоступен')).toBeNull();
-    const checkoutButton = screen.getByRole('button', { name: /Загрузить макет и заказать/ });
+    const checkoutButton = screen.getByRole('button', { name: /Перейти к оформлению/ });
     await waitFor(() => expect(checkoutButton.hasAttribute('disabled')).toBe(false), { timeout: 3000 });
     // Confirm уходит на binding-slug родительской услуги.
     fireEvent.click(checkoutButton);

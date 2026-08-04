@@ -130,19 +130,20 @@ export default function HomePage() {
                 Рассчитать стоимость <ArrowRight size={18} />
               </Button>
               <Button href="/poligrafiya/" size="lg" variant="outline">
-                Посмотреть услуги
+                <Zap size={18} /> Срочная печать
               </Button>
               <Button href={site.phone.href} size="lg" variant="ghost">
                 <Phone size={18} /> Позвонить
               </Button>
             </Reveal>
 
-            {/* Мини-преимущества (макет): чипы вместо счётчиков — цифры в блоке «Почему мы». */}
+            {/* Строка доверия (ТЗ hero): рейтинг, количество заказов, годы работы. */}
             <Reveal delay={400} className="mt-9 flex flex-wrap gap-x-6 gap-y-3">
               {[
-                { icon: Zap, text: 'Изготовление от 1 часа' },
                 { icon: Star, text: `${site.rating.value} · ${site.rating.count} отзывов` },
-                { icon: PackageCheck, text: 'Доставка СДЭК и Почтой России' },
+                { icon: PackageCheck, text: '50 000+ выполненных заказов' },
+                { icon: BadgeCheck, text: '12 лет на рынке' },
+                { icon: Zap, text: 'Изготовление от 1 часа' },
               ].map((c) => (
                 <span key={c.text} className="inline-flex items-center gap-2 text-sm text-muted">
                   <c.icon size={15} className="text-primary" /> {c.text}
@@ -431,6 +432,17 @@ export default function HomePage() {
           ))}
           </MobileCarousel>
         </Reveal>
+        {/* Внешняя ссылка на все отзывы (ТЗ главной, блок 7). */}
+        <Reveal delay={120} className="mt-8 text-center">
+          <a
+            href={site.reviewsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-11 items-center gap-2 rounded-xl border border-border px-5 text-sm font-semibold text-fg hover:bg-surface-2"
+          >
+            <Star size={16} className="fill-warning text-warning" /> Читать все отзывы на Яндекс.Картах
+          </a>
+        </Reveal>
       </Section>
 
       {/* Блок 9 — Блог: обложки с дуотоном и тематическим водяным знаком. */}
@@ -600,6 +612,23 @@ export default function HomePage() {
         </div>
       </Section>
 
+      {/* Блок 11 — Pre-footer CTA (ТЗ главной). */}
+      <section className="border-t border-border bg-bg-2">
+        <Container className="flex flex-col items-center gap-5 py-14 text-center">
+          <h2 className="text-2xl font-bold sm:text-3xl">Рассчитайте стоимость за минуту</h2>
+          <p className="max-w-xl text-muted">
+            Выберите услугу, укажите параметры — калькулятор сразу покажет цену и дату готовности.
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button href="/poligrafiya/" size="lg">
+              Рассчитать стоимость <ArrowRight size={18} />
+            </Button>
+            <Button href={site.phone.href} size="lg" variant="outline">
+              <Phone size={18} /> Позвонить
+            </Button>
+          </div>
+        </Container>
+      </section>
     </>
   );
 }

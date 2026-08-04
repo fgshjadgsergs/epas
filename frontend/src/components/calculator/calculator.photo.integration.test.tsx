@@ -224,7 +224,7 @@ describe('Calculator «Фотопечать» + MULTI_QTY definition (integratio
   it('изменение количества делает результат stale и блокирует заказ до fresh', async () => {
     render(<Calculator slug={PAGE} name="Фотопечать" />);
     await screen.findByText('9×13 мини');
-    const checkoutButton = screen.getByRole('button', { name: /Загрузить макет и заказать/ });
+    const checkoutButton = screen.getByRole('button', { name: /Перейти к оформлению/ });
     await waitFor(() => expect(checkoutButton.hasAttribute('disabled')).toBe(false), { timeout: 3000 });
 
     postCalculateMock.mockImplementation(() => new Promise(() => undefined)); // сервер «завис»
@@ -238,7 +238,7 @@ describe('Calculator «Фотопечать» + MULTI_QTY definition (integratio
   it('confirm отправляет тот же формат-объект, что и calculate', async () => {
     render(<Calculator slug={PAGE} name="Фотопечать" />);
     await screen.findByText('9×13 мини');
-    const checkoutButton = screen.getByRole('button', { name: /Загрузить макет и заказать/ });
+    const checkoutButton = screen.getByRole('button', { name: /Перейти к оформлению/ });
     await waitFor(() => expect(checkoutButton.hasAttribute('disabled')).toBe(false), { timeout: 3000 });
     fireEvent.click(checkoutButton);
     await waitFor(() => expect(postConfirmMock).toHaveBeenCalledTimes(1));
@@ -254,6 +254,6 @@ describe('Calculator «Фотопечать» + MULTI_QTY definition (integratio
     getDefinitionMock.mockRejectedValue(new Error('offline'));
     render(<Calculator slug={PAGE} name="Фотопечать" />);
     expect(await screen.findByText('Онлайн-расчёт временно недоступен')).toBeTruthy();
-    expect(screen.queryByRole('button', { name: /Загрузить макет и заказать/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: /Перейти к оформлению/ })).toBeNull();
   });
 });

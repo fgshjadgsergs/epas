@@ -19,6 +19,8 @@ import { ReadMore } from '@/components/read-more';
 import { Reveal } from '@/components/reveal';
 import { RelatedCard } from '@/components/catalog/related-card';
 import { PhotobookConfigurator } from '@/components/photobook/configurator';
+import { OccasionTabs } from '@/components/photobook/occasion-tabs';
+import { PhotobookExamples } from '@/components/photobook/examples-filter';
 import { site } from '@/lib/site';
 import { faqItems, type SeoPage } from '@/data/seo';
 import { getBreadcrumbs, type CatalogNode } from '@/data/catalog';
@@ -55,42 +57,15 @@ const steps = [
   { icon: ShoppingCart, title: 'Оформите заказ', text: 'Доставка курьером, СДЭК и Почтой России по всей стране.' },
 ];
 
-/** Характеристики фотокниг — 3 колонки по переплётам (макет). */
-const specs = [
-  {
-    name: 'LayFlat',
-    rows: [
-      ['Переплёт', 'Ламинированный, без шва'],
-      ['Разворот', 'Плоский, панорама'],
-      ['Размеры', '20×20 … 30×30 см'],
-      ['Обложка', 'Твёрдая, фотопечать'],
-      ['Страницы', 'Плотные 170–200 г'],
-      ['Срок', 'от 7 дней'],
-    ],
-  },
-  {
-    name: 'Softcover',
-    rows: [
-      ['Переплёт', 'Мягкий, на клей'],
-      ['Разворот', 'С лёгким сгибом'],
-      ['Размеры', '20×20 … 30×30 см'],
-      ['Обложка', 'Мягкая, ламинация'],
-      ['Страницы', 'Мелованные 170 г'],
-      ['Срок', 'от 5 дней'],
-    ],
-  },
-  {
-    name: 'Hardcover',
-    rows: [
-      ['Переплёт', 'Твёрдый, клеевой'],
-      ['Разворот', 'С линией сгиба'],
-      ['Размеры', '20×20 … 30×30 см'],
-      ['Обложка', 'Фотопечать / кожзам / ткань'],
-      ['Страницы', 'Мелованные 170–200 г'],
-      ['Срок', 'от 6 дней'],
-    ],
-  },
-];
+/** Сравнение типов страниц (ТЗ страницы фотокниги, блок 8). */
+const pageTypes: { rows: [string, string, string, string][] } = {
+  rows: [
+    ['', 'Мелованная 170 г', 'Дизайнерская 200 г', 'Lay-flat'],
+    ['Шов посередине', 'Есть', 'Есть', 'Нет'],
+    ['Разворот', 'С лёгким сгибом', 'С лёгким сгибом', 'Плоский, панорама'],
+    ['Для чего', 'Обычные альбомы', 'Подарки', 'Свадьба, панорамы'],
+  ],
+};
 
 const reviews = [
   { name: 'Елена К.', date: '12 июня 2026', text: 'Заказали свадебную фотокнигу LayFlat — развороты плоские, фото на всю ширину. Печать отличная, рекомендую.' },
@@ -171,6 +146,12 @@ export function PhotobookPage({ node, seo }: { node: CatalogNode; seo?: SeoPage 
           </div>
         </Container>
       </section>
+
+      {/* Калькулятор — сразу после hero (ТЗ страницы фотокниги, блок 3). */}
+      <Section id="calc" className="scroll-mt-28">
+        <SectionHeading title="Рассчитайте стоимость" />
+        <PhotobookConfigurator />
+      </Section>
 
       {/* Выберите тип фотокниги */}
       <Section>
@@ -253,10 +234,10 @@ export function PhotobookPage({ node, seo }: { node: CatalogNode; seo?: SeoPage 
         </div>
       </Section>
 
-      {/* Параметры + цена */}
+      {/* Виды фотокниг по поводу (ТЗ страницы фотокниги, блок 5). */}
       <Section>
-        <SectionHeading title="Рассчитайте стоимость" />
-        <PhotobookConfigurator />
+        <SectionHeading title="Фотокнига по поводу" />
+        <OccasionTabs constructorHref={KONSTRUKTOR} />
       </Section>
 
       {/* Как создать фотокнигу онлайн */}
@@ -275,38 +256,45 @@ export function PhotobookPage({ node, seo }: { node: CatalogNode; seo?: SeoPage 
         </Reveal>
       </Section>
 
-      {/* Характеристики фотокниг — 3 колонки */}
-      <Section>
-        <SectionHeading title="Характеристики фотокниг" />
-        <Reveal as="div" stagger className="grid gap-4 md:grid-cols-3">
-          {specs.map((s) => (
-            <div key={s.name} className="card-glow lift rounded-2xl border border-border bg-surface p-6">
-              <h3 className="text-lg font-bold">{s.name}</h3>
-              <dl className="mt-4 space-y-2 text-sm">
-                {s.rows.map(([k, v]) => (
-                  <div key={k} className="flex justify-between gap-3 border-b border-border pb-2 last:border-0 last:pb-0">
-                    <dt className="text-muted">{k}</dt>
-                    <dd className="text-right font-medium">{v}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          ))}
+      {/* Примеры наших фотокниг — 8 работ с фильтром по тематике (ТЗ, блок 7). */}
+      <Section className="bg-bg-2">
+        <SectionHeading title="Примеры наших фотокниг" link={{ label: 'Всё портфолио', href: '/portfolio/' }} />
+        <Reveal>
+          <PhotobookExamples />
         </Reveal>
       </Section>
 
-      {/* Примеры наших фотокниг */}
-      <Section className="bg-bg-2">
-        <SectionHeading title="Примеры наших фотокниг" link={{ label: 'Всё портфолио', href: '/portfolio/' }} />
-        {/* Пустые карточки — сюда встанут реальные фотографии фотокниг. */}
-        <Reveal as="div" stagger className="grid grid-cols-2 gap-4 md:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div
-              key={i}
-              className="lift aspect-[4/3] rounded-2xl border border-border bg-gradient-to-br from-surface-2 to-bg-2"
-              aria-hidden
-            />
-          ))}
+      {/* Сравнение типов страниц (ТЗ, блок 8). */}
+      <Section>
+        <SectionHeading title="Сравнение типов страниц" />
+        <Reveal>
+          <div className="overflow-x-auto rounded-2xl border border-border">
+            <table className="w-full min-w-[560px] text-sm">
+              <thead>
+                <tr className="bg-surface-2 text-left">
+                  {pageTypes.rows[0].map((h, i) => (
+                    <th key={i} className="px-4 py-3 font-semibold sm:px-6">
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {pageTypes.rows.slice(1).map((row) => (
+                  <tr key={row[0]} className="row-hover bg-surface">
+                    {row.map((cell, i) => (
+                      <td
+                        key={i}
+                        className={`px-4 py-3.5 sm:px-6 ${i === 0 ? 'font-medium text-muted' : ''}`}
+                      >
+                        {cell}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </Reveal>
       </Section>
 

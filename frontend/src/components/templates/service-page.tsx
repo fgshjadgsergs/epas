@@ -45,6 +45,15 @@ import { getBreadcrumbs, getSiblings, type CatalogNode } from '@/data/catalog';
  * 9) перелинковка на смежные услуги; 10) CTA.
  */
 
+/** Анкор-навигация (ТЗ услуги, блок 1): Калькулятор | Описание | Примеры | Отзывы | FAQ. */
+const anchors = [
+  { id: 'calculator', label: 'Калькулятор' },
+  { id: 'description', label: 'Описание' },
+  { id: 'examples', label: 'Примеры работ' },
+  { id: 'reviews', label: 'Отзывы' },
+  { id: 'faq', label: 'FAQ' },
+];
+
 const steps = [
   { icon: FileCheck2, title: 'Рассчитайте цену', text: 'Выберите параметры в калькуляторе — цена и дата готовности обновляются сразу' },
   { icon: Download, title: 'Загрузите макет', text: 'PDF/AI/CDR с вылетами 3 мм — или закажите дизайн от 500 ₽' },
@@ -152,6 +161,13 @@ export function ServicePage({ node, seo }: { node: CatalogNode; seo?: SeoPage })
                 <Clock size={14} className="text-primary" /> срок {node.term}
               </span>
             )}
+            {/* Тираж и доставка — обязательные параметры строки (ТЗ услуги, блок 2). */}
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-sm">
+              <Layers size={14} className="text-primary" /> тираж от {minQty.toLocaleString('ru-RU')} шт.
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-sm">
+              <Truck size={14} className="text-primary" /> доставка по России
+            </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-sm text-success">
               <BadgePercent size={14} /> скидка 5% за онлайн-заказ
             </span>
@@ -169,6 +185,24 @@ export function ServicePage({ node, seo }: { node: CatalogNode; seo?: SeoPage })
             </Button>
           </div>
           </Reveal>
+        </Container>
+      </div>
+
+      {/* Анкор-навигация (ТЗ услуги, блок 1): sticky ниже хедера,
+          на мобиле — горизонтальный скролл без переноса. */}
+      <div className="sticky top-[104px] z-30 border-y border-border bg-bg/95 backdrop-blur lg:top-[112px]">
+        <Container>
+          <nav aria-label="Разделы страницы" className="no-scrollbar flex gap-1 overflow-x-auto">
+            {anchors.map((a) => (
+              <a
+                key={a.id}
+                href={`#${a.id}`}
+                className="whitespace-nowrap px-3 py-3 text-sm font-medium text-muted hover:text-fg"
+              >
+                {a.label}
+              </a>
+            ))}
+          </nav>
         </Container>
       </div>
 
@@ -241,14 +275,18 @@ export function ServicePage({ node, seo }: { node: CatalogNode; seo?: SeoPage })
       {/* Примеры работ */}
       <Section id="examples" className="scroll-mt-28 bg-bg-2">
         <SectionHeading title="Примеры наших работ" />
-        {/* Крупные карточки под реальные фото + плитка «Всё портфолио» с шевронами. */}
+        {/* Карточки под реальные фото с подписью «название + техника»
+            (ТЗ услуги, блок 6) + плитка «Всё портфолио» с шевронами. */}
         <Reveal as="div" stagger className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div
-              key={i}
-              className="lift aspect-square rounded-2xl border border-border bg-gradient-to-br from-surface-2 to-bg-2"
-              aria-hidden
-            />
+          {['Цифровая печать', 'Офсетная печать', 'Премиум-отделка'].map((tech) => (
+            <figure
+              key={tech}
+              className="lift relative aspect-square overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-surface-2 to-bg-2"
+            >
+              <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-bg/90 to-transparent p-3 pt-8 text-xs font-medium">
+                {node.name} — {tech}
+              </figcaption>
+            </figure>
           ))}
           <PortfolioTile className="aspect-square" />
         </Reveal>
@@ -299,6 +337,17 @@ export function ServicePage({ node, seo }: { node: CatalogNode; seo?: SeoPage })
             </figure>
           ))}
         </Reveal>
+        {/* Внешняя ссылка на все отзывы (ТЗ услуги, блок 7). */}
+        <div className="mt-8 text-center">
+          <a
+            href={site.reviewsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-11 items-center gap-2 rounded-xl border border-border px-5 text-sm font-semibold text-fg hover:bg-surface-2"
+          >
+            <Star size={16} className="fill-warning text-warning" /> Все отзывы на Яндекс.Картах
+          </a>
+        </div>
       </Section>
 
       {/* SEO-текст + FAQ — две колонки (макет страницы услуги). */}

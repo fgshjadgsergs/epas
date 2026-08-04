@@ -248,7 +248,7 @@ describe('Calculator «Листовки» + backend definition (integration)', (
   it('checkout отправляет точный вход листовок: параметры definition + upsells', async () => {
     render(<Calculator slug="/listovki/" name="Листовки" />);
     await screen.findByText('A7 мини');
-    const checkoutButton = screen.getByRole('button', { name: /Загрузить макет и заказать/ });
+    const checkoutButton = screen.getByRole('button', { name: /Перейти к оформлению/ });
     await waitFor(() => expect(checkoutButton.hasAttribute('disabled')).toBe(false), { timeout: 3000 });
 
     fireEvent.click(screen.getByRole('button', { name: /Нумерация/ }));
@@ -278,6 +278,6 @@ describe('Calculator «Листовки» + backend definition (integration)', (
     getDefinitionMock.mockRejectedValue(new Error('offline'));
     render(<Calculator slug="/listovki/" name="Листовки" />);
     expect(await screen.findByText('Онлайн-расчёт временно недоступен')).toBeTruthy();
-    expect(screen.queryByRole('button', { name: /Загрузить макет и заказать/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: /Перейти к оформлению/ })).toBeNull();
   });
 });

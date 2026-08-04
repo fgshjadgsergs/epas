@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Calculator, Download, LayoutGrid, Phone, Upload } from 'lucide-react';
+import { ArrowRight, Calculator, Clock, Download, LayoutGrid, MessageCircle, Phone, Upload } from 'lucide-react';
 import { Container } from '@/components/ui/container';
 import { Section, SectionHeading } from '@/components/ui/section';
 import { Button } from '@/components/ui/button';
@@ -14,8 +14,9 @@ import { PortfolioTile } from '@/components/catalog/portfolio-tile';
 import { RelatedCard } from '@/components/catalog/related-card';
 import { deriveFacets } from '@/lib/catalog/facets';
 import { site } from '@/lib/site';
-import { faqItems, type SeoPage } from '@/data/seo';
+import { faqItems, getSeo, type SeoPage } from '@/data/seo';
 import { getBreadcrumbs, getRelatedSections, type CatalogNode } from '@/data/catalog';
+import { getPopularOrders } from '@/data/popular-orders';
 
 export function CategoryPage({
   node,
@@ -32,6 +33,22 @@ export function CategoryPage({
   const nameLower = node.name.toLowerCase();
   const related = getRelatedSections(node.slug);
   const paragraphs = seo?.seoText ? seo.seoText.split(/(?<=\.)\s+(?=[А-ЯA-Z])/) : [];
+  const popular = getPopularOrders(node.slug);
+
+  // SEO-текст с H3-структурой (ТЗ категории, блок 10): вступление + три
+  // подраздела; абзацы после первого распределяются по подзаголовкам.
+  const seoIntro = paragraphs[0];
+  const seoRest = paragraphs.slice(1);
+  const seoSections: { h3: string; text: string }[] =
+    seoRest.length >= 3
+      ? ['Что входит в категорию', 'Сроки и стоимость', 'Как заказать онлайн'].map((h3, i, arr) => {
+          const per = Math.ceil(seoRest.length / arr.length);
+          return { h3, text: seoRest.slice(i * per, (i + 1) * per).join(' ') };
+        }).filter((s) => s.text)
+      : [];
+
+  /** Краткое описание подкатегории (1 строка) — первое предложение её SEO-описания. */
+  const briefOf = (slug: string) => getSeo(slug)?.description?.split(/(?<=\.)\s/)[0];
 
   const steps = [
     { icon: LayoutGrid, title: 'Выберите вид', text: `Подберите подходящий вид: ${nameLower} — в каталоге выше.` },
@@ -97,7 +114,18 @@ export function CategoryPage({
                 <div className="aspect-[4/3] bg-gradient-to-br from-surface-2 to-bg-2" aria-hidden />
                 <div className="flex flex-1 flex-col p-5">
                   <h3 className="font-semibold group-hover:text-primary">{c.name}</h3>
-                  {c.priceFrom && <p className="mt-1 text-sm font-semibold text-fg">{c.priceFrom}</p>}
+                  {/* Краткое описание в 1 строку (ТЗ категории, блок 3). */}
+                  {briefOf(c.slug) && (
+                    <p className="mt-1 line-clamp-1 text-xs text-muted">{briefOf(c.slug)}</p>
+                  )}
+                  <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                    {c.priceFrom && <span className="text-sm font-semibold text-fg">{c.priceFrom}</span>}
+                    {c.term && (
+                      <span className="inline-flex items-center gap-1 text-xs text-muted">
+                        <Clock size={12} className="text-primary" /> {c.term}
+                      </span>
+                    )}
+                  </div>
                   <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary">
                     Рассчитать
                     <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
@@ -124,6 +152,26 @@ export function CategoryPage({
       <Section>
         <SectionHeading title={`Почему заказывают ${nameLower} у нас`} />
         <WhyUsShowcase />
+      </Section>
+
+      {/* Популярные заказы — готовые конфигурации (ТЗ категории, блок 5). */}
+      <Section className="pt-0">
+        <SectionHeading title="Популярные заказы" />
+        <Reveal as="div" stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {popular.map((p) => (
+            <div
+              key={p.title + p.href}
+              className="card-glow lift flex flex-col rounded-2xl border border-border bg-surface p-5"
+            >
+              <h3 className="font-semibold">{p.title}</h3>
+              <p className="mt-1 flex-1 text-xs text-muted">{p.params}</p>
+              <p className="mt-3 text-xl font-extrabold tracking-tight">{p.price}</p>
+              <Button href={p.href} size="sm" className="mt-3 self-start">
+                Заказать <ArrowRight size={14} />
+              </Button>
+            </div>
+          ))}
+        </Reveal>
       </Section>
 
       {/* Примеры наших работ: крупные карточки под реальные фото + кликабельная
@@ -188,9 +236,18 @@ export function CategoryPage({
                 <h2 className="mb-4 text-2xl font-bold">Подробнее о разделе</h2>
                 <ReadMore>
                   <div className="space-y-3 text-muted">
-                    {paragraphs.map((p, i) => (
-                      <p key={i}>{p}</p>
-                    ))}
+                    {seoIntro && <p>{seoIntro}</p>}
+                    {/* H3-структура SEO-текста (ТЗ категории, блок 10). */}
+                    {seoSections.length > 0 ? (
+                      seoSections.map((s) => (
+                        <div key={s.h3}>
+                          <h3 className="mb-1.5 mt-4 text-base font-semibold text-fg">{s.h3}</h3>
+                          <p>{s.text}</p>
+                        </div>
+                      ))
+                    ) : (
+                      seoRest.map((p, i) => <p key={i}>{p}</p>)
+                    )}
                   </div>
                 </ReadMore>
               </div>
@@ -216,6 +273,29 @@ export function CategoryPage({
           </Reveal>
         </Section>
       )}
+
+      {/* Pre-footer CTA категории (ТЗ, блок 9): помощь с выбором. */}
+      <section className="border-t border-border">
+        <Container className="flex flex-col items-center gap-5 py-14 text-center">
+          <h2 className="text-2xl font-bold sm:text-3xl">Поможем выбрать и рассчитать</h2>
+          <p className="max-w-xl text-muted">
+            Не уверены, какой вариант подойдёт? Менеджер подберёт материалы, тираж и срок под вашу задачу.
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button href={site.phone.href} size="lg">
+              <Phone size={18} /> Позвонить
+            </Button>
+            <a
+              href={site.socials.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-12 items-center gap-2 rounded-xl border border-border px-6 text-base font-semibold text-fg hover:bg-surface-2"
+            >
+              <MessageCircle size={18} className="text-success" /> Написать в WhatsApp
+            </a>
+          </div>
+        </Container>
+      </section>
     </>
   );
 }

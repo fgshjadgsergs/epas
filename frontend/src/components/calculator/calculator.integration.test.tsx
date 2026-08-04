@@ -180,7 +180,7 @@ describe('Calculator + backend definition (integration)', () => {
     await screen.findByText('Дизайнерская премиум');
 
     // Дожидаемся свежего серверного расчёта (debounce 300 мс + ответ).
-    const checkoutButton = screen.getByRole('button', { name: /Загрузить макет и заказать/ });
+    const checkoutButton = screen.getByRole('button', { name: /Перейти к оформлению/ });
     await waitFor(() => expect(checkoutButton.hasAttribute('disabled')).toBe(false), { timeout: 3000 });
 
     // Включаем upsell → цена пересчитывается → снова ждём разблокировки.
@@ -210,7 +210,7 @@ describe('Calculator + backend definition (integration)', () => {
     postCalculateMock.mockImplementation(() => new Promise(() => undefined));
     render(<Calculator slug="/vizitki/" name="Визитки" />);
     await screen.findByText('Дизайнерская премиум');
-    const checkoutButton = screen.getByRole('button', { name: /Загрузить макет и заказать/ });
+    const checkoutButton = screen.getByRole('button', { name: /Перейти к оформлению/ });
     await new Promise((r) => setTimeout(r, 500));
     expect(checkoutButton.hasAttribute('disabled')).toBe(true);
     expect(postConfirmMock).not.toHaveBeenCalled();
@@ -222,6 +222,6 @@ describe('Calculator + backend definition (integration)', () => {
     render(<Calculator slug="/vizitki/" name="Визитки" />);
     expect(await screen.findByText('Онлайн-расчёт временно недоступен')).toBeTruthy();
     // PricePanel с кнопкой заказа не рендерится вовсе.
-    expect(screen.queryByRole('button', { name: /Загрузить макет и заказать/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: /Перейти к оформлению/ })).toBeNull();
   });
 });
