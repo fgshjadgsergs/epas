@@ -16,7 +16,14 @@ export function ThemeToggle({ className }: { className?: string }) {
   const isLight = resolvedTheme === 'light';
   const next = isLight ? 'dark' : 'light';
   const Icon = isLight ? Moon : Sun;
-  const label = isLight ? 'Включить тёмную тему «Чернила»' : 'Включить светлую тему «Бумага»';
+  // До маунта тема неизвестна, а сервер всегда рендерит вариант тёмной темы.
+  // Нейтральная подпись до гидратации — иначе React ругается на расхождение
+  // aria-label у посетителя со светлой темой.
+  const label = mounted
+    ? isLight
+      ? 'Включить тёмную тему «Чернила»'
+      : 'Включить светлую тему «Бумага»'
+    : 'Переключить тему';
 
   return (
     <button
