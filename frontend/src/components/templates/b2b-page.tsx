@@ -504,14 +504,14 @@ export function B2BPage({ node, seo }: { node: CatalogNode; seo?: SeoPage }) {
       </Section>
 
       {/* Заявка — тёмный CTA с формой */}
-      <section id="request" className="scroll-mt-24 border-y border-border bg-[rgb(13_17_28)] text-[rgb(244_247_250)]">
+      <section id="request" className="scroll-mt-24 border-y border-border bg-[rgb(18_16_23)] text-[rgb(248_246_250)]">
         <Container className="py-14 lg:py-20">
           <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
             <Reveal>
               <h2 className="text-2xl font-bold sm:text-3xl">
                 Запросите коммерческое предложение
               </h2>
-              <p className="mt-4 max-w-md text-[rgb(154_167_189)]">
+              <p className="mt-4 max-w-md text-[rgb(169_163_181)]">
                 Опишите, что нужно напечатать. Менеджер рассчитает стоимость и подготовит коммерческое
                 предложение с учётом тиража и сроков.
               </p>
@@ -524,25 +524,25 @@ export function B2BPage({ node, seo }: { node: CatalogNode; seo?: SeoPage }) {
               </ul>
 
               {/* Прямые контакты менеджера (ТЗ B2B, блок 4). */}
-              <div className="mt-8 flex flex-wrap items-center gap-4 rounded-2xl border border-[rgb(42_52_71)] bg-[rgb(19_25_38)] p-5">
+              <div className="mt-8 flex flex-wrap items-center gap-4 rounded-2xl border border-[rgb(58_52_72)] bg-[rgb(31_27_39)] p-5">
                 <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-gradient-to-br from-primary to-accent text-lg font-bold text-white">
                   {manager.initials}
                 </span>
                 <div className="min-w-0">
                   <p className="font-semibold">{manager.name}</p>
-                  <p className="text-xs text-[rgb(154_167_189)]">{manager.role}</p>
+                  <p className="text-xs text-[rgb(169_163_181)]">{manager.role}</p>
                   <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
                     <a href={manager.phone.href} className="font-medium hover:text-accent">
                       {manager.phone.display}
                     </a>
-                    <a href={`mailto:${manager.email}`} className="text-[rgb(154_167_189)] hover:text-accent">
+                    <a href={`mailto:${manager.email}`} className="text-[rgb(169_163_181)] hover:text-accent">
                       {manager.email}
                     </a>
                     <span className="flex gap-3">
-                      <a href={site.socials.whatsapp} target="_blank" rel="noopener noreferrer" className="text-[rgb(154_167_189)] hover:text-accent">
+                      <a href={site.socials.whatsapp} target="_blank" rel="noopener noreferrer" className="text-[rgb(169_163_181)] hover:text-accent">
                         WhatsApp
                       </a>
-                      <a href={site.socials.telegram} target="_blank" rel="noopener noreferrer" className="text-[rgb(154_167_189)] hover:text-accent">
+                      <a href={site.socials.telegram} target="_blank" rel="noopener noreferrer" className="text-[rgb(169_163_181)] hover:text-accent">
                         Telegram
                       </a>
                     </span>
@@ -553,7 +553,7 @@ export function B2BPage({ node, seo }: { node: CatalogNode; seo?: SeoPage }) {
 
             <Reveal delay={120}>
               <form
-                className="rounded-2xl border border-[rgb(42_52_71)] bg-[rgb(19_25_38)] p-6 lg:p-8"
+                className="rounded-2xl border border-[rgb(58_52_72)] bg-[rgb(31_27_39)] p-6 lg:p-8"
                 aria-label="Заявка на коммерческое предложение"
               >
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -563,27 +563,27 @@ export function B2BPage({ node, seo }: { node: CatalogNode; seo?: SeoPage }) {
                   <DarkField label="E-mail" required type="email" />
                 </div>
                 <label className="mt-4 block text-sm">
-                  <span className="mb-1.5 block text-[rgb(154_167_189)]">Что нужно напечатать *</span>
+                  <span className="mb-1.5 block text-[rgb(169_163_181)]">Что нужно напечатать *</span>
                   <textarea
                     rows={3}
-                    className="w-full rounded-xl border border-[rgb(42_52_71)] bg-[rgb(13_17_28)] px-3 py-2 text-[rgb(244_247_250)] outline-none focus:border-accent"
+                    className="w-full rounded-xl border border-[rgb(58_52_72)] bg-[rgb(18_16_23)] px-3 py-2 text-[rgb(248_246_250)] outline-none focus:border-accent"
                   />
                 </label>
                 <label className="mt-4 block text-sm">
-                  <span className="mb-1.5 block text-[rgb(154_167_189)]">Примерный тираж / объём</span>
+                  <span className="mb-1.5 block text-[rgb(169_163_181)]">Примерный тираж / объём</span>
                   <textarea
                     rows={2}
-                    className="w-full rounded-xl border border-[rgb(42_52_71)] bg-[rgb(13_17_28)] px-3 py-2 text-[rgb(244_247_250)] outline-none focus:border-accent"
+                    className="w-full rounded-xl border border-[rgb(58_52_72)] bg-[rgb(18_16_23)] px-3 py-2 text-[rgb(248_246_250)] outline-none focus:border-accent"
                   />
                 </label>
                 <label className="mt-4 block text-sm">
-                  <span className="mb-1.5 block text-[rgb(154_167_189)]">Прикрепить файл (макет, ТЗ)</span>
+                  <span className="mb-1.5 block text-[rgb(169_163_181)]">Прикрепить файл (макет, ТЗ)</span>
                   <input
                     type="file"
-                    className="w-full cursor-pointer rounded-xl border border-dashed border-[rgb(42_52_71)] bg-[rgb(13_17_28)] px-3 py-2.5 text-sm text-[rgb(154_167_189)] file:mr-3 file:rounded-lg file:border-0 file:bg-[rgb(42_52_71)] file:px-3 file:py-1.5 file:text-[rgb(244_247_250)]"
+                    className="w-full cursor-pointer rounded-xl border border-dashed border-[rgb(58_52_72)] bg-[rgb(18_16_23)] px-3 py-2.5 text-sm text-[rgb(169_163_181)] file:mr-3 file:rounded-lg file:border-0 file:bg-[rgb(58_52_72)] file:px-3 file:py-1.5 file:text-[rgb(248_246_250)]"
                   />
                 </label>
-                <label className="mt-3 flex items-start gap-2 text-sm text-[rgb(154_167_189)]">
+                <label className="mt-3 flex items-start gap-2 text-sm text-[rgb(169_163_181)]">
                   <input type="checkbox" className="mt-1" />
                   <span>
                     Согласен на{' '}
@@ -600,7 +600,7 @@ export function B2BPage({ node, seo }: { node: CatalogNode; seo?: SeoPage }) {
                 <Button type="button" className="mt-5 w-full">
                   <Send size={17} /> Отправить запрос
                 </Button>
-                <p className="mt-3 text-center text-xs text-[rgb(110_122_143)]">
+                <p className="mt-3 text-center text-xs text-[rgb(122_116_136)]">
                   Ответим в течение 1 рабочего часа
                 </p>
               </form>
@@ -727,12 +727,12 @@ export function B2BPage({ node, seo }: { node: CatalogNode; seo?: SeoPage }) {
 function DarkField({ label, required, type = 'text' }: { label: string; required?: boolean; type?: string }) {
   return (
     <label className="block text-sm">
-      <span className="mb-1.5 block text-[rgb(154_167_189)]">
+      <span className="mb-1.5 block text-[rgb(169_163_181)]">
         {label} {required && '*'}
       </span>
       <input
         type={type}
-        className="h-11 w-full rounded-xl border border-[rgb(42_52_71)] bg-[rgb(13_17_28)] px-3 text-[rgb(244_247_250)] outline-none focus:border-accent"
+        className="h-11 w-full rounded-xl border border-[rgb(58_52_72)] bg-[rgb(18_16_23)] px-3 text-[rgb(248_246_250)] outline-none focus:border-accent"
       />
     </label>
   );

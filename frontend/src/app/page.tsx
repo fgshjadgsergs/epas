@@ -501,7 +501,7 @@ export default function HomePage() {
 
       {/* Блок 10 — Для бизнеса (макет): полноширинная тёмная секция с кнопками
           «Оставить заявку» и «Узнать условия». Цвета фиксированы для обеих тем. */}
-      <section className="relative overflow-hidden border-y border-border bg-[rgb(10_14_24)] text-[rgb(244_247_250)]">
+      <section className="relative overflow-hidden border-y border-border bg-[rgb(15_13_20)] text-[rgb(248_246_250)]">
         <div
           aria-hidden
           className="aurora-b pointer-events-none absolute -right-24 -top-28 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgb(var(--accent)/0.22),transparent_70%)] blur-2xl"
@@ -524,13 +524,13 @@ export default function HomePage() {
               <h2 className="mt-4 text-2xl font-bold sm:text-3xl lg:text-4xl">
                 Работаем с <span className="text-gradient">юридическими лицами</span>
               </h2>
-              <p className="mt-3 max-w-xl text-[rgb(154_167_189)]">
+              <p className="mt-3 max-w-xl text-[rgb(169_163_181)]">
                 Выставляем счёт, работаем с НДС 20%, закрывающие документы — Диадок и СБИС. Персональный
                 менеджер и оптовые цены от 10 шт.
               </p>
               <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
                 {b2bPerks.map((p) => (
-                  <li key={p} className="flex items-center gap-2 text-sm text-[rgb(154_167_189)]">
+                  <li key={p} className="flex items-center gap-2 text-sm text-[rgb(169_163_181)]">
                     <BadgeCheck size={16} className="shrink-0 text-success" /> {p}
                   </li>
                 ))}
@@ -543,7 +543,7 @@ export default function HomePage() {
                   href="/dlya-biznesa-b2b/"
                   size="lg"
                   variant="outline"
-                  className="border-white/25 text-[rgb(244_247_250)] hover:bg-white/10"
+                  className="border-white/25 text-[rgb(248_246_250)] hover:bg-white/10"
                 >
                   Узнать условия
                 </Button>
@@ -557,20 +557,20 @@ export default function HomePage() {
                 strokeWidth={0.6}
                 className="absolute -bottom-6 -right-4 -rotate-6 text-accent opacity-[0.08]"
               />
-              <div className="float-b absolute left-4 top-10 h-56 w-44 -rotate-6 rounded-xl border border-white/10 bg-[rgb(19_25_38)] p-4 shadow-[0_32px_64px_-24px_rgb(0_0_0/0.8)]">
-                <div className="h-2 w-16 rounded-full bg-[rgb(42_52_71)]" />
+              <div className="float-b absolute left-4 top-10 h-56 w-44 -rotate-6 rounded-xl border border-white/10 bg-[rgb(31_27_39)] p-4 shadow-[0_32px_64px_-24px_rgb(0_0_0/0.8)]">
+                <div className="h-2 w-16 rounded-full bg-[rgb(58_52_72)]" />
                 <div className="mt-2.5 space-y-1.5">
                   {[24, 28, 20, 26, 16].map((w, j) => (
-                    <div key={j} className="h-1.5 rounded-full bg-[rgb(42_52_71)]" style={{ width: `${w * 4}px` }} />
+                    <div key={j} className="h-1.5 rounded-full bg-[rgb(58_52_72)]" style={{ width: `${w * 4}px` }} />
                   ))}
                 </div>
-                <div className="mt-4 h-1.5 w-20 rounded-full bg-[rgb(42_52_71)]" />
+                <div className="mt-4 h-1.5 w-20 rounded-full bg-[rgb(58_52_72)]" />
               </div>
-              <div className="float-a absolute right-2 top-0 h-60 w-48 rotate-3 rounded-xl border border-white/10 bg-[rgb(26_34_51)] p-4 shadow-[0_32px_64px_-24px_rgb(0_0_0/0.8)]">
+              <div className="float-a absolute right-2 top-0 h-60 w-48 rotate-3 rounded-xl border border-white/10 bg-[rgb(41_36_52)] p-4 shadow-[0_32px_64px_-24px_rgb(0_0_0/0.8)]">
                 <div className="h-2 w-24 rounded-full bg-gradient-to-r from-primary to-accent" />
                 <div className="mt-3 space-y-1.5">
                   {[30, 24, 28, 18, 26, 22].map((w, j) => (
-                    <div key={j} className="h-1.5 rounded-full bg-[rgb(42_52_71)]" style={{ width: `${w * 4}px` }} />
+                    <div key={j} className="h-1.5 rounded-full bg-[rgb(58_52_72)]" style={{ width: `${w * 4}px` }} />
                   ))}
                 </div>
                 {/* Печать организации */}
@@ -579,7 +579,7 @@ export default function HomePage() {
                     НДС
                   </div>
                 </div>
-                <div className="absolute bottom-6 left-4 h-1.5 w-16 rounded-full bg-[rgb(42_52_71)]" />
+                <div className="absolute bottom-6 left-4 h-1.5 w-16 rounded-full bg-[rgb(58_52_72)]" />
               </div>
             </Reveal>
           </div>

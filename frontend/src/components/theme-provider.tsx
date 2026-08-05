@@ -3,17 +3,14 @@
 import { ThemeProvider as NextThemeProvider } from 'next-themes';
 import type { ReactNode } from 'react';
 
-/** Тёмная тема (PrintOS) — по умолчанию; светлая — равноправный вариант.
- * «gold» и «gold-light» — временные экспериментальные темы
- * (шампанское золото на чёрном и на тёплом светлом).
- * «cmyk» и «cmyk-light» — «Чернила и бумага»: маджента + циан
- * (краски печатной машины) на чернильном и тёпло-бумажном фоне. */
+/** Две темы «Чернила и бумага»: маджента + циан (краски печатной машины)
+ * на чернильном и тёпло-бумажном фоне. Тёмная — по умолчанию. */
 export function ThemeProvider({ children }: { children: ReactNode }) {
   return (
     <NextThemeProvider
       attribute="data-theme"
       defaultTheme="dark"
-      themes={['dark', 'light', 'gold', 'gold-light', 'cmyk', 'cmyk-light']}
+      themes={['dark', 'light']}
       enableSystem={false}
       disableTransitionOnChange
     >
