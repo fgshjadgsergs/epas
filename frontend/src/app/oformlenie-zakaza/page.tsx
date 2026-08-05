@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { CheckoutView } from '@/components/commerce/checkout-view';
 
 export const metadata: Metadata = {
-  title: 'Оформление заказа — КИДС-ПРИНТ',
+  title: 'Оформление заказа — ПРИНТЕРА',
   robots: { index: false, follow: true },
 };
 

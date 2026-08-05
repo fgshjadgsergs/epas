@@ -167,7 +167,7 @@ const manager = {
   role: 'Менеджер по работе с юрлицами',
   initials: 'АС',
   phone: site.phone,
-  email: 'b2b@kidsprint.ru',
+  email: 'b2b@printera.ru',
 };
 
 /** Логотипы компаний-клиентов (ТЗ B2B, блок 6) — текстовые заглушки до реальных. */

@@ -1,4 +1,4 @@
-# Production deployment (KidsPrint)
+# Production deployment (PRINTERA)
 
 Боевой контур. Демонстрационные цены запрещены (`APP_ENV=production`,
 `ALLOW_DEMO_PRICING=false`). Для публичного демо-стенда см. `STAGING_DEPLOY.md`.

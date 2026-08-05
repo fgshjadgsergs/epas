@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { ChevronDown, Menu, X } from 'lucide-react';
 import { mainNav, type NavItem } from '@/data/navigation';
-import { site } from '@/lib/site';
+import { Wordmark } from './logo';
 import { cn } from '@/lib/utils';
 
 /**
@@ -37,10 +37,7 @@ export function MobileMenu({ nav = mainNav }: { nav?: NavItem[] }) {
           aria-label="Мобильное меню"
         >
           <div className="flex items-center justify-between border-b border-border px-4 py-3">
-            <span className="font-bold">
-              {site.name.split('-')[0]}
-              <span className="text-primary">-ПРИНТ</span>
-            </span>
+            <Wordmark className="font-bold" />
             <Dialog.Close asChild>
               <button
                 type="button"

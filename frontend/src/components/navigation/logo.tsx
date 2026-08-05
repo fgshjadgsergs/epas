@@ -2,7 +2,19 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { site } from '@/lib/site';
 
-/** Текстовый логотип КИДС-ПРИНТ (SVG-лого подставится позже). */
+/**
+ * Текстовый вордмарк: «ПРИНТ» + акцентное «ЕРА» (SVG-лого подставится позже).
+ * Вынесен отдельно, чтобы шапка и мобильное меню писали название одинаково.
+ */
+export function Wordmark({ className, white }: { className?: string; white?: boolean }) {
+  return (
+    <span className={cn(className, white && 'text-white')}>
+      ПРИНТ<span className="text-primary">ЕРА</span>
+    </span>
+  );
+}
+
+/** Текстовый логотип ПРИНТЕРА (SVG-лого подставится позже). */
 export function Logo({ className, white }: { className?: string; white?: boolean }) {
   return (
     <Link
@@ -14,11 +26,9 @@ export function Logo({ className, white }: { className?: string; white?: boolean
         aria-hidden
         className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-fg text-sm font-black"
       >
-        К
+        П
       </span>
-      <span className={cn('text-lg', white && 'text-white')}>
-        КИДС<span className="text-primary">-ПРИНТ</span>
-      </span>
+      <Wordmark className="text-lg" white={white} />
     </Link>
   );
 }

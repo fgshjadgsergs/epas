@@ -1,4 +1,4 @@
-# Release checklist (KidsPrint Core MVP)
+# Release checklist (PRINTERA Core MVP)
 
 Технические release-fixes стадии 9/9 выполнены. Оставшиеся блокеры —
 **бизнес-данные**, не код. Подробный деплой — `DEPLOYMENT.md`.

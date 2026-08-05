@@ -12,7 +12,7 @@ import { OrganizationJsonLd } from '@/components/seo/json-ld';
 // HTML-карта сайта (ТЗ «Общие технические требования», п.10). Индексируется.
 export const metadata: Metadata = buildMetadata({
   title: 'Карта сайта',
-  description: 'Полный каталог ссылок на все разделы, категории и услуги КИДС-ПРИНТ.',
+  description: 'Полный каталог ссылок на все разделы, категории и услуги ПРИНТЕРА.',
   path: '/karta-sayta-html/',
 });
 

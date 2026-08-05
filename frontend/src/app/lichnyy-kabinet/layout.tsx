@@ -4,7 +4,7 @@ import { Reveal } from '@/components/reveal';
 import { AccountNav } from '@/components/account/account-nav';
 
 export const metadata: Metadata = {
-  title: 'Личный кабинет — КИДС-ПРИНТ',
+  title: 'Личный кабинет — ПРИНТЕРА',
   robots: { index: false, follow: true },
 };
 

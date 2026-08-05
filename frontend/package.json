@@ -2,7 +2,7 @@
   "name": "kids-print",
   "version": "0.1.0",
   "private": true,
-  "description": "КИДС-ПРИНТ — онлайн-типография. Фронтенд на Next.js (App Router).",
+  "description": "ПРИНТЕРА — онлайн-типография. Фронтенд на Next.js (App Router).",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

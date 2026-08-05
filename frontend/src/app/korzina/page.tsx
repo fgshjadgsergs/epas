@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { CartView } from '@/components/commerce/cart-view';
 
 export const metadata: Metadata = {
-  title: 'Корзина — КИДС-ПРИНТ',
+  title: 'Корзина — ПРИНТЕРА',
   robots: { index: false, follow: true },
 };
 

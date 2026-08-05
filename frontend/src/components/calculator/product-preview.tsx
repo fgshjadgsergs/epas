@@ -150,9 +150,9 @@ function CardPreview({ config, state }: { config: CalcConfig; state: CalcState }
                 >
                   Иван Петров
                 </div>
-                <div className="text-[8px] text-gray-500">Директор · КИДС-ПРИНТ</div>
+                <div className="text-[8px] text-gray-500">Директор · ПРИНТЕРА</div>
                 <div className="mt-1.5 h-px w-2/3" style={{ background: foil ? foilBg : '#cbd5e1' }} />
-                <div className="mt-1 text-[7px] text-gray-400">+7 495 000-00-00 · kidsprint.ru</div>
+                <div className="mt-1 text-[7px] text-gray-400">+7 495 000-00-00 · printera.ru</div>
               </div>
             </div>
             <div className="pointer-events-none absolute inset-0" style={sheenOverlay(coating?.swatch)} />

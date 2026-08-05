@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { SearchForm } from '@/components/navigation/search-form';
 
 // Кастомная 404 с навигацией и поиском, БЕЗ noindex (ТЗ требований, п.4).
-export const metadata: Metadata = { title: 'Страница не найдена — КИДС-ПРИНТ' };
+export const metadata: Metadata = { title: 'Страница не найдена — ПРИНТЕРА' };
 
 export default function NotFound() {
   return (

@@ -3,7 +3,7 @@ import { AdminShell } from '@/components/admin/admin-shell';
 
 /** Панель управления не индексируется. */
 export const metadata: Metadata = {
-  title: 'Панель управления — КИДС-ПРИНТ',
+  title: 'Панель управления — ПРИНТЕРА',
   robots: { index: false, follow: false },
 };
 

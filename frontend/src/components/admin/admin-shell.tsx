@@ -93,7 +93,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     <Container className="py-6">
       <div className="mb-5 flex items-center justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-subtle">KidsPrint</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-subtle">PRINTERA</p>
           <h1 className="text-xl font-bold sm:text-2xl">Панель управления</h1>
         </div>
         <button
